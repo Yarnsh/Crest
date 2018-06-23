@@ -184,7 +184,6 @@ func walkTowards(dest):
 		pick_up = null
 
 func _walk(dest):
-	anim_player.play(\"Run\")
 	if (world != null):
 		var close_dest = world.get_closest_point(Vector3(dest.x, 0, dest.y))
 		walk_path = Array(world.get_simple_path(Vector3(transform.origin.x, 0, transform.origin.y), close_dest))
@@ -262,6 +261,10 @@ func setHighlight(highlight):
 	else:
 		model.get_child(0).get_child(0).get_child(0).get_mesh().surface_get_material(0).set_next_pass(null)
 
+func _anim_playing(anim):
+	if (anim_player.get_current_animation() != anim):
+		anim_player.play(anim)
+
 func _ready():
 	world = get_node(\"/root/World\")
 	
@@ -279,11 +282,6 @@ func _process(delta):
 	_updateModelPosition()
 	#TODO: limit inputs when attacking
 	if (!is_dead):
-		if (!anim_player.is_playing()):
-			if (in_combat):
-				anim_player.play(\"Idle_Combat\")
-			else:
-				anim_player.play(\"Idle\")
 		#TODO: make the actor walk, interact, attack, and all that, client side based on parameters passed by controller
 		if (!is_attacking):
 			if (walk_towards != null and !isOnGlobalCooldown()):
@@ -298,11 +296,8 @@ func _process(delta):
 						_turn_towards(walk_towards)
 					else:
 						if (in_combat):
-							anim_player.play(\"Idle_Combat\")
 							busy = false
 							startGlobalCooldown()
-						else:
-							anim_player.play(\"Idle\")
 				else:
 					translate((walk_towards - global_transform.origin).normalized() * walk_speed * delta)
 			
@@ -323,6 +318,20 @@ func _process(delta):
 				emit_signal(\"inventory_updated\")
 	else:
 		get_node(\"Sprite\").set_texture(load(\"res://Actors/Assets/guyded.png\"))
+	
+	#Make sure the right animation is playing
+	if (!is_dead):
+		if (is_attacking):
+			pass #TODO: attack animations
+		else: if (walk_towards and !isOnGlobalCooldown()):
+			_anim_playing(\"Run\")
+		else:
+			if (in_combat):
+				_anim_playing(\"Idle_Combat\")
+			else:
+				_anim_playing(\"Idle\")
+	else:
+		pass #TODO: dying animation
 "
 
 [sub_resource type="CircleShape2D" id=2]
