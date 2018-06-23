@@ -1,0 +1,50 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://Actors/PlayerActor.tscn" type="PackedScene" id=1]
+
+[sub_resource type="GDScript" id=1]
+
+script/source = "extends Node
+
+onready var actor = $Actor
+
+func getState():
+	if (typeof(actor) != TYPE_NIL):
+		return actor.getState()
+	else:
+		print(\"FAILED TO GET STATE \" + self.name)
+		return null
+func setState(state):
+	if (typeof(actor) != TYPE_NIL):
+		actor.setState(state)
+	else:
+		print(\"FAILED TO SET STATE \" + self.name)
+
+func setInCombat(combat):
+	actor.in_combat = combat
+
+func walkTowards(dest):
+	actor.walkTowards(dest)
+
+func pickUp(item):
+	actor.pickUp(item)
+
+func dropItem(id):
+	actor.dropItem(id)
+
+func equipItem(id):
+	actor.equipItem(id)
+
+func unequipItem():
+	actor.unequipItem()
+
+func queueAbilityTowardsByName(ability, point):
+	actor.queueAbilityTowardsByName(ability, point)"
+
+[node name="Node" type="Node" index="0"]
+
+script = SubResource( 1 )
+
+[node name="Actor" parent="." index="0" instance=ExtResource( 1 )]
+
+

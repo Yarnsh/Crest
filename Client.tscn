@@ -1,0 +1,161 @@
+[gd_scene load_steps=2 format=2]
+
+[sub_resource type="GDScript" id=1]
+
+script/source = "extends Node
+
+onready var textBox = $VBoxContainer/RichTextLabel
+onready var textLine = $VBoxContainer/HBoxContainer/LineEdit
+
+func _input(event):
+	if (event is InputEventKey):
+		if (event.scancode == KEY_ENTER and event.pressed):
+			_on_Send_pressed()
+
+func _ready():
+	set_process_input(true)
+	
+	var peer = NetworkedMultiplayerENet.new()
+	peer.create_client(global.SERVER_IP, global.SERVER_PORT)
+	get_tree().set_network_peer(peer)
+	
+	get_tree().connect(\"network_peer_connected\", self, \"_player_connected\")
+	get_tree().connect(\"network_peer_disconnected\", self, \"_player_disconnected\")
+	get_tree().connect(\"connected_to_server\", self, \"_connected_ok\")
+	get_tree().connect(\"connection_failed\", self, \"_connected_fail\")
+	get_tree().connect(\"server_disconnected\", self, \"_server_disconnected\")
+
+
+func _on_Send_pressed():
+	var message = textLine.get_text()
+	textLine.set_text(\"\")
+	rpc_id(1, \"disperse_chat_message\", message)
+
+func _player_connected(id):
+	pass # Will go unused, not useful here
+
+func _player_disconnected(id):
+	pass
+
+func _connected_ok():
+	pass # Only called on clients, not server. Send my ID and info to all the other peer
+
+func _server_disconnected():
+	pass # Server kicked us, show error and abort
+
+func _connected_fail():
+	pass # Could not even connect to server, abort
+
+remote func receive_chat_message(message):
+	textBox.add_text(message)"
+
+[node name="Node" type="Node"]
+
+script = SubResource( 1 )
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." index="0"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+rect_pivot_offset = Vector2( 0, 0 )
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+alignment = 0
+_sections_unfolded = [ "Anchor", "Margin" ]
+
+[node name="RichTextLabel" type="RichTextLabel" parent="VBoxContainer" index="0"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 1920.0
+margin_bottom = 1052.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = true
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+bbcode_enabled = false
+bbcode_text = ""
+visible_characters = -1
+percent_visible = 1.0
+meta_underlined = true
+tab_size = 4
+text = ""
+scroll_active = true
+scroll_following = true
+selection_enabled = true
+override_selected_font_color = false
+_sections_unfolded = [ "Anchor", "Margin", "Rect", "Size Flags" ]
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer" index="1"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 1056.0
+margin_right = 1920.0
+margin_bottom = 1080.0
+rect_pivot_offset = Vector2( 0, 0 )
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+alignment = 0
+
+[node name="LineEdit" type="LineEdit" parent="VBoxContainer/HBoxContainer" index="0"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 1870.0
+margin_bottom = 24.0
+rect_pivot_offset = Vector2( 0, 0 )
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 1
+size_flags_horizontal = 3
+size_flags_vertical = 1
+focus_mode = 2
+context_menu_enabled = true
+placeholder_alpha = 0.6
+caret_blink = false
+caret_blink_speed = 0.65
+caret_position = 0
+_sections_unfolded = [ "Grow Direction", "Size Flags" ]
+
+[node name="Send" type="Button" parent="VBoxContainer/HBoxContainer" index="1"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 1874.0
+margin_right = 1920.0
+margin_bottom = 24.0
+rect_pivot_offset = Vector2( 0, 0 )
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+toggle_mode = false
+enabled_focus_mode = 2
+shortcut = null
+group = null
+text = "SEND"
+flat = false
+align = 1
+
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/Send" to="." method="_on_Send_pressed"]
+
+

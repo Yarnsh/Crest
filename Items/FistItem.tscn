@@ -1,0 +1,38 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://Items/Assets/Fist.png" type="Texture" id=1]
+[ext_resource path="res://Abilities/Punch.tscn" type="PackedScene" id=2]
+
+[sub_resource type="GDScript" id=1]
+
+script/source = "extends \"res://Items/WeaponItem.gd\"
+
+const type = \"FistItem\"
+const slot = \"Weapon\"
+"
+
+[node name="StaticBody" type="StaticBody"]
+
+input_ray_pickable = true
+input_capture_on_drag = false
+collision_layer = 524288
+collision_mask = 0
+friction = 1.0
+bounce = 0.0
+constant_linear_velocity = Vector3( 0, 0, 0 )
+constant_angular_velocity = Vector3( 0, 0, 0 )
+script = SubResource( 1 )
+_sections_unfolded = [ "Collision" ]
+
+[node name="Sprite" type="Sprite" parent="." index="0"]
+
+texture = ExtResource( 1 )
+_sections_unfolded = [ "Offset", "Transform" ]
+
+[node name="Abilities" type="Node2D" parent="." index="1"]
+
+[node name="Punch" parent="Abilities" index="0" instance=ExtResource( 2 )]
+
+[node name="Model" type="Spatial" parent="." index="2"]
+
+

@@ -1,0 +1,91 @@
+[gd_scene load_steps=2 format=2]
+
+[sub_resource type="GDScript" id=1]
+
+script/source = "extends PanelContainer
+
+onready var list = $VBoxContainer
+
+var _controller
+var _actor
+
+func init(controller):
+	_controller = weakref(controller)
+	_actor = weakref(controller.actor)
+
+func _ready():
+	# Called every time the node is added to the scene.
+	# Initialization here
+	pass
+
+func updateAbilities():
+	for c in list.get_children():
+		list.remove_child(c)
+		c.free()
+	
+	#TODO: get abilities from actor and all equipment
+	if (_actor.get_ref() and _actor.get_ref().equipped_weapon != null):
+		var label = Label.new()
+		label.text = _actor.get_ref().equipped_weapon.type
+		list.add_child(label)
+		for a in _actor.get_ref().equipped_weapon.getAbilities():
+			var abil = preload(\"res://Controllers/UI/AbilityDesc.tscn\").instance()
+			list.add_child(abil)
+			abil.init(_controller.get_ref(), a)
+
+func toggle():
+	if (is_visible()):
+		hide()
+	else:
+		show()
+"
+
+[node name="Abilities" type="PanelContainer"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+rect_pivot_offset = Vector2( 0, 0 )
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+script = SubResource( 1 )
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." index="0"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 60.0
+margin_bottom = 21.0
+rect_pivot_offset = Vector2( 0, 0 )
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+alignment = 0
+
+[node name="Label" type="Label" parent="VBoxContainer" index="0"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 53.0
+margin_bottom = 14.0
+rect_pivot_offset = Vector2( 0, 0 )
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 4
+text = "Abilities"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+
