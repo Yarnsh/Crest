@@ -197,7 +197,8 @@ func _walk(dest):
 	_turn_towards(walk_towards)
 
 func _turn_towards(point):
-	model.look_at(Vector3(point.x, 0.0 ,point.y), Vector3(0,1,0))
+	var target = -point + (2 * get_global_position())
+	model.look_at(Vector3(target.x, 0.0 ,target.y), Vector3(0,1,0))
 
 func pickUp(item):
 	#TODO: check if item is able to be reached
