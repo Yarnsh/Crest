@@ -124,6 +124,7 @@ _sections_unfolded = [ "Drag Margin", "Offset", "Smoothing", "Transform" ]
 
 [node name="Camera" type="Camera" parent="Actor/Spatial" index="1"]
 
+transform = Transform( 0.717471, 0.450118, -0.53163, 0.0108616, 0.755868, 0.654633, 0.696504, -0.475455, 0.537424, -4.09512, 4.99419, 4.42696 )
 keep_aspect = 1
 cull_mask = 1048575
 environment = null

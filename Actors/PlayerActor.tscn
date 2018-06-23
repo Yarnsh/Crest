@@ -205,7 +205,7 @@ func pickUp(item):
 	queued_ability_name = null
 	if (item != null and !busy):
 		pick_up = weakref(item)
-		_walk(item.get_global_position())
+		_walk(item.global_transform.origin)
 
 func dropItem(id):
 	if (inventory.has(id)):
@@ -329,7 +329,7 @@ func _process(delta):
 custom_solver_bias = 0.0
 radius = 10.0
 
-[node name="Actor" type="KinematicBody2D"]
+[node name="Actor" type="KinematicBody2D" index="0"]
 
 input_pickable = true
 collision_layer = 1

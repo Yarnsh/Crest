@@ -82,7 +82,7 @@ func unequip_item():
 	actor.unequipItem()
 "
 
-[node name="Node" type="Node" index="0"]
+[node name="Node" type="Node"]
 
 script = SubResource( 1 )
 
