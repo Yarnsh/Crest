@@ -17,7 +17,9 @@ func unlock():
 	lock.unlock()
 
 var world
-onready var model = $Model
+onready var spatial = $Spatial
+onready var model = $Spatial/Model
+onready var anim_player = $Spatial/Model/AnimationPlayer
 
 onready var SwingNoise = $SwingNoise
 onready var HurtNoise = $HurtNoise
@@ -178,16 +180,24 @@ func walkTowards(dest):
 	#TODO: make this use navmesh path
 	queued_ability_name = null
 	if (!busy):
-		if (world != null):
-			var close_dest = world.get_closest_point(Vector3(dest.x, 0, dest.y))
-			walk_path = Array(world.get_simple_path(Vector3(transform.origin.x, 0, transform.origin.y), close_dest))
-			var walk3D = walk_path.pop_front()
-			walk_towards = Vector2(walk3D.x, walk3D.z)
-			var walkDest3D = walk_path.back()
-			walk_dest = Vector2(walkDest3D.x, walkDest3D.z)
-		else:
-			walk_towards = dest
+		_walk(dest)
 		pick_up = null
+
+func _walk(dest):
+	anim_player.play(\"Run\")
+	if (world != null):
+		var close_dest = world.get_closest_point(Vector3(dest.x, 0, dest.y))
+		walk_path = Array(world.get_simple_path(Vector3(transform.origin.x, 0, transform.origin.y), close_dest))
+		var walk3D = walk_path.pop_front()
+		walk_towards = Vector2(walk3D.x, walk3D.z)
+		var walkDest3D = walk_path.back()
+		walk_dest = Vector2(walkDest3D.x, walkDest3D.z)
+	else:
+		walk_towards = dest
+	_turn_towards(walk_towards)
+
+func _turn_towards(point):
+	model.look_at(Vector3(point.x, 0.0 ,point.y), Vector3(0,1,0))
 
 func pickUp(item):
 	#TODO: check if item is able to be reached
@@ -195,7 +205,7 @@ func pickUp(item):
 	queued_ability_name = null
 	if (item != null and !busy):
 		pick_up = weakref(item)
-		walk_towards = item.getGlobalPosition() #TODO: make this use the navmesh path
+		_walk(item.get_global_position())
 
 func dropItem(id):
 	if (inventory.has(id)):
@@ -234,7 +244,7 @@ func startTowardsByName(ability_name, point): #TODO: make this require which equ
 
 func _updateModelPosition():
 	var pos = get_position()
-	model.transform.origin = Vector3(pos.x, 0, pos.y)
+	spatial.transform.origin = Vector3(pos.x, 0, pos.y)
 	#TODO: make this match to the height of the navmesh at that point
 	for i in inventory_node.get_children():
 		i.setGlobalPosition(pos)
@@ -253,11 +263,26 @@ func setHighlight(highlight):
 
 func _ready():
 	world = get_node(\"/root/World\")
+	
+	#Set all animations that need to to loop
+	anim_player.get_animation(\"Idle\").loop = true
+	anim_player.get_animation(\"Idle_Combat\").loop = true
+	anim_player.get_animation(\"Run\").loop = true
+	
+	if (in_combat):
+		anim_player.play(\"Idle_Combat\")
+	else:
+		anim_player.play(\"Idle\")
 
 func _process(delta):
 	_updateModelPosition()
 	#TODO: limit inputs when attacking
 	if (!is_dead):
+		if (!anim_player.is_playing()):
+			if (in_combat):
+				anim_player.play(\"Idle_Combat\")
+			else:
+				anim_player.play(\"Idle\")
 		#TODO: make the actor walk, interact, attack, and all that, client side based on parameters passed by controller
 		if (!is_attacking):
 			if (walk_towards != null and !isOnGlobalCooldown()):
@@ -269,9 +294,14 @@ func _process(delta):
 					if (walk_path != null and !walk_path.empty()):
 						var walk3D = walk_path.pop_front()
 						walk_towards = Vector2(walk3D.x, walk3D.z)
-					else: if (in_combat):
-						busy = false
-						startGlobalCooldown()
+						_turn_towards(walk_towards)
+					else:
+						if (in_combat):
+							anim_player.play(\"Idle_Combat\")
+							busy = false
+							startGlobalCooldown()
+						else:
+							anim_player.play(\"Idle\")
 				else:
 					translate((walk_towards - global_transform.origin).normalized() * walk_speed * delta)
 			
@@ -299,7 +329,7 @@ func _process(delta):
 custom_solver_bias = 0.0
 radius = 10.0
 
-[node name="Actor" type="KinematicBody2D" index="0"]
+[node name="Actor" type="KinematicBody2D"]
 
 input_pickable = true
 collision_layer = 1
@@ -345,6 +375,8 @@ _sections_unfolded = [ "Collision", "Transform" ]
 
 [node name="Inventory" type="Node2D" parent="." index="5"]
 
-[node name="Model" parent="." index="6" instance=ExtResource( 5 )]
+[node name="Spatial" type="Spatial" parent="." index="6"]
+
+[node name="Model" parent="Spatial" index="0" instance=ExtResource( 5 )]
 
 

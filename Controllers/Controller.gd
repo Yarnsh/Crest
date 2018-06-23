@@ -14,7 +14,7 @@ func setState(state):
 
 
 onready var cam = $Actor/Camera2D
-onready var cam3D = $Actor/Model/Camera
+onready var cam3D = $Actor/Spatial/Camera
 onready var clickCast = $ClickCast
 onready var mouseCast = $MouseCast
 onready var inventoryUI = $CanvasLayer/Inventory

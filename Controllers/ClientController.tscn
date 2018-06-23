@@ -122,9 +122,8 @@ editor_draw_limits = false
 editor_draw_drag_margin = false
 _sections_unfolded = [ "Drag Margin", "Offset", "Smoothing", "Transform" ]
 
-[node name="Camera" type="Camera" parent="Actor/Model" index="3"]
+[node name="Camera" type="Camera" parent="Actor/Spatial" index="1"]
 
-transform = Transform( 0.779494, 0.323029, -0.536695, 0, 0.85678, 0.515683, 0.626409, -0.401972, 0.667855, -7.86395, 13.4174, 10.5161 )
 keep_aspect = 1
 cull_mask = 1048575
 environment = null
@@ -132,7 +131,7 @@ h_offset = 0.0
 v_offset = 0.0
 doppler_tracking = 0
 projection = 0
-current = true
+current = false
 fov = 70.0
 size = 1.0
 near = 0.05
