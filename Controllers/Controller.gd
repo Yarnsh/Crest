@@ -99,6 +99,7 @@ func _on_Actor_inventory_updated():
 	inventoryUI.updateItems(actor.inventory)
 
 func _on_Actor_equipment_updated():
+	inventoryUI.updateEquipment(actor.equipped_weapon, actor.equipped_chest)
 	abilityUI.updateAbilities()
 	_checkAbilityHotslots()
 	HUD.updateAbilityBar()

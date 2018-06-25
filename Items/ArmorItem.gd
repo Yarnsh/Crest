@@ -1,7 +1,8 @@
 extends "res://Items/BaseItem.gd"
 
-const type = "WeaponItem"
-const slot = "Weapon"
+const type = "ArmorItem"
+
+onready var mesh = ($Model).get_child(0).get_child(0).get_child(0)
 
 func getAbilities():
 	return abilities.get_children()
@@ -15,6 +16,7 @@ func startTowardsByName(user, ability, point):
 		a.setUser(user)
 		a.startTowards(point)
 
+#TODO: add defensive values and such
 
 func getState():
 	var abils = []

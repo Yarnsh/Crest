@@ -78,8 +78,8 @@ func drop_item(id):
 func equip_item(id):
 	actor.equipItem(id)
 
-func unequip_item():
-	actor.unequipItem()
+func unequip_item(type):
+	actor.unequipItem(type)
 "
 
 [node name="Node" type="Node"]

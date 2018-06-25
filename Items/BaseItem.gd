@@ -14,7 +14,7 @@ func __ITEM():
 func _ready():
 	pass
 
-func init():
+func _init():
 	#initialize a fresh base item
 	id = uuid.v4()
 	name = id

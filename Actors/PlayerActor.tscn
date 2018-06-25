@@ -20,6 +20,7 @@ var world
 onready var spatial = $Spatial
 onready var model = $Spatial/Model
 onready var anim_player = $Spatial/Model/AnimationPlayer
+onready var skeleton = $Spatial/Model/Armature/Skeleton
 
 onready var SwingNoise = $SwingNoise
 onready var HurtNoise = $HurtNoise
@@ -38,6 +39,7 @@ onready var inventory_node = $Inventory
 
 onready var default_weapon = $DefaultWeapon
 onready var equipped_weapon = default_weapon
+var equipped_chest = null
 
 var is_attacking = false
 var startup_ends = 0
@@ -102,6 +104,10 @@ func getState():
 	for i in inventory:
 		inv[i] = inventory[i].getState()
 	
+	var e_chest = null
+	if (equipped_chest):
+		e_chest = equipped_chest.name
+	
 	return {
 		\"id\":self.name,
 		\"global_cooldown_ends\":global_cooldown_ends,
@@ -111,6 +117,7 @@ func getState():
 		#TODO: make this work
 		\"equipped_weapon\":equipped_weapon.name,
 		\"default_weapon\":default_weapon.getState(),
+		\"equipped_chest\":e_chest,
 		\"walk_speed\":walk_speed, 
 		\"inventory\":inv, 
 		\"pos\":get_global_position(),
@@ -148,9 +155,17 @@ func setState(state):
 	var equipped_weapon_name = state[\"equipped_weapon\"]
 	if (!equipped_weapon.name == equipped_weapon_name):
 		if (equipped_weapon_name == default_weapon.name):
-			unequipItem()
+			unequipItem(\"Weapon\")
 		else:
 			equipItem(equipped_weapon_name)
+		emit_signal(\"equipment_updated\")
+	
+	var equipped_chest_name = state[\"equipped_chest\"]
+	if (!equipped_chest or !equipped_chest.name == equipped_chest_name):
+		if (equipped_chest_name == null):
+			unequipItem(\"Chest\")
+		else:
+			equipItem(equipped_chest_name)
 		emit_signal(\"equipment_updated\")
 	
 	default_weapon.setState(state[\"default_weapon\"])
@@ -205,38 +220,62 @@ func pickUp(item):
 	queued_ability_name = null
 	if (item != null and !busy):
 		pick_up = weakref(item)
-		_walk(item.global_transform.origin)
+		_walk(pick_up.get_ref().getGlobalPosition())
 
 func dropItem(id):
 	if (inventory.has(id)):
-		inventory_node.remove_child(inventory[id])
-		world.Items.add_child(inventory[id])
-		inventory[id].drop(get_global_position())
-		inventory.erase(id)
+		if (equipped_weapon.id != id
+		and (!equipped_chest or equipped_chest.id != id)):
+			inventory_node.remove_child(inventory[id])
+			world.Items.add_child(inventory[id])
+			inventory[id].drop(get_global_position())
+			inventory.erase(id)
+			emit_signal(\"inventory_updated\")
 
-func equipItem(id): #TODO: make this actually check what slot and shit is being done
+func equipItem(id):
 	#TODO: dont allow any equipment changing during busy time
 	#TODO: dont allow any equipment changing in combat
 	if (inventory.has(id)):
 		var item = inventory[id]
 		if (item.slot == \"Weapon\"):
-			#if (equipped_weapon != null and equipped_weapon.type == \"FistItem\"):
-				#equipped_weapon = null
-			#if (equipped_weapon != null):
-				#inventory[equipped_weapon.id] = equipped_weapon
 			equipped_weapon = item
-			#inventory.erase(id)
-			emit_signal(\"inventory_updated\")
-			emit_signal(\"equipment_updated\")
+			#TODO: something about putting weapon in hand and also animations
+		else: if (item.slot == \"Chest\"):
+			equipped_chest = item
+			_setEquipmentModel(\"Chest\")
+	
+	emit_signal(\"inventory_updated\")
+	emit_signal(\"equipment_updated\")
 
-func unequipItem(): #TODO: make this actually check what slot and shit is being done
+func unequipItem(type):
 	#TODO: dont allow changing weapons during busy time
 	#TODO: dont allow any equipment changing in combat
-	#if (equipped_weapon != null and equipped_weapon.type != \"FistItem\"):
-		#inventory[equipped_weapon.id] = equipped_weapon
+	if (type == \"Weapon\"):
 		equipped_weapon = default_weapon
-		emit_signal(\"inventory_updated\")
-		emit_signal(\"equipment_updated\")
+	else: if (type == \"Chest\"):
+		equipped_chest = null
+		_unsetEquipmentModel(\"Chest\")
+	emit_signal(\"inventory_updated\")
+	emit_signal(\"equipment_updated\")
+
+func _setEquipmentModel(type):
+	_unsetEquipmentModel(type)
+	var mesh
+	if (type == \"Chest\" and equipped_chest):
+		mesh = equipped_chest.mesh.duplicate()
+		skeleton.get_node(\"BodyDefault\").hide()
+	
+	mesh.name = type
+	skeleton.add_child(mesh)
+
+func _unsetEquipmentModel(type):
+	var mesh = skeleton.get_node(type)
+	if (mesh):
+		skeleton.remove_child(mesh)
+		mesh.queue_free()
+	
+	if (type == \"Chest\"):
+		skeleton.get_node(\"BodyDefault\").show()
 
 func startTowardsByName(ability_name, point): #TODO: make this require which equipment the ability is from
 	if (equipped_weapon != null):
@@ -390,3 +429,4 @@ _sections_unfolded = [ "Collision", "Transform" ]
 [node name="Model" parent="Spatial" index="0" instance=ExtResource( 5 )]
 
 
+[editable path="Spatial/Model"]

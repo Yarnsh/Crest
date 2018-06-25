@@ -12,16 +12,14 @@ var WORLD_MULTI = false
 var WORLD_HOST = false
 var WORLD_LOAD = false
 
+#is this even how I should do this
 var itemInventoryIcons = {
-	"Fist":preload("res://Items/Assets/Fist.png"),
+	"FistItem":preload("res://Items/Assets/Fist.png"),
 	"PotionItem":preload("res://Items/Assets/Potion.png"),
-	"SwordItem":preload("res://Items/Assets/Sword.png")
-	}
-
-#TODO: make all item descriptions autoloaded stuff, and have an item instance that points to the item for use
-var items = {
-	"PotionItem":preload("res://Items/PotionItem.tscn").instance(),
-	"SwordItem":preload("res://Items/SwordItem.tscn").instance()
+	"SwordItem":preload("res://Items/Assets/Sword.png"),
+	
+	"Armor/Chest":preload("res://Items/Armor/Assets/chest.png"),
+	"Armor/KnightChest":preload("res://Items/Armor/Assets/knightchest.png"),
 	}
 
 func xzPlaneIntersect(pos, dir):

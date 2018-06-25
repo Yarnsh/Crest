@@ -35,13 +35,13 @@ func dropItem(id):
 func equipItem(id):
 	actor.equipItem(id)
 
-func unequipItem():
-	actor.unequipItem()
+func unequipItem(type):
+	actor.unequipItem(type)
 
 func queueAbilityTowardsByName(ability, point):
 	actor.queueAbilityTowardsByName(ability, point)"
 
-[node name="Node" type="Node" index="0"]
+[node name="Node" type="Node"]
 
 script = SubResource( 1 )
 
