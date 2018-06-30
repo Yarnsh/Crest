@@ -40,6 +40,9 @@ onready var inventory_node = $Inventory
 onready var default_weapon = $DefaultWeapon
 onready var equipped_weapon = default_weapon
 var equipped_chest = null
+var equipped_head = null
+var equipped_arms = null
+var equipped_legs = null
 
 var is_attacking = false
 var startup_ends = 0
@@ -107,6 +110,15 @@ func getState():
 	var e_chest = null
 	if (equipped_chest):
 		e_chest = equipped_chest.name
+	var e_head = null
+	if (equipped_head):
+		e_head = equipped_head.name
+	var e_arms = null
+	if (equipped_arms):
+		e_arms = equipped_arms.name
+	var e_legs = null
+	if (equipped_legs):
+		e_legs = equipped_legs.name
 	
 	return {
 		\"id\":self.name,
@@ -118,6 +130,9 @@ func getState():
 		\"equipped_weapon\":equipped_weapon.name,
 		\"default_weapon\":default_weapon.getState(),
 		\"equipped_chest\":e_chest,
+		\"equipped_head\":e_head,
+		\"equipped_arms\":e_arms,
+		\"equipped_legs\":e_legs,
 		\"walk_speed\":walk_speed, 
 		\"inventory\":inv, 
 		\"pos\":get_global_position(),
@@ -133,6 +148,7 @@ func getState():
 
 func setState(state):
 	#set all parameters of the actor, used to resync with server
+	#TODO: optimize signal emission
 	in_combat = state[\"in_combat\"]
 	busy = state[\"busy\"]
 	is_attacking = state[\"is_attacking\"]
@@ -166,6 +182,27 @@ func setState(state):
 			unequipItem(\"Chest\")
 		else:
 			equipItem(equipped_chest_name)
+		emit_signal(\"equipment_updated\")
+	var equipped_head_name = state[\"equipped_head\"]
+	if (!equipped_head or !equipped_head.name == equipped_head_name):
+		if (equipped_head_name == null):
+			unequipItem(\"head\")
+		else:
+			equipItem(equipped_head_name)
+		emit_signal(\"equipment_updated\")
+	var equipped_arms_name = state[\"equipped_arms\"]
+	if (!equipped_arms or !equipped_arms.name == equipped_arms_name):
+		if (equipped_arms_name == null):
+			unequipItem(\"arms\")
+		else:
+			equipItem(equipped_arms_name)
+		emit_signal(\"equipment_updated\")
+	var equipped_legs_name = state[\"equipped_legs\"]
+	if (!equipped_legs or !equipped_legs.name == equipped_legs_name):
+		if (equipped_legs_name == null):
+			unequipItem(\"legs\")
+		else:
+			equipItem(equipped_legs_name)
 		emit_signal(\"equipment_updated\")
 	
 	default_weapon.setState(state[\"default_weapon\"])
@@ -242,7 +279,13 @@ func equipItem(id):
 			#TODO: something about putting weapon in hand and also animations
 		else: if (item.slot == \"Chest\"):
 			equipped_chest = item
-			_setEquipmentModel(\"Chest\")
+		else: if (item.slot == \"Head\"):
+			equipped_head = item
+		else: if (item.slot == \"Arms\"):
+			equipped_arms = item
+		else: if (item.slot == \"Legs\"):
+			equipped_legs = item
+		_setEquipmentModel(item.slot)
 	
 	emit_signal(\"inventory_updated\")
 	emit_signal(\"equipment_updated\")
@@ -254,7 +297,13 @@ func unequipItem(type):
 		equipped_weapon = default_weapon
 	else: if (type == \"Chest\"):
 		equipped_chest = null
-		_unsetEquipmentModel(\"Chest\")
+	else: if (type == \"Head\"):
+		equipped_head = null
+	else: if (type == \"Arms\"):
+		equipped_arms = null
+	else: if (type == \"Legs\"):
+		equipped_legs = null
+	_unsetEquipmentModel(type)
 	emit_signal(\"inventory_updated\")
 	emit_signal(\"equipment_updated\")
 
@@ -264,9 +313,19 @@ func _setEquipmentModel(type):
 	if (type == \"Chest\" and equipped_chest):
 		mesh = equipped_chest.mesh.duplicate()
 		skeleton.get_node(\"BodyDefault\").hide()
+	if (type == \"Head\" and equipped_head):
+		mesh = equipped_head.mesh.duplicate()
+		skeleton.get_node(\"HeadDefault\").hide()
+	if (type == \"Arms\" and equipped_arms):
+		mesh = equipped_arms.mesh.duplicate()
+		skeleton.get_node(\"HandsDefault\").hide()
+	if (type == \"Legs\" and equipped_legs):
+		mesh = equipped_legs.mesh.duplicate()
+		skeleton.get_node(\"LegsDefault\").hide()
 	
-	mesh.name = type
-	skeleton.add_child(mesh)
+	if (mesh):
+		mesh.name = type
+		skeleton.add_child(mesh)
 
 func _unsetEquipmentModel(type):
 	var mesh = skeleton.get_node(type)
@@ -276,6 +335,12 @@ func _unsetEquipmentModel(type):
 	
 	if (type == \"Chest\"):
 		skeleton.get_node(\"BodyDefault\").show()
+	if (type == \"Head\"):
+		skeleton.get_node(\"HeadDefault\").show()
+	if (type == \"Arms\"):
+		skeleton.get_node(\"HandsDefault\").show()
+	if (type == \"Legs\"):
+		skeleton.get_node(\"LegsDefault\").show()
 
 func startTowardsByName(ability_name, point): #TODO: make this require which equipment the ability is from
 	if (equipped_weapon != null):
@@ -378,7 +443,7 @@ func _process(delta):
 custom_solver_bias = 0.0
 radius = 10.0
 
-[node name="Actor" type="KinematicBody2D" index="0"]
+[node name="Actor" type="KinematicBody2D"]
 
 input_pickable = true
 collision_layer = 1

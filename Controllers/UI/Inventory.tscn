@@ -1,7 +1,10 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://Items/Assets/Fist.png" type="Texture" id=1]
-[ext_resource path="res://Items/Armor/Assets/chest.png" type="Texture" id=2]
+[ext_resource path="res://Items/Armor/Assets/head.png" type="Texture" id=2]
+[ext_resource path="res://Items/Armor/Assets/chest.png" type="Texture" id=3]
+[ext_resource path="res://Items/Armor/Assets/arms.png" type="Texture" id=4]
+[ext_resource path="res://Items/Armor/Assets/legs.png" type="Texture" id=5]
 
 [sub_resource type="GDScript" id=1]
 
@@ -10,7 +13,10 @@ script/source = "extends PanelContainer
 var world
 onready var itemList = $HBoxContainer/PanelContainer/ItemList
 onready var equipedWeaponIcon = $HBoxContainer/Equipment/Weapon/VBoxContainer/TextureRect
+onready var equipedHeadIcon = $HBoxContainer/Equipment/Head/VBoxContainer/TextureRect
 onready var equipedChestIcon = $HBoxContainer/Equipment/Chest/VBoxContainer/TextureRect
+onready var equipedArmsIcon = $HBoxContainer/Equipment/Arms/VBoxContainer/TextureRect
+onready var equipedLegsIcon = $HBoxContainer/Equipment/Legs/VBoxContainer/TextureRect
 var controller = null
 
 func _ready():
@@ -31,16 +37,31 @@ func updateItems(items):
 		#TODO: check that the thing to select is there still, just to avoid error messages
 		itemList.select(s)
 
-func updateEquipment(eweapon, echest):
+func updateEquipment(eweapon, ehead, echest, earms, elegs):
 	if (eweapon == null):
 		equipedWeaponIcon.set_texture(global.itemInventoryIcons[\"FistItem\"])
 	else:
 		equipedWeaponIcon.set_texture(global.itemInventoryIcons[eweapon.type])
 	
+	if (ehead == null):
+		equipedHeadIcon.set_texture(global.itemInventoryIcons[\"Armor/Head\"])
+	else:
+		equipedHeadIcon.set_texture(global.itemInventoryIcons[ehead.type])
+	
 	if (echest == null):
 		equipedChestIcon.set_texture(global.itemInventoryIcons[\"Armor/Chest\"])
 	else:
 		equipedChestIcon.set_texture(global.itemInventoryIcons[echest.type])
+	
+	if (earms == null):
+		equipedArmsIcon.set_texture(global.itemInventoryIcons[\"Armor/Arms\"])
+	else:
+		equipedArmsIcon.set_texture(global.itemInventoryIcons[earms.type])
+	
+	if (elegs == null):
+		equipedLegsIcon.set_texture(global.itemInventoryIcons[\"Armor/Legs\"])
+	else:
+		equipedLegsIcon.set_texture(global.itemInventoryIcons[elegs.type])
 
 func toggle():
 	if (is_visible()):
@@ -65,9 +86,18 @@ func _on_UnequipWeapon_pressed():
 
 func _on_UnequipChest_pressed():
 	controller.unequip_item(\"Chest\")
+
+func _on_UnequipLegs_pressed():
+	controller.unequip_item(\"Legs\")
+
+func _on_UnequipArms_pressed():
+	controller.unequip_item(\"Arms\")
+
+func _on_UnequipHead_pressed():
+	controller.unequip_item(\"Head\")
 "
 
-[node name="Inventory" type="PanelContainer"]
+[node name="Inventory" type="PanelContainer" index="0"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -91,7 +121,7 @@ anchor_bottom = 0.0
 margin_left = 7.0
 margin_top = 7.0
 margin_right = 596.0
-margin_bottom = 407.0
+margin_bottom = 501.0
 rect_pivot_offset = Vector2( 0, 0 )
 mouse_filter = 1
 mouse_default_cursor_shape = 0
@@ -107,7 +137,7 @@ anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_right = 393.0
-margin_bottom = 400.0
+margin_bottom = 494.0
 rect_pivot_offset = Vector2( 0, 0 )
 mouse_filter = 0
 mouse_default_cursor_shape = 0
@@ -124,7 +154,7 @@ anchor_bottom = 0.0
 margin_left = 7.0
 margin_top = 7.0
 margin_right = 386.0
-margin_bottom = 393.0
+margin_bottom = 487.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = true
 focus_mode = 2
@@ -149,7 +179,7 @@ anchor_right = 0.0
 anchor_bottom = 0.0
 margin_left = 397.0
 margin_right = 505.0
-margin_bottom = 400.0
+margin_bottom = 494.0
 rect_pivot_offset = Vector2( 0, 0 )
 mouse_filter = 0
 mouse_default_cursor_shape = 0
@@ -165,7 +195,7 @@ anchor_bottom = 0.0
 margin_left = 7.0
 margin_top = 7.0
 margin_right = 101.0
-margin_bottom = 393.0
+margin_bottom = 487.0
 rect_pivot_offset = Vector2( 0, 0 )
 mouse_filter = 1
 mouse_default_cursor_shape = 0
@@ -180,7 +210,7 @@ anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_right = 43.0
-margin_bottom = 386.0
+margin_bottom = 480.0
 rect_pivot_offset = Vector2( 0, 0 )
 focus_mode = 2
 mouse_filter = 0
@@ -203,7 +233,7 @@ anchor_right = 0.0
 anchor_bottom = 0.0
 margin_left = 47.0
 margin_right = 94.0
-margin_bottom = 386.0
+margin_bottom = 480.0
 rect_pivot_offset = Vector2( 0, 0 )
 focus_mode = 2
 mouse_filter = 0
@@ -226,7 +256,7 @@ anchor_right = 0.0
 anchor_bottom = 0.0
 margin_left = 509.0
 margin_right = 589.0
-margin_bottom = 400.0
+margin_bottom = 494.0
 rect_pivot_offset = Vector2( 0, 0 )
 mouse_filter = 0
 mouse_default_cursor_shape = 0
@@ -304,7 +334,7 @@ text = "Unequip"
 flat = false
 align = 1
 
-[node name="Chest" type="PanelContainer" parent="HBoxContainer/Equipment" index="1"]
+[node name="Head" type="PanelContainer" parent="HBoxContainer/Equipment" index="1"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -313,6 +343,77 @@ anchor_bottom = 0.0
 margin_top = 74.0
 margin_right = 80.0
 margin_bottom = 176.0
+rect_pivot_offset = Vector2( 0, 0 )
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/Equipment/Head" index="0"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 73.0
+margin_bottom = 95.0
+rect_pivot_offset = Vector2( 0, 0 )
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+alignment = 0
+
+[node name="TextureRect" type="TextureRect" parent="HBoxContainer/Equipment/Head/VBoxContainer" index="0"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 66.0
+margin_bottom = 64.0
+rect_pivot_offset = Vector2( 0, 0 )
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+texture = ExtResource( 2 )
+stretch_mode = 0
+
+[node name="UnequipHead" type="Button" parent="HBoxContainer/Equipment/Head/VBoxContainer" index="1"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 68.0
+margin_right = 66.0
+margin_bottom = 88.0
+rect_pivot_offset = Vector2( 0, 0 )
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+toggle_mode = false
+enabled_focus_mode = 2
+shortcut = null
+group = null
+text = "Unequip"
+flat = false
+align = 1
+
+[node name="Chest" type="PanelContainer" parent="HBoxContainer/Equipment" index="2"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 180.0
+margin_right = 80.0
+margin_bottom = 282.0
 rect_pivot_offset = Vector2( 0, 0 )
 mouse_filter = 0
 mouse_default_cursor_shape = 0
@@ -349,10 +450,152 @@ mouse_filter = 1
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
-texture = ExtResource( 2 )
+texture = ExtResource( 3 )
 stretch_mode = 0
 
 [node name="UnequipChest" type="Button" parent="HBoxContainer/Equipment/Chest/VBoxContainer" index="1"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 68.0
+margin_right = 66.0
+margin_bottom = 88.0
+rect_pivot_offset = Vector2( 0, 0 )
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+toggle_mode = false
+enabled_focus_mode = 2
+shortcut = null
+group = null
+text = "Unequip"
+flat = false
+align = 1
+
+[node name="Arms" type="PanelContainer" parent="HBoxContainer/Equipment" index="3"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 286.0
+margin_right = 80.0
+margin_bottom = 388.0
+rect_pivot_offset = Vector2( 0, 0 )
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/Equipment/Arms" index="0"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 73.0
+margin_bottom = 95.0
+rect_pivot_offset = Vector2( 0, 0 )
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+alignment = 0
+
+[node name="TextureRect" type="TextureRect" parent="HBoxContainer/Equipment/Arms/VBoxContainer" index="0"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 66.0
+margin_bottom = 64.0
+rect_pivot_offset = Vector2( 0, 0 )
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+texture = ExtResource( 4 )
+stretch_mode = 0
+
+[node name="UnequipArms" type="Button" parent="HBoxContainer/Equipment/Arms/VBoxContainer" index="1"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 68.0
+margin_right = 66.0
+margin_bottom = 88.0
+rect_pivot_offset = Vector2( 0, 0 )
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+toggle_mode = false
+enabled_focus_mode = 2
+shortcut = null
+group = null
+text = "Unequip"
+flat = false
+align = 1
+
+[node name="Legs" type="PanelContainer" parent="HBoxContainer/Equipment" index="4"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 392.0
+margin_right = 80.0
+margin_bottom = 494.0
+rect_pivot_offset = Vector2( 0, 0 )
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/Equipment/Legs" index="0"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 73.0
+margin_bottom = 95.0
+rect_pivot_offset = Vector2( 0, 0 )
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+alignment = 0
+
+[node name="TextureRect" type="TextureRect" parent="HBoxContainer/Equipment/Legs/VBoxContainer" index="0"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 66.0
+margin_bottom = 64.0
+rect_pivot_offset = Vector2( 0, 0 )
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+texture = ExtResource( 5 )
+stretch_mode = 0
+
+[node name="UnequipLegs" type="Button" parent="HBoxContainer/Equipment/Legs/VBoxContainer" index="1"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -381,6 +624,12 @@ align = 1
 
 [connection signal="pressed" from="HBoxContainer/Equipment/Weapon/VBoxContainer/UnequipWeapon" to="." method="_on_UnequipWeapon_pressed"]
 
+[connection signal="pressed" from="HBoxContainer/Equipment/Head/VBoxContainer/UnequipHead" to="." method="_on_UnequipHead_pressed"]
+
 [connection signal="pressed" from="HBoxContainer/Equipment/Chest/VBoxContainer/UnequipChest" to="." method="_on_UnequipChest_pressed"]
+
+[connection signal="pressed" from="HBoxContainer/Equipment/Arms/VBoxContainer/UnequipArms" to="." method="_on_UnequipArms_pressed"]
+
+[connection signal="pressed" from="HBoxContainer/Equipment/Legs/VBoxContainer/UnequipLegs" to="." method="_on_UnequipLegs_pressed"]
 
 

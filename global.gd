@@ -18,8 +18,15 @@ var itemInventoryIcons = {
 	"PotionItem":preload("res://Items/Assets/Potion.png"),
 	"SwordItem":preload("res://Items/Assets/Sword.png"),
 	
+	"Armor/Head":preload("res://Items/Armor/Assets/head.png"),
 	"Armor/Chest":preload("res://Items/Armor/Assets/chest.png"),
+	"Armor/Arms":preload("res://Items/Armor/Assets/arms.png"),
+	"Armor/Legs":preload("res://Items/Armor/Assets/legs.png"),
+	
+	"Armor/KnightHelm":preload("res://Items/Armor/Assets/knighthelm.png"),
 	"Armor/KnightChest":preload("res://Items/Armor/Assets/knightchest.png"),
+	"Armor/KnightGauntlets":preload("res://Items/Armor/Assets/knightgauntlets.png"),
+	"Armor/KnightGreaves":preload("res://Items/Armor/Assets/knightgreaves.png"),
 	}
 
 func xzPlaneIntersect(pos, dir):

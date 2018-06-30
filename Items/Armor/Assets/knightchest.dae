@@ -5,8 +5,8 @@
 		<author>Anonymous</author>
 		<authoring_tool>Collada Exporter for Blender 2.6+, by Juan Linietsky (juan@codenix.com)</authoring_tool>
 	</contributor>
-	<created>2018-06-24T19:06:10Z</created>
-	<modified>2018-06-24T19:06:10Z</modified>
+	<created>2018-06-24T19:08:56Z</created>
+	<modified>2018-06-24T19:08:56Z</modified>
 	<unit meter="1.0" name="meter"/>
 	<up_axis>Z_UP</up_axis>
 </asset>
