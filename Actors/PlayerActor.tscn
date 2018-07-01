@@ -1,10 +1,8 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://Actors/Assets/guy.png" type="Texture" id=1]
-[ext_resource path="res://Actors/Assets/31.wav" type="AudioStream" id=2]
-[ext_resource path="res://Actors/Assets/effect00.wav" type="AudioStream" id=3]
-[ext_resource path="res://Items/FistItem.tscn" type="PackedScene" id=4]
-[ext_resource path="res://Actors/Assets/Character.dae" type="PackedScene" id=5]
+[ext_resource path="res://Items/FistItem.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Actors/Assets/Character.dae" type="PackedScene" id=3]
 
 [sub_resource type="GDScript" id=1]
 
@@ -21,9 +19,8 @@ onready var spatial = $Spatial
 onready var model = $Spatial/Model
 onready var anim_player = $Spatial/Model/AnimationPlayer
 onready var skeleton = $Spatial/Model/Armature/Skeleton
-
-onready var SwingNoise = $SwingNoise
-onready var HurtNoise = $HurtNoise
+onready var held_l = $Spatial/Model/Armature/Skeleton/Held_L
+onready var held_r = $Spatial/Model/Armature/Skeleton/Held_R
 
 signal inventory_updated
 signal equipment_updated
@@ -78,8 +75,6 @@ func setBusy(b):
 	busy = b
 
 func takeHit(damage): #for testing atm
-	HurtNoise.play()
-	
 	var damage_tier = -1
 	while (defense[damage_tier+1] <= damage or (damage_tier >= 0 and current_wounds[damage_tier].size() >= max_wounds[damage_tier])):
 		damage_tier += 1
@@ -276,7 +271,6 @@ func equipItem(id):
 		var item = inventory[id]
 		if (item.slot == \"Weapon\"):
 			equipped_weapon = item
-			#TODO: something about putting weapon in hand and also animations
 		else: if (item.slot == \"Chest\"):
 			equipped_chest = item
 		else: if (item.slot == \"Head\"):
@@ -310,28 +304,49 @@ func unequipItem(type):
 func _setEquipmentModel(type):
 	_unsetEquipmentModel(type)
 	var mesh
-	if (type == \"Chest\" and equipped_chest):
+	var wrmesh
+	var wlmesh
+	if (type == \"Weapon\" and equipped_weapon):
+		if (equipped_weapon.rMesh()):
+			wrmesh = equipped_weapon.rMesh().duplicate()
+		if (equipped_weapon.lMesh()):
+			wlmesh = equipped_weapon.lMesh().duplicate()
+	else: if (type == \"Chest\" and equipped_chest):
 		mesh = equipped_chest.mesh.duplicate()
 		skeleton.get_node(\"BodyDefault\").hide()
-	if (type == \"Head\" and equipped_head):
+	else: if (type == \"Head\" and equipped_head):
 		mesh = equipped_head.mesh.duplicate()
 		skeleton.get_node(\"HeadDefault\").hide()
-	if (type == \"Arms\" and equipped_arms):
+	else: if (type == \"Arms\" and equipped_arms):
 		mesh = equipped_arms.mesh.duplicate()
 		skeleton.get_node(\"HandsDefault\").hide()
-	if (type == \"Legs\" and equipped_legs):
+	else: if (type == \"Legs\" and equipped_legs):
 		mesh = equipped_legs.mesh.duplicate()
 		skeleton.get_node(\"LegsDefault\").hide()
 	
 	if (mesh):
 		mesh.name = type
 		skeleton.add_child(mesh)
+	if (wrmesh):
+		wrmesh.name = type + \"R\"
+		held_r.add_child(wrmesh)
+	if (wlmesh):
+		wlmesh.name = type + \"L\"
+		held_l.add_child(wlmesh)
 
 func _unsetEquipmentModel(type):
 	var mesh = skeleton.get_node(type)
 	if (mesh):
 		skeleton.remove_child(mesh)
 		mesh.queue_free()
+	var wrmesh = held_r.get_node(type + \"R\")
+	if (wrmesh):
+		skeleton.remove_child(wrmesh)
+		wrmesh.queue_free()
+	var wlmesh = held_l.get_node(type + \"L\")
+	if (wlmesh):
+		skeleton.remove_child(wlmesh)
+		wlmesh.queue_free()
 	
 	if (type == \"Chest\"):
 		skeleton.get_node(\"BodyDefault\").show()
@@ -443,7 +458,7 @@ func _process(delta):
 custom_solver_bias = 0.0
 radius = 10.0
 
-[node name="Actor" type="KinematicBody2D"]
+[node name="Actor" type="KinematicBody2D" index="0"]
 
 input_pickable = true
 collision_layer = 1
@@ -463,35 +478,31 @@ scale = Vector2( 1.91537, 1.91537 )
 shape = SubResource( 2 )
 _sections_unfolded = [ "Material", "Transform", "Visibility" ]
 
-[node name="HurtNoise" type="AudioStreamPlayer2D" parent="." index="2"]
-
-stream = ExtResource( 2 )
-volume_db = 0.0
-autoplay = false
-max_distance = 2000.0
-attenuation = 1.0
-bus = "Master"
-area_mask = 1
-
-[node name="SwingNoise" type="AudioStreamPlayer2D" parent="." index="3"]
-
-stream = ExtResource( 3 )
-volume_db = 0.0
-autoplay = false
-max_distance = 2000.0
-attenuation = 1.0
-bus = "Master"
-area_mask = 1
-
-[node name="DefaultWeapon" parent="." index="4" instance=ExtResource( 4 )]
+[node name="DefaultWeapon" parent="." index="2" instance=ExtResource( 2 )]
 
 _sections_unfolded = [ "Collision", "Transform" ]
 
-[node name="Inventory" type="Node2D" parent="." index="5"]
+[node name="Inventory" type="Node2D" parent="." index="3"]
 
-[node name="Spatial" type="Spatial" parent="." index="6"]
+[node name="Spatial" type="Spatial" parent="." index="4"]
 
-[node name="Model" parent="Spatial" index="0" instance=ExtResource( 5 )]
+[node name="Model" parent="Spatial" index="0" instance=ExtResource( 3 )]
+
+[node name="Skeleton" parent="Spatial/Model/Armature" index="0"]
+
+bones/9/bound_children = [ NodePath("Held_L") ]
+bones/16/bound_children = [ NodePath("Held_R") ]
+_sections_unfolded = [ "bones", "bones/16", "bones/21", "bones/22", "bones/23", "bones/24", "bones/25", "bones/26", "bones/9" ]
+
+[node name="Held_L" type="BoneAttachment" parent="Spatial/Model/Armature/Skeleton" index="4"]
+
+transform = Transform( -1, 0, -3.53337e-09, 0, 1, 1.75203e-09, 6.66134e-16, -6.66134e-16, -1, 0.685989, 1.32507, 0.00487548 )
+bone_name = "Held_L"
+
+[node name="Held_R" type="BoneAttachment" parent="Spatial/Model/Armature/Skeleton" index="5"]
+
+transform = Transform( -1, 0, 3.53338e-09, 0, 1, 1.75204e-09, 1.09635e-15, -6.66134e-16, -1, -0.685989, 1.32507, 0.00487548 )
+bone_name = "Held_R"
 
 
 [editable path="Spatial/Model"]

@@ -15,6 +15,12 @@ func startTowardsByName(user, ability, point):
 		a.setUser(user)
 		a.startTowards(point)
 
+func rMesh():
+	pass
+
+func lMesh():
+	pass
+
 
 func getState():
 	var abils = []
