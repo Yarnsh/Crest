@@ -14,6 +14,7 @@ const ability_desc = \"Swing. Your. Sword. From side to side CMON YOU KNOW YOU F
 
 const startup = 0.75
 const cooldown = 1.0
+const anim_cooldown = 1.0
 
 func _ready():
 	set_process(false)
