@@ -16,7 +16,7 @@ const slot = \"Chest\"
 
 extents = Vector3( 0.205317, 0.112004, 0.283931 )
 
-[node name="StaticBody" type="StaticBody"]
+[node name="StaticBody" type="StaticBody" index="0"]
 
 input_ray_pickable = true
 input_capture_on_drag = false

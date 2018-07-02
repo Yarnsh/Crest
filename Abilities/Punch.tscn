@@ -78,7 +78,7 @@ func _on_Collider_body_exited( body ):
 custom_solver_bias = 0.0
 extents = Vector2( 10, 10 )
 
-[node name="Punch" type="Node2D" index="0"]
+[node name="Punch" type="Node2D"]
 
 script = SubResource( 1 )
 

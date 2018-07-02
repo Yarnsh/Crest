@@ -20,7 +20,7 @@ func _ready():
 custom_solver_bias = 0.0
 extents = Vector2( 11.9214, 16.096 )
 
-[node name="Area2D" type="StaticBody" index="0"]
+[node name="Area2D" type="StaticBody"]
 
 input_ray_pickable = true
 input_capture_on_drag = false
