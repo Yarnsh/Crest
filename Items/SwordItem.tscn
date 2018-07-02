@@ -19,7 +19,7 @@ func rMesh():
 
 extents = Vector3( 0.117428, 0.0243001, 0.597227 )
 
-[node name="StaticBody" type="StaticBody"]
+[node name="StaticBody" type="StaticBody" index="0"]
 
 input_ray_pickable = true
 input_capture_on_drag = false
@@ -38,9 +38,11 @@ _sections_unfolded = [ "Collision" ]
 
 [node name="Model" parent="." index="1" instance=ExtResource( 2 )]
 
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.436738 )
+
 [node name="CollisionShape" type="CollisionShape" parent="." index="2"]
 
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.485782 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.0192612 )
 shape = SubResource( 2 )
 disabled = false
 
