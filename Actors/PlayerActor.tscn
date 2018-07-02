@@ -45,9 +45,9 @@ var is_attacking = false
 var startup_ends = 0
 var attack_anim_ends = 0
 var attack_towards = null
-func startAttackAnimCooldown(anim_cooldown):
+func startAnimCooldown(anim_cooldown):
 	attack_anim_ends = global.clock + anim_cooldown
-func isOnAttackAnimCooldown():
+func isOnAnimCooldown():
 	return global.clock < attack_anim_ends
 
 var pick_up = null
@@ -85,7 +85,11 @@ func takeHit(damage): #for testing atm
 		damage_tier += 1
 		if (damage_tier >= max_wounds.size()):
 			is_dead = true
+			emit_signal(\"damage_updated\")
 			return
+	if (damage_tier >= 1):
+		startAnimCooldown(1.0)
+		_anim_playing(\"Damage\")
 	current_wounds[damage_tier] += 1
 	emit_signal(\"damage_updated\")
 
@@ -443,7 +447,7 @@ func _process(delta):
 	
 	#Make sure the right animation is playing
 	if (!is_dead):
-		if (is_attacking or isOnAttackAnimCooldown()):
+		if (is_attacking or isOnAnimCooldown()):
 			pass #ability should take care of this
 		else: if (walk_towards and !isOnGlobalCooldown()):
 			_anim_playing(\"Run\")
