@@ -8,8 +8,11 @@ var _controller
 var _actor
 
 onready var light = $HBoxContainer/Light/Damage
+onready var lightlabel = $HBoxContainer/Light/Label
 onready var moderate = $HBoxContainer/Moderate/Damage
+onready var moderatelabel = $HBoxContainer/Moderate/Label
 onready var severe = $HBoxContainer/Severe/Damage
+onready var severelabel = $HBoxContainer/Severe/Label
 
 func init(controller):
 	_controller = weakref(controller)
@@ -31,6 +34,10 @@ func updateDamage():
 	for c in severe.get_children():
 		severe.remove_child(c)
 		c.queue_free()
+	
+	lightlabel.text = String(_actor.get_ref().defense[0])
+	moderatelabel.text = String(_actor.get_ref().defense[1])
+	severelabel.text = String(_actor.get_ref().defense[2])
 	
 	for i in range(0, _actor.get_ref().max_wounds[0]):
 		var box = ColorRect.new()
@@ -64,7 +71,7 @@ func toggle():
 		show()
 "
 
-[node name="Damage" type="PanelContainer"]
+[node name="Damage" type="PanelContainer" index="0"]
 
 anchor_left = 0.0
 anchor_top = 0.0
