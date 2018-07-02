@@ -11,6 +11,7 @@ onready var model = $Model
 
 const startup = 0.0
 const cooldown = 0.0
+const anim_cooldown = 0.0
 
 var startup_ends = 0.0
 var cooldown_ends = 0.0

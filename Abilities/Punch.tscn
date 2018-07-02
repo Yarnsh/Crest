@@ -26,6 +26,9 @@ func startTowards(point):
 		return
 	
 	ability_user.get_ref().lock()
+	ability_user.get_ref().is_attacking = true
+	ability_user.get_ref()._anim_playing(\"Punch\")
+	ability_user.get_ref()._turn_towards(point)
 	
 	if (ability_user.get_ref().has_method(\"setBusy\")):
 		ability_user.get_ref().setBusy(true)
@@ -40,6 +43,7 @@ func startTowards(point):
 
 func _do():
 	ability_user.get_ref().lock()
+	ability_user.get_ref().is_attacking = false
 	
 	ability_user.get_ref().startGlobalCooldown()
 	ability_user.get_ref().setBusy(false)
@@ -51,6 +55,7 @@ func _do():
 	
 	hideArea()
 	shown = false
+	ability_user.get_ref().startAttackAnimCooldown(anim_cooldown)
 	
 	ability_user.get_ref().unlock()
 

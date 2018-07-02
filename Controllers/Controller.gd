@@ -20,6 +20,7 @@ onready var mouseCast = $MouseCast
 onready var inventoryUI = $CanvasLayer/Inventory
 onready var abilityUI = $CanvasLayer/Abilities
 onready var HUD = $CanvasLayer/HUD
+onready var damageUI = $CanvasLayer/Damage
 onready var WalkDest = $WalkDest
 onready var WalkMarker = $WalkMarker
 
@@ -49,11 +50,13 @@ func _ready():
 	inventoryUI.init(self)
 	abilityUI.init(self)
 	HUD.init(self)
+	damageUI.init(self)
 	
 	inventoryUI.updateItems(actor.inventory)
 	abilityUI.updateAbilities()
 	_checkAbilityHotslots()
 	HUD.updateAbilityBar()
+	damageUI.updateDamage()
 
 func _checkAbilityHotslots():
 	var i = 0
@@ -104,6 +107,8 @@ func _on_Actor_equipment_updated():
 	_checkAbilityHotslots()
 	HUD.updateAbilityBar()
 
+func _on_Actor_damage_updated():
+	pass # replace with function body
 
 func _process(delta):
 	if (actor.walk_towards == null):
