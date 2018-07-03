@@ -22,13 +22,18 @@ var point_towards = Vector2(0,0)
 
 
 func hideArea():
-	collider.set_monitoring(false)
 	preview = false
+	_hideArea()
+func _hideArea():
+	collider.set_monitoring(false)
 	collider.hide()
 	model.hide()
+	
 func showArea():
-	collider.set_monitoring(true)
 	preview = true
+	_showArea()
+func _showArea():
+	collider.set_monitoring(true)
 	collider.show()
 	model.show()
 
@@ -67,8 +72,8 @@ func setState(state):
 	
 	shown = state["shown"]
 	if (shown or preview):
-		showArea()
+		_showArea()
 	else:
-		hideArea()
+		_hideArea()
 	
 	if (shown): _pointTowardsUnchecked(state["point_towards"])
