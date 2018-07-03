@@ -456,9 +456,7 @@ func _process(delta):
 	
 	#Make sure the right animation is playing
 	if (!is_dead):
-		if (is_attacking or isOnAnimCooldown()):
-			pass #ability should take care of this
-		else: if (walk_towards and !isOnGlobalCooldown()):
+		if (!is_attacking and !isOnAnimCooldown() and walk_towards and !isOnGlobalCooldown()):
 			_anim_playing(\"Run\")
 		else:
 			if (in_combat):
@@ -474,7 +472,7 @@ func _process(delta):
 custom_solver_bias = 0.0
 radius = 10.0
 
-[node name="Actor" type="KinematicBody2D" index="0"]
+[node name="Actor" type="KinematicBody2D"]
 
 input_pickable = true
 collision_layer = 1
@@ -502,18 +500,16 @@ _sections_unfolded = [ "Collision", "Transform" ]
 
 [node name="Skeleton" parent="Spatial/Model/Armature" index="0"]
 
-bones/9/bound_children = [ NodePath("Held_L") ]
-bones/16/bound_children = [ NodePath("Held_R") ]
 _sections_unfolded = [ "bones", "bones/16", "bones/21", "bones/22", "bones/23", "bones/24", "bones/25", "bones/26", "bones/9" ]
 
 [node name="Held_L" type="BoneAttachment" parent="Spatial/Model/Armature/Skeleton" index="4"]
 
-transform = Transform( 0.199488, 0.83633, -0.510643, -0.528188, -0.347159, -0.774918, -0.825362, 0.424303, 0.372486, 0.172173, 1.12168, 0.465158 )
+transform = Transform( -1, 0, -3.53337e-09, 0, 1, 1.75203e-09, 6.66134e-16, -6.66134e-16, -1, 0.685989, 1.32507, 0.00487548 )
 bone_name = "Held_L"
 
 [node name="Held_R" type="BoneAttachment" parent="Spatial/Model/Armature/Skeleton" index="5"]
 
-transform = Transform( 0.108756, -0.993972, -0.0138244, -0.527143, -0.0458758, -0.848537, 0.842789, 0.0995706, -0.528955, -0.225653, 0.900898, 0.217834 )
+transform = Transform( -1, 0, 3.53338e-09, 0, 1, 1.75204e-09, 1.09635e-15, -6.66134e-16, -1, -0.685989, 1.32507, 0.00487548 )
 bone_name = "Held_R"
 
 

@@ -20,19 +20,19 @@ func _init():
 	name = id
 
 func getState():
-	return {"id":id, "on_ground":on_ground, "type":type, "pos":get_position()}
+	return {"id":id, "on_ground":on_ground, "type":type, "pos":global_transform.origin}
 func setState(state):
 	id = state["id"]
 	type = state["type"]
-	set_position(state["pos"])
+	global_transform.origin = state["pos"]
 	if (state["on_ground"]):
 		on_ground = true
 		input_ray_pickable = true
-		hide()
+		show()
 	else:
 		on_ground = false
 		input_ray_pickable = false
-		show()
+		hide()
 
 func setGlobalPosition(pos):
 	global_transform.origin = Vector3(pos.x, 0, pos.y)

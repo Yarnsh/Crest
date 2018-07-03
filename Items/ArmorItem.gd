@@ -19,15 +19,15 @@ func startTowardsByName(user, ability, point):
 #TODO: add defensive values and such
 
 func getState():
+	var state = .getState()
 	var abils = []
 	for a in getAbilities():
 		abils.append(a.getState())
-	return {"id":id, "type":type, "pos":global_transform.origin, "abilities":abils}
+	state["abilities"] = abils
+	return state
 
 func setState(state):
-	id = state["id"]
-	type = state["type"]
-	global_transform.origin = state["pos"]
+	.setState(state)
 	
 	for a in state["abilities"]:
 		var n = abilities.find_node(a["name"])
