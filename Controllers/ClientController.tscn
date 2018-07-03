@@ -91,7 +91,7 @@ func unequip_item(type):
 	get_node(\"/root/World\").rpc_id(1, \"unequipItem\", type)
 "
 
-[node name="Node" type="Node" index="0"]
+[node name="Node" type="Node"]
 
 script = SubResource( 1 )
 

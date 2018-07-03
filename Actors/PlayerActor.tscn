@@ -112,6 +112,9 @@ func getState():
 	for i in inventory:
 		inv[i] = inventory[i].getState()
 	
+	var e_weapon = null
+	if (equipped_weapon):
+		e_weapon = equipped_weapon.name
 	var e_chest = null
 	if (equipped_chest):
 		e_chest = equipped_chest.name
@@ -131,9 +134,8 @@ func getState():
 		\"in_combat\":in_combat,
 		\"busy\":busy,
 		\"is_attacking\":is_attacking,
-		#TODO: make this work
-		\"equipped_weapon\":equipped_weapon.name,
 		\"default_weapon\":default_weapon.getState(),
+		\"equipped_weapon\":e_weapon,
 		\"equipped_chest\":e_chest,
 		\"equipped_head\":e_head,
 		\"equipped_arms\":e_arms,
@@ -151,6 +153,8 @@ func getState():
 		\"queued_ability_point\":queued_ability_point,
 		}
 
+func _equipment_state_check(equipment, e_name):
+	return !(equipment == null and e_name == null) and equipment != null and e_name != null and equipment.name != e_name
 func setState(state):
 	#set all parameters of the actor, used to resync with server
 	#TODO: optimize signal emission
@@ -174,7 +178,7 @@ func setState(state):
 	emit_signal(\"inventory_updated\")
 	
 	var equipped_weapon_name = state[\"equipped_weapon\"]
-	if (!equipped_weapon.name == equipped_weapon_name):
+	if (_equipment_state_check(equipped_weapon, equipped_weapon_name)):
 		if (equipped_weapon_name == default_weapon.name):
 			unequipItem(\"Weapon\")
 		else:
@@ -182,28 +186,28 @@ func setState(state):
 		emit_signal(\"equipment_updated\")
 	
 	var equipped_chest_name = state[\"equipped_chest\"]
-	if (!equipped_chest or !equipped_chest.name == equipped_chest_name):
+	if (_equipment_state_check(equipped_chest, equipped_chest_name)):
 		if (equipped_chest_name == null):
 			unequipItem(\"Chest\")
 		else:
 			equipItem(equipped_chest_name)
 		emit_signal(\"equipment_updated\")
 	var equipped_head_name = state[\"equipped_head\"]
-	if (!equipped_head or !equipped_head.name == equipped_head_name):
+	if (_equipment_state_check(equipped_head, equipped_head_name)):
 		if (equipped_head_name == null):
 			unequipItem(\"head\")
 		else:
 			equipItem(equipped_head_name)
 		emit_signal(\"equipment_updated\")
 	var equipped_arms_name = state[\"equipped_arms\"]
-	if (!equipped_arms or !equipped_arms.name == equipped_arms_name):
+	if (_equipment_state_check(equipped_arms, equipped_arms_name)):
 		if (equipped_arms_name == null):
 			unequipItem(\"arms\")
 		else:
 			equipItem(equipped_arms_name)
 		emit_signal(\"equipment_updated\")
 	var equipped_legs_name = state[\"equipped_legs\"]
-	if (!equipped_legs or !equipped_legs.name == equipped_legs_name):
+	if (_equipment_state_check(equipped_legs, equipped_legs_name)):
 		if (equipped_legs_name == null):
 			unequipItem(\"legs\")
 		else:
@@ -243,6 +247,7 @@ func walkTowards(dest):
 func _walk(dest):
 	if (world != null):
 		var close_dest = world.get_closest_point(Vector3(dest.x, 0, dest.y))
+		#TODO: this contains starting point I believe so remove that before doing movement
 		walk_path = Array(world.get_simple_path(Vector3(transform.origin.x, 0, transform.origin.y), close_dest))
 		var walk3D = walk_path.pop_front()
 		walk_towards = Vector2(walk3D.x, walk3D.z)
@@ -465,7 +470,7 @@ func _process(delta):
 custom_solver_bias = 0.0
 radius = 10.0
 
-[node name="Actor" type="KinematicBody2D"]
+[node name="Actor" type="KinematicBody2D" index="0"]
 
 input_pickable = true
 collision_layer = 1
@@ -493,6 +498,8 @@ _sections_unfolded = [ "Collision", "Transform" ]
 
 [node name="Skeleton" parent="Spatial/Model/Armature" index="0"]
 
+bones/9/bound_children = [ NodePath("Held_L") ]
+bones/16/bound_children = [ NodePath("Held_R") ]
 _sections_unfolded = [ "bones", "bones/16", "bones/21", "bones/22", "bones/23", "bones/24", "bones/25", "bones/26", "bones/9" ]
 
 [node name="Held_L" type="BoneAttachment" parent="Spatial/Model/Armature/Skeleton" index="4"]
