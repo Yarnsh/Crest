@@ -226,6 +226,7 @@ func setState(state):
 	current_wounds = state[\"current_wounds\"]
 	defense = state[\"defense\"]
 	is_dead = state[\"is_dead\"]
+	emit_signal(\"damage_updated\")
 	
 	queued_ability_name = state[\"queued_ability_name\"]
 	queued_ability_point = state[\"queued_ability_point\"]

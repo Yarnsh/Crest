@@ -108,7 +108,7 @@ func _on_Actor_equipment_updated():
 	HUD.updateAbilityBar()
 
 func _on_Actor_damage_updated():
-	pass # replace with function body
+	damageUI.updateDamage()
 
 func _process(delta):
 	if (actor.walk_towards == null):
