@@ -43,12 +43,12 @@ var equipped_legs = null
 
 var is_attacking = false
 var startup_ends = 0
-var attack_anim_ends = 0
+var anim_cooldown_ends = 0
 var attack_towards = null
 func startAnimCooldown(anim_cooldown):
-	attack_anim_ends = global.clock + anim_cooldown
+	anim_cooldown_ends = global.clock + anim_cooldown_ends
 func isOnAnimCooldown():
-	return global.clock < attack_anim_ends
+	return global.clock < anim_cooldown_ends
 
 var pick_up = null
 
@@ -131,6 +131,7 @@ func getState():
 	return {
 		\"id\":self.name,
 		\"global_cooldown_ends\":global_cooldown_ends,
+		\"anim_cooldown_ends\":anim_cooldown_ends,
 		\"in_combat\":in_combat,
 		\"busy\":busy,
 		\"is_attacking\":is_attacking,
@@ -163,6 +164,7 @@ func setState(state):
 	is_attacking = state[\"is_attacking\"]
 	
 	global_cooldown_ends = state[\"global_cooldown_ends\"]
+	anim_cooldown_ends = state[\"anim_cooldown_ends\"]
 	
 	walk_speed = state[\"walk_speed\"]
 	
@@ -402,7 +404,9 @@ func _anim_playing(anim):
 func _ready():
 	world = get_node(\"/root/World\")
 	
-	#Set all animations that need to to loop
+	#Set all animations that need to to loop and vice versa
+	for aname in anim_player.get_animation_list():
+		anim_player.get_animation(aname).loop = false #Since if the default is loop or not seems random
 	anim_player.get_animation(\"Idle\").loop = true
 	anim_player.get_animation(\"Idle_Combat\").loop = true
 	anim_player.get_animation(\"Run\").loop = true
@@ -504,12 +508,12 @@ _sections_unfolded = [ "bones", "bones/16", "bones/21", "bones/22", "bones/23", 
 
 [node name="Held_L" type="BoneAttachment" parent="Spatial/Model/Armature/Skeleton" index="4"]
 
-transform = Transform( -1, 0, -3.53337e-09, 0, 1, 1.75203e-09, 6.66134e-16, -6.66134e-16, -1, 0.685989, 1.32507, 0.00487548 )
+transform = Transform( 0.199488, 0.83633, -0.510643, -0.528188, -0.347159, -0.774918, -0.825362, 0.424303, 0.372486, 0.172173, 1.12168, 0.465158 )
 bone_name = "Held_L"
 
 [node name="Held_R" type="BoneAttachment" parent="Spatial/Model/Armature/Skeleton" index="5"]
 
-transform = Transform( -1, 0, 3.53338e-09, 0, 1, 1.75204e-09, 1.09635e-15, -6.66134e-16, -1, -0.685989, 1.32507, 0.00487548 )
+transform = Transform( 0.108756, -0.993972, -0.0138244, -0.527143, -0.0458758, -0.848537, 0.842789, 0.0995706, -0.528955, -0.225653, 0.900898, 0.217834 )
 bone_name = "Held_R"
 
 
