@@ -114,19 +114,19 @@ func getState():
 	
 	var e_weapon = null
 	if (equipped_weapon):
-		e_weapon = equipped_weapon.name
+		e_weapon = equipped_weapon.id
 	var e_chest = null
 	if (equipped_chest):
-		e_chest = equipped_chest.name
+		e_chest = equipped_chest.id
 	var e_head = null
 	if (equipped_head):
-		e_head = equipped_head.name
+		e_head = equipped_head.id
 	var e_arms = null
 	if (equipped_arms):
-		e_arms = equipped_arms.name
+		e_arms = equipped_arms.id
 	var e_legs = null
 	if (equipped_legs):
-		e_legs = equipped_legs.name
+		e_legs = equipped_legs.id
 	
 	return {
 		\"id\":self.name,
@@ -155,7 +155,11 @@ func getState():
 		}
 
 func _equipment_state_check(equipment, e_name):
-	return !(equipment == null and e_name == null) and equipment != null and e_name != null and equipment.name != e_name
+	if (equipment == null and e_name == null):
+		return false
+	if !(equipment != null and e_name != null):
+		return true
+	return equipment.name != e_name
 func setState(state):
 	#set all parameters of the actor, used to resync with server
 	#TODO: optimize signal emission
@@ -170,11 +174,13 @@ func setState(state):
 	
 	for i in state[\"inventory\"]:
 		if (inventory.has(i)):
+			print(\"HAS \" + String(i))
 			if (inventory[i].type != state[\"inventory\"][i][\"type\"]):
 				destroyItem(i)
 				addItem(i, state[\"inventory\"][i][\"type\"])
 			inventory[i].setState(state[\"inventory\"][i])
 		else:
+			print(\"HASNT \" + String(i))
 			addItem(i, state[\"inventory\"][i][\"type\"])
 			inventory[i].setState(state[\"inventory\"][i])
 	emit_signal(\"inventory_updated\")
@@ -189,6 +195,7 @@ func setState(state):
 	
 	var equipped_chest_name = state[\"equipped_chest\"]
 	if (_equipment_state_check(equipped_chest, equipped_chest_name)):
+		print(equipped_chest_name)
 		if (equipped_chest_name == null):
 			unequipItem(\"Chest\")
 		else:
@@ -298,6 +305,8 @@ func equipItem(id):
 		else: if (item.slot == \"Legs\"):
 			equipped_legs = item
 		_setEquipmentModel(item.slot)
+	else:
+		print(\"MISSING ITEM \" + String(id))
 	
 	emit_signal(\"inventory_updated\")
 	emit_signal(\"equipment_updated\")
@@ -473,7 +482,7 @@ func _process(delta):
 custom_solver_bias = 0.0
 radius = 10.0
 
-[node name="Actor" type="KinematicBody2D"]
+[node name="Actor" type="KinematicBody2D" index="0"]
 
 input_pickable = true
 collision_layer = 1
@@ -501,6 +510,8 @@ _sections_unfolded = [ "Collision", "Transform" ]
 
 [node name="Skeleton" parent="Spatial/Model/Armature" index="0"]
 
+bones/9/bound_children = [ NodePath("Held_L") ]
+bones/16/bound_children = [ NodePath("Held_R") ]
 _sections_unfolded = [ "bones", "bones/16", "bones/21", "bones/22", "bones/23", "bones/24", "bones/25", "bones/26", "bones/9" ]
 
 [node name="Held_L" type="BoneAttachment" parent="Spatial/Model/Armature/Skeleton" index="4"]
