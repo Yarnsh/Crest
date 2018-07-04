@@ -27,6 +27,8 @@ signal damage_updated
 
 var highlight_count = 0
 
+var turn_dir = Vector2(0,1)
+
 var in_combat = false
 var busy = false
 var queued_ability_name = null
@@ -79,7 +81,7 @@ func toggleInCombat():
 func setBusy(b):
 	busy = b
 
-func takeHit(damage): #for testing atm
+func takeHit(damage):
 	var damage_tier = -1
 	while (defense[damage_tier+1] <= damage or (damage_tier >= 0 and current_wounds[damage_tier] >= max_wounds[damage_tier])):
 		damage_tier += 1
@@ -152,6 +154,7 @@ func getState():
 		\"defense\":defense,
 		\"queued_ability_name\":queued_ability_name,
 		\"queued_ability_point\":queued_ability_point,
+		\"turn_dir\":turn_dir,
 		}
 
 func _equipment_state_check(equipment, e_name):
@@ -235,6 +238,8 @@ func setState(state):
 	
 	queued_ability_name = state[\"queued_ability_name\"]
 	queued_ability_point = state[\"queued_ability_point\"]
+	
+	_turn_towards_direction(state[\"turn_dir\"])
 
 func queueAbilityTowardsByName(abil_name, point):
 	walk_towards = null
@@ -263,11 +268,16 @@ func _walk(dest):
 		walk_dest = Vector2(walkDest3D.x, walkDest3D.z)
 	else:
 		walk_towards = dest
-	_turn_towards(walk_towards)
 
 func _turn_towards(point):
 	var target = -point + (2 * get_global_position())
-	model.look_at(Vector3(target.x, 0.0 ,target.y), Vector3(0,1,0))
+	turn_dir = (target - get_global_position()).normalized()
+	if (get_global_position() != target):
+		model.look_at(Vector3(target.x, 0.0 ,target.y), Vector3(0,1,0))
+func _turn_towards_direction(dir):
+	turn_dir = dir
+	if (dir.length_squared() > 0.0):
+		model.look_at(Vector3(get_global_position().x + dir.x, 0.0 ,get_global_position().y + dir.y), Vector3(0,1,0))
 
 func pickUp(item):
 	#TODO: check if item is able to be reached
