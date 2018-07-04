@@ -159,7 +159,7 @@ func _equipment_state_check(equipment, e_name):
 		return false
 	if !(equipment != null and e_name != null):
 		return true
-	return equipment.name != e_name
+	return equipment.id != e_name
 func setState(state):
 	#set all parameters of the actor, used to resync with server
 	#TODO: optimize signal emission
@@ -174,20 +174,18 @@ func setState(state):
 	
 	for i in state[\"inventory\"]:
 		if (inventory.has(i)):
-			print(\"HAS \" + String(i))
 			if (inventory[i].type != state[\"inventory\"][i][\"type\"]):
 				destroyItem(i)
 				addItem(i, state[\"inventory\"][i][\"type\"])
 			inventory[i].setState(state[\"inventory\"][i])
 		else:
-			print(\"HASNT \" + String(i))
 			addItem(i, state[\"inventory\"][i][\"type\"])
 			inventory[i].setState(state[\"inventory\"][i])
 	emit_signal(\"inventory_updated\")
 	
 	var equipped_weapon_name = state[\"equipped_weapon\"]
 	if (_equipment_state_check(equipped_weapon, equipped_weapon_name)):
-		if (equipped_weapon_name == default_weapon.name):
+		if (equipped_weapon_name == default_weapon.id):
 			unequipItem(\"Weapon\")
 		else:
 			equipItem(equipped_weapon_name)
