@@ -61,7 +61,7 @@ func _unhandled_input(event):
 					if (clickpos != null):
 						var clickpos2D = Vector2(clickpos.x, clickpos.z)
 						actor.queueAbilityTowardsByName(ability_list[sa].get_ref().name, clickpos2D)
-						get_node(\"/root/World\").rpc_id(1, \"queueAbilityTowardsByName\", ability_list[sa].get_ref().name, cam.get_global_mouse_position()) #TODO: add what equipment slot later
+						get_node(\"/root/World\").rpc_id(1, \"queueAbilityTowardsByName\", ability_list[sa].get_ref().name, clickpos2D) #TODO: add what equipment slot later
 				else:
 					#TODO: ignore items on the ground if in combat
 					var atClick = _get_item_at_mouse() #TODO: make the check of if to pick up or not based on whats found

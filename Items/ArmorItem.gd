@@ -16,6 +16,11 @@ func startTowardsByName(user, ability, point):
 		a.setUser(user)
 		a.startTowards(point)
 
+func pointTowardsByName(ability, point):
+	var a = abilities.find_node(ability)
+	if (a != null):
+		a.pointTowards(point)
+
 #TODO: add defensive values and such
 
 func getState():

@@ -246,6 +246,7 @@ func queueAbilityTowardsByName(abil_name, point):
 	pick_up = null
 	
 	queued_ability_point = point
+	equipped_weapon.pointTowardsByName(abil_name, point) #TODO: make it depend on slot and whatever
 	queued_ability_name = abil_name
 
 func walkTowards(dest):

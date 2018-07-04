@@ -76,4 +76,4 @@ func setState(state):
 	else:
 		_hideArea()
 	
-	if (shown): _pointTowardsUnchecked(state["point_towards"])
+	_pointTowardsUnchecked(state["point_towards"])
