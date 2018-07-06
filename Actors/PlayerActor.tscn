@@ -48,7 +48,7 @@ var startup_ends = 0
 var anim_cooldown_ends = 0
 var attack_towards = null
 func startAnimCooldown(anim_cooldown):
-	anim_cooldown_ends = global.clock + anim_cooldown_ends
+	anim_cooldown_ends = global.clock + anim_cooldown
 func isOnAnimCooldown():
 	return global.clock < anim_cooldown_ends
 
@@ -67,6 +67,9 @@ var health = 100 #TODO: replace with the wound system
 var walk_speed = 10.0
 var pick_up_range = 0.1
 var inventory = {}
+
+var playing_anim = null
+var playing_anim_started = 0
 
 var global_cooldown = 5.0
 var global_cooldown_ends = 0
@@ -89,7 +92,7 @@ func takeHit(damage):
 			is_dead = true
 			emit_signal(\"damage_updated\")
 			return
-	if (damage_tier >= 1):
+	if (damage_tier >= 0):
 		startAnimCooldown(1.0)
 		_anim_playing(\"Damage\")
 	current_wounds[damage_tier] += 1
@@ -130,6 +133,8 @@ func getState():
 	if (equipped_legs):
 		e_legs = equipped_legs.id
 	
+	print(String(playing_anim) + \": \" + String(playing_anim_started))
+	
 	return {
 		\"id\":self.name,
 		\"global_cooldown_ends\":global_cooldown_ends,
@@ -155,6 +160,8 @@ func getState():
 		\"queued_ability_name\":queued_ability_name,
 		\"queued_ability_point\":queued_ability_point,
 		\"turn_dir\":turn_dir,
+		\"playing_anim\":playing_anim,
+		\"playing_anim_started\":playing_anim_started,
 		}
 
 func _equipment_state_check(equipment, e_name):
@@ -240,6 +247,11 @@ func setState(state):
 	queued_ability_point = state[\"queued_ability_point\"]
 	
 	_turn_towards_direction(state[\"turn_dir\"])
+	
+	if (state[\"playing_anim\"] != null):
+		_anim_playing(state[\"playing_anim\"], state[\"playing_anim_started\"])
+	
+	print(String(playing_anim) + \": \" + String(playing_anim_started))
 
 func queueAbilityTowardsByName(abil_name, point):
 	walk_towards = null
@@ -416,9 +428,15 @@ func setHighlight(highlight):
 	else:
 		model.get_child(0).get_child(0).get_child(0).get_mesh().surface_get_material(0).set_next_pass(null)
 
-func _anim_playing(anim):
+func _anim_playing(anim, start_at = null):
 	if (anim_player.get_current_animation() != anim):
 		anim_player.play(anim)
+		if (start_at != null):
+			anim_player.seek(global.clock - start_at)
+			playing_anim_started = start_at
+		else:
+			playing_anim_started = global.clock
+		playing_anim = anim
 
 func _ready():
 	world = get_node(\"/root/World\")
@@ -431,9 +449,9 @@ func _ready():
 	anim_player.get_animation(\"Run\").loop = true
 	
 	if (in_combat):
-		anim_player.play(\"Idle_Combat\")
+		_anim_playing(\"Idle_Combat\")
 	else:
-		anim_player.play(\"Idle\")
+		_anim_playing(\"Idle\")
 
 func _process(delta):
 	_updateModelPosition()
@@ -475,13 +493,14 @@ func _process(delta):
 	
 	#Make sure the right animation is playing
 	if (!is_dead):
-		if (!is_attacking and !isOnAnimCooldown() and walk_towards and !isOnGlobalCooldown()):
-			_anim_playing(\"Run\")
-		else:
-			if (in_combat):
-				_anim_playing(\"Idle_Combat\")
+		if (!isOnAnimCooldown()):
+			if (!is_attacking and walk_towards and !isOnGlobalCooldown()):
+				_anim_playing(\"Run\")
 			else:
-				_anim_playing(\"Idle\")
+				if (in_combat):
+					_anim_playing(\"Idle_Combat\")
+				else:
+					_anim_playing(\"Idle\")
 	else:
 		_anim_playing(\"Death\")
 "
