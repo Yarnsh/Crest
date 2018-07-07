@@ -133,8 +133,6 @@ func getState():
 	if (equipped_legs):
 		e_legs = equipped_legs.id
 	
-	print(String(playing_anim) + \": \" + String(playing_anim_started))
-	
 	return {
 		\"id\":self.name,
 		\"global_cooldown_ends\":global_cooldown_ends,
@@ -203,7 +201,6 @@ func setState(state):
 	
 	var equipped_chest_name = state[\"equipped_chest\"]
 	if (_equipment_state_check(equipped_chest, equipped_chest_name)):
-		print(equipped_chest_name)
 		if (equipped_chest_name == null):
 			unequipItem(\"Chest\")
 		else:
@@ -250,8 +247,6 @@ func setState(state):
 	
 	if (state[\"playing_anim\"] != null):
 		_anim_playing(state[\"playing_anim\"], state[\"playing_anim_started\"])
-	
-	print(String(playing_anim) + \": \" + String(playing_anim_started))
 
 func queueAbilityTowardsByName(abil_name, point):
 	walk_towards = null
