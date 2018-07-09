@@ -27,6 +27,8 @@ signal damage_updated
 
 var highlight_count = 0
 
+var turn_dir = Vector2(0,1)
+
 var in_combat = false
 var busy = false
 var queued_ability_name = null
@@ -43,12 +45,12 @@ var equipped_legs = null
 
 var is_attacking = false
 var startup_ends = 0
-var attack_anim_ends = 0
+var anim_cooldown_ends = 0
 var attack_towards = null
 func startAnimCooldown(anim_cooldown):
-	attack_anim_ends = global.clock + anim_cooldown
+	anim_cooldown_ends = global.clock + anim_cooldown
 func isOnAnimCooldown():
-	return global.clock < attack_anim_ends
+	return global.clock < anim_cooldown_ends
 
 var pick_up = null
 
@@ -66,6 +68,9 @@ var walk_speed = 10.0
 var pick_up_range = 0.1
 var inventory = {}
 
+var playing_anim = null
+var playing_anim_started = 0
+
 var global_cooldown = 5.0
 var global_cooldown_ends = 0
 func startGlobalCooldown():
@@ -79,7 +84,7 @@ func toggleInCombat():
 func setBusy(b):
 	busy = b
 
-func takeHit(damage): #for testing atm
+func takeHit(damage):
 	var damage_tier = -1
 	while (defense[damage_tier+1] <= damage or (damage_tier >= 0 and current_wounds[damage_tier] >= max_wounds[damage_tier])):
 		damage_tier += 1
@@ -87,7 +92,7 @@ func takeHit(damage): #for testing atm
 			is_dead = true
 			emit_signal(\"damage_updated\")
 			return
-	if (damage_tier >= 1):
+	if (damage_tier >= 0):
 		startAnimCooldown(1.0)
 		_anim_playing(\"Damage\")
 	current_wounds[damage_tier] += 1
@@ -114,23 +119,24 @@ func getState():
 	
 	var e_weapon = null
 	if (equipped_weapon):
-		e_weapon = equipped_weapon.name
+		e_weapon = equipped_weapon.id
 	var e_chest = null
 	if (equipped_chest):
-		e_chest = equipped_chest.name
+		e_chest = equipped_chest.id
 	var e_head = null
 	if (equipped_head):
-		e_head = equipped_head.name
+		e_head = equipped_head.id
 	var e_arms = null
 	if (equipped_arms):
-		e_arms = equipped_arms.name
+		e_arms = equipped_arms.id
 	var e_legs = null
 	if (equipped_legs):
-		e_legs = equipped_legs.name
+		e_legs = equipped_legs.id
 	
 	return {
 		\"id\":self.name,
 		\"global_cooldown_ends\":global_cooldown_ends,
+		\"anim_cooldown_ends\":anim_cooldown_ends,
 		\"in_combat\":in_combat,
 		\"busy\":busy,
 		\"is_attacking\":is_attacking,
@@ -151,10 +157,17 @@ func getState():
 		\"defense\":defense,
 		\"queued_ability_name\":queued_ability_name,
 		\"queued_ability_point\":queued_ability_point,
+		\"turn_dir\":turn_dir,
+		\"playing_anim\":playing_anim,
+		\"playing_anim_started\":playing_anim_started,
 		}
 
 func _equipment_state_check(equipment, e_name):
-	return !(equipment == null and e_name == null) and equipment != null and e_name != null and equipment.name != e_name
+	if (equipment == null and e_name == null):
+		return false
+	if !(equipment != null and e_name != null):
+		return true
+	return equipment.id != e_name
 func setState(state):
 	#set all parameters of the actor, used to resync with server
 	#TODO: optimize signal emission
@@ -163,6 +176,7 @@ func setState(state):
 	is_attacking = state[\"is_attacking\"]
 	
 	global_cooldown_ends = state[\"global_cooldown_ends\"]
+	anim_cooldown_ends = state[\"anim_cooldown_ends\"]
 	
 	walk_speed = state[\"walk_speed\"]
 	
@@ -179,7 +193,7 @@ func setState(state):
 	
 	var equipped_weapon_name = state[\"equipped_weapon\"]
 	if (_equipment_state_check(equipped_weapon, equipped_weapon_name)):
-		if (equipped_weapon_name == default_weapon.name):
+		if (equipped_weapon_name == default_weapon.id):
 			unequipItem(\"Weapon\")
 		else:
 			equipItem(equipped_weapon_name)
@@ -224,15 +238,22 @@ func setState(state):
 	current_wounds = state[\"current_wounds\"]
 	defense = state[\"defense\"]
 	is_dead = state[\"is_dead\"]
+	emit_signal(\"damage_updated\")
 	
 	queued_ability_name = state[\"queued_ability_name\"]
 	queued_ability_point = state[\"queued_ability_point\"]
+	
+	_turn_towards_direction(state[\"turn_dir\"])
+	
+	if (state[\"playing_anim\"] != null):
+		_anim_playing(state[\"playing_anim\"], state[\"playing_anim_started\"])
 
 func queueAbilityTowardsByName(abil_name, point):
 	walk_towards = null
 	pick_up = null
 	
 	queued_ability_point = point
+	equipped_weapon.pointTowardsByName(abil_name, point) #TODO: make it depend on slot and whatever
 	queued_ability_name = abil_name
 
 func walkTowards(dest):
@@ -255,11 +276,16 @@ func _walk(dest):
 		walk_dest = Vector2(walkDest3D.x, walkDest3D.z)
 	else:
 		walk_towards = dest
-	_turn_towards(walk_towards)
 
 func _turn_towards(point):
 	var target = -point + (2 * get_global_position())
-	model.look_at(Vector3(target.x, 0.0 ,target.y), Vector3(0,1,0))
+	turn_dir = (target - get_global_position()).normalized()
+	if (get_global_position() != target):
+		model.look_at(Vector3(target.x, 0.0 ,target.y), Vector3(0,1,0))
+func _turn_towards_direction(dir):
+	turn_dir = dir
+	if (dir.length_squared() > 0.0):
+		model.look_at(Vector3(get_global_position().x + dir.x, 0.0 ,get_global_position().y + dir.y), Vector3(0,1,0))
 
 func pickUp(item):
 	#TODO: check if item is able to be reached
@@ -295,6 +321,8 @@ func equipItem(id):
 		else: if (item.slot == \"Legs\"):
 			equipped_legs = item
 		_setEquipmentModel(item.slot)
+	else:
+		print(\"MISSING ITEM \" + String(id))
 	
 	emit_signal(\"inventory_updated\")
 	emit_signal(\"equipment_updated\")
@@ -395,22 +423,30 @@ func setHighlight(highlight):
 	else:
 		model.get_child(0).get_child(0).get_child(0).get_mesh().surface_get_material(0).set_next_pass(null)
 
-func _anim_playing(anim):
+func _anim_playing(anim, start_at = null):
 	if (anim_player.get_current_animation() != anim):
 		anim_player.play(anim)
+		if (start_at != null):
+			anim_player.seek(global.clock - start_at)
+			playing_anim_started = start_at
+		else:
+			playing_anim_started = global.clock
+		playing_anim = anim
 
 func _ready():
 	world = get_node(\"/root/World\")
 	
-	#Set all animations that need to to loop
+	#Set all animations that need to to loop and vice versa
+	for aname in anim_player.get_animation_list():
+		anim_player.get_animation(aname).loop = false #Since if the default is loop or not seems random
 	anim_player.get_animation(\"Idle\").loop = true
 	anim_player.get_animation(\"Idle_Combat\").loop = true
 	anim_player.get_animation(\"Run\").loop = true
 	
 	if (in_combat):
-		anim_player.play(\"Idle_Combat\")
+		_anim_playing(\"Idle_Combat\")
 	else:
-		anim_player.play(\"Idle\")
+		_anim_playing(\"Idle\")
 
 func _process(delta):
 	_updateModelPosition()
@@ -452,15 +488,14 @@ func _process(delta):
 	
 	#Make sure the right animation is playing
 	if (!is_dead):
-		if (is_attacking or isOnAnimCooldown()):
-			pass #ability should take care of this
-		else: if (walk_towards and !isOnGlobalCooldown()):
-			_anim_playing(\"Run\")
-		else:
-			if (in_combat):
-				_anim_playing(\"Idle_Combat\")
+		if (!isOnAnimCooldown()):
+			if (!is_attacking and walk_towards and !isOnGlobalCooldown()):
+				_anim_playing(\"Run\")
 			else:
-				_anim_playing(\"Idle\")
+				if (in_combat):
+					_anim_playing(\"Idle_Combat\")
+				else:
+					_anim_playing(\"Idle\")
 	else:
 		_anim_playing(\"Death\")
 "
