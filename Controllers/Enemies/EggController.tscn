@@ -1,0 +1,32 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://Actors/Enemies/Egg/Egg.tscn" type="PackedScene" id=1]
+
+[sub_resource type="GDScript" id=1]
+
+script/source = "extends Node
+
+onready var actor = $Egg
+
+func getState():
+	#TODO: add AI state to gets, grab it from sets
+	if (typeof(actor) != TYPE_NIL):
+		return actor.getState()
+	else:
+		print(\"FAILED TO GET STATE \" + self.name)
+		return null
+func setState(state):
+	if (typeof(actor) != TYPE_NIL):
+		actor.setState(state)
+	else:
+		print(\"FAILED TO SET STATE \" + self.name)
+
+"
+
+[node name="Node" type="Node" index="0"]
+
+script = SubResource( 1 )
+
+[node name="Egg" parent="." index="0" instance=ExtResource( 1 )]
+
+
