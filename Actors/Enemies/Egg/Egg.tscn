@@ -201,14 +201,15 @@ func setHighlight(highlight):
 		model.get_child(0).get_child(0).get_child(0).get_mesh().surface_get_material(0).set_next_pass(null)
 
 func _anim_playing(anim, start_at = null):
-	if (anim_player.get_current_animation() != anim):
-		anim_player.play(anim)
-		if (start_at != null):
-			anim_player.seek(global.clock - start_at)
-			playing_anim_started = start_at
-		else:
-			playing_anim_started = global.clock
-		playing_anim = anim
+	#if (anim_player.get_current_animation() != anim):
+	#	anim_player.play(anim)
+	#	if (start_at != null):
+	#		anim_player.seek(global.clock - start_at)
+	#		playing_anim_started = start_at
+	#	else:
+	#		playing_anim_started = global.clock
+	#	playing_anim = anim
+	pass
 
 func _ready():
 	world = get_node(\"/root/World\")
@@ -261,7 +262,7 @@ func _process(delta):
 custom_solver_bias = 0.0
 radius = 1.0
 
-[node name="Egg" type="KinematicBody2D" index="0"]
+[node name="Egg" type="KinematicBody2D"]
 
 input_pickable = false
 collision_layer = 1
