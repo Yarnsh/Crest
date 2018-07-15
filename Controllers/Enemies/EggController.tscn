@@ -21,7 +21,7 @@ func setState(state):
 	else:
 		print(\"FAILED TO SET STATE \" + self.name)
 
-"
+#TODO: enemy logic"
 
 [node name="Node" type="Node" index="0"]
 
