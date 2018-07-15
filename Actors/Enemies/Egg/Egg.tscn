@@ -83,41 +83,8 @@ func takeHit(damage):
 	current_wounds[damage_tier] += 1
 	emit_signal(\"damage_updated\")
 
-func addItem(id, type):
-	var new_item = load(\"res://Items/\" + type + \".tscn\").instance()
-	new_item.id = id
-	new_item.set_name(new_item.id)
-	inventory_node.add_child(new_item)
-	inventory[id] = new_item
-func destroyItem(id):
-	var item = inventory_node.find_node(id)
-	if (item != null):
-		inventory_node.remove_child(item)
-		inventory.erase(id)
-		item.free()
-
 func getState():
 	#get a state that you can regen the entierty of the actor from
-	var inv = {}
-	for i in inventory:
-		inv[i] = inventory[i].getState()
-	
-	var e_weapon = null
-	if (equipped_weapon):
-		e_weapon = equipped_weapon.id
-	var e_chest = null
-	if (equipped_chest):
-		e_chest = equipped_chest.id
-	var e_head = null
-	if (equipped_head):
-		e_head = equipped_head.id
-	var e_arms = null
-	if (equipped_arms):
-		e_arms = equipped_arms.id
-	var e_legs = null
-	if (equipped_legs):
-		e_legs = equipped_legs.id
-	
 	return {
 		\"id\":self.name,
 		\"global_cooldown_ends\":global_cooldown_ends,
@@ -170,6 +137,10 @@ func setState(state):
 	if (state[\"playing_anim\"] != null):
 		_anim_playing(state[\"playing_anim\"], state[\"playing_anim_started\"])
 
+func setPosition(pos):
+	set_global_position(pos)
+	_updateModelPosition()
+
 func queueAbilityTowardsByName(abil_name, point):
 	walk_towards = null
 	pick_up = null
@@ -217,9 +188,6 @@ func _updateModelPosition():
 	var pos = get_position()
 	spatial.transform.origin = Vector3(pos.x, 0, pos.y)
 	#TODO: make this match to the height of the navmesh at that point
-	for i in inventory_node.get_children():
-		i.setGlobalPosition(pos)
-	default_weapon.setGlobalPosition(pos)
 
 func setHighlight(highlight):
 	#TODO: make this not stupid like it is right now
@@ -244,18 +212,6 @@ func _anim_playing(anim, start_at = null):
 
 func _ready():
 	world = get_node(\"/root/World\")
-	
-	#Set all animations that need to to loop and vice versa
-	for aname in anim_player.get_animation_list():
-		anim_player.get_animation(aname).loop = false #Since if the default is loop or not seems random
-	anim_player.get_animation(\"Idle\").loop = true
-	anim_player.get_animation(\"Idle_Combat\").loop = true
-	anim_player.get_animation(\"Run\").loop = true
-	
-	if (in_combat):
-		_anim_playing(\"Idle_Combat\")
-	else:
-		_anim_playing(\"Idle\")
 
 func _process(delta):
 	_updateModelPosition()

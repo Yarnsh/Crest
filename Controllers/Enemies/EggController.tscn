@@ -7,6 +7,7 @@
 script/source = "extends Node
 
 onready var actor = $Egg
+var spawnPos = Vector2(0,0)
 
 func getState():
 	#TODO: add AI state to gets, grab it from sets
@@ -21,9 +22,13 @@ func setState(state):
 	else:
 		print(\"FAILED TO SET STATE \" + self.name)
 
-#TODO: enemy logic"
+func setSpawnPosition(pos):
+	spawnPos = Vector2(pos.x, pos.z)
 
-[node name="Node" type="Node" index="0"]
+func _ready():
+	actor.setPosition(spawnPos)"
+
+[node name="Node" type="Node"]
 
 script = SubResource( 1 )
 
