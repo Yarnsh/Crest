@@ -12,7 +12,6 @@ var spawnPos = Vector2(0,0)
 var wanderThread = Thread.new()
 func _wander(par):
 	while(par.get_ref()):
-		print(\"WALK\")
 		actor.walkTowards(spawnPos + _randomPointInRadius(8))
 		OS.delay_msec(1000)
 
