@@ -201,14 +201,14 @@ func setHighlight(highlight):
 		model.get_child(0).get_child(0).get_child(0).get_mesh().surface_get_material(0).set_next_pass(null)
 
 func _anim_playing(anim, start_at = null):
-	#if (anim_player.get_current_animation() != anim):
-	#	anim_player.play(anim)
-	#	if (start_at != null):
-	#		anim_player.seek(global.clock - start_at)
-	#		playing_anim_started = start_at
-	#	else:
-	#		playing_anim_started = global.clock
-	#	playing_anim = anim
+	if (anim_player.get_current_animation() != anim):
+		anim_player.play(anim)
+		if (start_at != null):
+			anim_player.seek(global.clock - start_at)
+			playing_anim_started = start_at
+		else:
+			playing_anim_started = global.clock
+		playing_anim = anim
 	pass
 
 func _ready():
@@ -247,10 +247,10 @@ func _process(delta):
 	if (!is_dead):
 		if (!isOnAnimCooldown()):
 			if (!is_attacking and walk_towards and !isOnGlobalCooldown()):
-				_anim_playing(\"Run\")
+				_anim_playing(\"Walk\")
 			else:
 				if (in_combat):
-					_anim_playing(\"Idle_Combat\")
+					_anim_playing(\"Idle_combat\")
 				else:
 					_anim_playing(\"Idle\")
 	else:
