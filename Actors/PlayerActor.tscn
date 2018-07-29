@@ -84,7 +84,7 @@ func toggleInCombat():
 func setBusy(b):
 	busy = b
 
-func takeHit(damage):
+func takeHit(damage, source=null):
 	var damage_tier = -1
 	while (defense[damage_tier+1] <= damage or (damage_tier >= 0 and current_wounds[damage_tier] >= max_wounds[damage_tier])):
 		damage_tier += 1
@@ -96,6 +96,11 @@ func takeHit(damage):
 		startAnimCooldown(1.0)
 		_anim_playing(\"Damage\")
 	current_wounds[damage_tier] += 1
+	
+	if (source != null and source.get_ref() != null):
+		#TODO: force attacker into combat as well as self
+		pass
+	
 	emit_signal(\"damage_updated\")
 
 func addItem(id, type):

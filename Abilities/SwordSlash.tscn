@@ -52,7 +52,7 @@ func _do():
 	var bods = collider.get_overlapping_bodies()
 	for b in bods:
 		if (b.has_method(\"takeHit\") and b != ability_user.get_ref()):
-			b.takeHit(15) #TODO: make this depend on weapon and what damage was rolled
+			b.takeHit(15, ability_user)
 	
 	hideArea()
 	shown = false
@@ -69,7 +69,7 @@ func _process(delta):
 custom_solver_bias = 0.0
 extents = Vector2( 14.3599, 52.4546 )
 
-[node name="SwordSlash" type="Node2D" index="0"]
+[node name="SwordSlash" type="Node2D"]
 
 script = SubResource( 1 )
 

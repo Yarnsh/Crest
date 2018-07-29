@@ -9,11 +9,14 @@ script/source = "extends Node
 onready var actor = $Egg
 var spawnPos = Vector2(0,0)
 
-var wanderThread = Thread.new()
-func _wander(par):
+var AIThread = Thread.new()
+func _think(par):
 	while(par.get_ref()):
-		actor.walkTowards(spawnPos + _randomPointInRadius(8))
-		OS.delay_msec(1000)
+		if (actor.in_combat):
+			OS.delay_msec(100)
+		else:
+			actor.walkTowards(spawnPos + _randomPointInRadius(8))
+			OS.delay_msec(1000)
 
 
 func getState():
@@ -35,7 +38,7 @@ func setSpawnPosition(pos):
 func _ready():
 	randomize()
 	actor.setPosition(spawnPos)
-	var e = wanderThread.start(self, \"_wander\", weakref(self))
+	var e = AIThread.start(self, \"_think\", weakref(self))
 	print(e)
 
 func _randomPointInRadius(rad):
@@ -43,7 +46,7 @@ func _randomPointInRadius(rad):
 	return vec.rotated(randf() * 2 * PI)
 "
 
-[node name="Node" type="Node" index="0"]
+[node name="Node" type="Node"]
 
 script = SubResource( 1 )
 
