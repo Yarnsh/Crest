@@ -24,6 +24,8 @@ onready var held_r = $Spatial/Model/Armature/Skeleton/Held_R
 signal inventory_updated
 signal equipment_updated
 signal damage_updated
+signal in_combat
+signal out_combat
 
 var highlight_count = 0
 
@@ -80,6 +82,17 @@ func isOnGlobalCooldown():
 
 func toggleInCombat():
 	in_combat = !in_combat
+	if (in_combat):
+		emit_signal(\"in_combat\")
+	else:
+		emit_signal(\"out_combat\")
+
+func setInCombat(val):
+	in_combat = val
+	if (in_combat):
+		emit_signal(\"in_combat\")
+	else:
+		emit_signal(\"out_combat\")
 
 func setBusy(b):
 	busy = b
@@ -176,7 +189,7 @@ func _equipment_state_check(equipment, e_name):
 func setState(state):
 	#set all parameters of the actor, used to resync with server
 	#TODO: optimize signal emission
-	in_combat = state[\"in_combat\"]
+	setInCombat(state[\"in_combat\"])
 	busy = state[\"busy\"]
 	is_attacking = state[\"is_attacking\"]
 	

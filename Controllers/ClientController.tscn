@@ -75,7 +75,7 @@ func _unhandled_input(event):
 			_toggle_abilities()
 
 func setInCombat(combat):
-	actor.in_combat = combat
+	actor.setInCombat(combat)
 	#TODO: probably make server check this shit
 
 func drop_item(id):
@@ -89,6 +89,13 @@ func equip_item(id):
 func unequip_item(type):
 	actor.unequipItem(type)
 	get_node(\"/root/World\").rpc_id(1, \"unequipItem\", type)
+
+
+func _on_Actor_in_combat():
+	HUD.setInCombat(true)
+
+func _on_Actor_out_combat():
+	HUD.setInCombat(false)
 "
 
 [node name="Node" type="Node"]
@@ -194,7 +201,11 @@ collision_mask = 1
 
 [connection signal="equipment_updated" from="Actor" to="." method="_on_Actor_equipment_updated"]
 
+[connection signal="in_combat" from="Actor" to="." method="_on_Actor_in_combat"]
+
 [connection signal="inventory_updated" from="Actor" to="." method="_on_Actor_inventory_updated"]
+
+[connection signal="out_combat" from="Actor" to="." method="_on_Actor_out_combat"]
 
 
 [editable path="Actor"]

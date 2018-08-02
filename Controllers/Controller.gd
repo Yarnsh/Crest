@@ -130,3 +130,6 @@ func _process(delta):
 	
 	HUD.setMaxGlobalCooldown(actor.global_cooldown)
 	HUD.setCurrentCooldown(actor.global_cooldown_ends - global.clock)
+
+func isInCombat():
+	return actor.in_combat

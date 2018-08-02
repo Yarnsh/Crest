@@ -12,11 +12,21 @@ var spawnPos = Vector2(0,0)
 var AIThread = Thread.new()
 func _think(par):
 	while(par.get_ref()):
+		if (_checkForCombat() and !actor.in_combat):
+			actor.in_combat = true
+			#TODO: any stuff that needs to be done when entering combat
 		if (actor.in_combat):
 			OS.delay_msec(100)
 		else:
 			actor.walkTowards(spawnPos + _randomPointInRadius(8))
 			OS.delay_msec(1000)
+
+func _checkForCombat():
+	for npc in actor.world.NPCs.get_children():
+		#TODO: check for players and stuff
+		if npc.isInCombat(): #TODO: check for visibily and alliedness
+			return true
+	return false
 
 
 func getState():
@@ -34,6 +44,9 @@ func setState(state):
 
 func setSpawnPosition(pos):
 	spawnPos = Vector2(pos.x, pos.z)
+
+func isInCombat():
+	return actor.in_combat
 
 func _ready():
 	randomize()

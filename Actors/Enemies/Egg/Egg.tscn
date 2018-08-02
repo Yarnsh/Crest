@@ -83,6 +83,8 @@ func takeHit(damage, source=null):
 	current_wounds[damage_tier] += 1
 	
 	if (source != null and source.get_ref() != null):
+		in_combat = true
+		source.get_ref().setInCombat(true)
 		#TODO: force attacker into combat as well as self
 		pass
 	
@@ -205,6 +207,9 @@ func setHighlight(highlight):
 	else:
 		model.get_child(0).get_child(0).get_child(0).get_mesh().surface_get_material(0).set_next_pass(null)
 
+func setInCombat(val):
+	in_combat = val
+
 func _anim_playing(anim, start_at = null):
 	if (anim_player.get_current_animation() != anim):
 		anim_player.play(anim)
@@ -216,10 +221,6 @@ func _anim_playing(anim, start_at = null):
 		playing_anim = anim
 	pass
 
-func _checkForCombat():
-	#TODO: check the world for in view either in combat allies, or any enemy
-	pass
-
 func _ready():
 	world = get_node(\"/root/World\")
 
@@ -228,9 +229,6 @@ func _process(delta):
 	#TODO: limit inputs when attacking
 	if (!is_dead):
 		#TODO: make the actor walk, interact, attack, and all that, client side based on parameters passed by controller
-		if (_checkForCombat() and !in_combat):
-			in_combat = true
-			#TODO: any stuff that needs to be done when entering combat
 		if (walk_towards != null and !isOnGlobalCooldown()):
 			if (in_combat):
 				busy = true
@@ -274,7 +272,7 @@ func _process(delta):
 custom_solver_bias = 0.0
 radius = 1.0
 
-[node name="Egg" type="KinematicBody2D" index="0"]
+[node name="Egg" type="KinematicBody2D"]
 
 input_pickable = false
 collision_layer = 1
