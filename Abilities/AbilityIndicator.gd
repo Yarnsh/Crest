@@ -1,9 +1,11 @@
-extends Spatial
+extends ImmediateGeometry
 
 func _process(delta):
 	var pos = get_parent().get_global_position()
-	transform.origin = Vector3(pos.x, 0, pos.y)
-	var look = get_parent().getPointTowards()
-	look = Vector3(-look.x, 0.0, -look.y) + global_transform.origin + global_transform.origin
-	if (look.x != pos.x and look.z != pos.y):
-		look_at(look, Vector3(0,1,0))
+	var p = Array(get_parent().polygon)
+	clear()
+	begin(Mesh.PRIMITIVE_TRIANGLE_FAN, null)
+	for x in p:
+		add_vertex(Vector3(x.x + pos.x, 0, x.y + pos.y))
+	add_vertex(Vector3(p[0].x + pos.x, 0, p[0].y + pos.y))
+	end()
