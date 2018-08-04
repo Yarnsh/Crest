@@ -63,7 +63,7 @@ func _process(delta):
 		set_process(false)
 		_do()"
 
-[node name="SwordSlash" type="Node2D"]
+[node name="SwordSlash" type="Node2D" index="0"]
 
 script = SubResource( 1 )
 _sections_unfolded = [ "Transform" ]
@@ -80,16 +80,14 @@ monitorable = false
 collision_layer = 0
 audio_bus_override = false
 audio_bus_name = "Master"
-_sections_unfolded = [ "Collision", "Pickable" ]
+_sections_unfolded = [ "Collision", "Pickable", "Transform" ]
 
 [node name="Shape" type="CollisionPolygon2D" parent="Collider" index="0"]
 
 modulate = Color( 1, 0, 0, 1 )
-position = Vector2( 35.1685, -0.228607 )
-scale = Vector2( 2.61023, 1.04247 )
 build_mode = 0
-polygon = PoolVector2Array( -13.4769, 0.189455, -13.1045, -1.14873, -13.1045, 1.36151 )
-_sections_unfolded = [ "Material", "Visibility" ]
+polygon = PoolVector2Array( 0.0127478, -0.0332985, 2.93809, -2.24844, 2.93809, 2.30021 )
+_sections_unfolded = [ "Material", "Transform", "Visibility" ]
 
 [node name="Model" type="ImmediateGeometry" parent="Collider/Shape" index="0"]
 
