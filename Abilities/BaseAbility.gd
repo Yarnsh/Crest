@@ -7,7 +7,7 @@ const ability_desc = "How did you get this?"
 var ability_user = null
 
 onready var collider = $Collider
-onready var model = $Model
+onready var model = $Collider/Shape/Model
 
 const startup = 0.0
 const cooldown = 0.0
