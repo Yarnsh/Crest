@@ -12,7 +12,7 @@ var spawnPos = Vector2(0,0)
 var AIThread = Thread.new()
 func _think(par):
 	while(par.get_ref()):
-		if (_checkForCombat() and !actor.in_combat):
+		if (!actor.in_combat and (_checkForStartCombat() or _antagonizeEnemy())):
 			actor.in_combat = true
 			#TODO: any stuff that needs to be done when entering combat
 		if (actor.in_combat):
@@ -21,13 +21,23 @@ func _think(par):
 			actor.walkTowards(spawnPos + _randomPointInRadius(8))
 			OS.delay_msec(1000)
 
-func _checkForCombat():
+func _antagonizeEnemy():
+	for p in actor.world.Players.get_children():
+		#TODO: check if sightline is free
+		if actor.see_distance >= _distanceTo(p):
+			p.setInCombat(true)
+			return true
+	return false
+
+func _checkForStartCombat():
 	for npc in actor.world.NPCs.get_children():
 		#TODO: check for players and stuff
 		if npc.isInCombat(): #TODO: check for visibily and alliedness
 			return true
 	return false
 
+func _distanceTo(thing):
+	return getPosition().distance_to(thing.getPosition())
 
 func getState():
 	#TODO: add AI state to gets, grab it from sets
@@ -48,6 +58,9 @@ func setSpawnPosition(pos):
 func isInCombat():
 	return actor.in_combat
 
+func getPosition():
+	return actor.global_transform.origin
+
 func _ready():
 	randomize()
 	actor.setPosition(spawnPos)
@@ -59,7 +72,7 @@ func _randomPointInRadius(rad):
 	return vec.rotated(randf() * 2 * PI)
 "
 
-[node name="Node" type="Node"]
+[node name="Node" type="Node" index="0"]
 
 script = SubResource( 1 )
 

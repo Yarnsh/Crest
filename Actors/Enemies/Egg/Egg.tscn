@@ -52,6 +52,7 @@ var defense = [2,10,20,40]
 var is_dead = false
 
 var walk_speed = 1.0
+var see_distance = 5.0 #TODO: figure out correct distance
 
 var playing_anim = null
 var playing_anim_started = 0

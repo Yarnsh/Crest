@@ -133,3 +133,6 @@ func _process(delta):
 
 func isInCombat():
 	return actor.in_combat
+
+func getPosition():
+	return actor.global_transform.origin
