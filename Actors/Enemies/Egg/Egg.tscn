@@ -51,7 +51,7 @@ var current_wounds = [0,0,0]
 var defense = [2,10,20,40]
 var is_dead = false
 
-var walk_speed = 10.0
+var walk_speed = 1.0
 
 var playing_anim = null
 var playing_anim_started = 0
@@ -85,8 +85,6 @@ func takeHit(damage, source=null):
 	if (source != null and source.get_ref() != null):
 		in_combat = true
 		source.get_ref().setInCombat(true)
-		#TODO: force attacker into combat as well as self
-		pass
 	
 	emit_signal(\"damage_updated\")
 
