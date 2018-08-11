@@ -1,6 +1,7 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://Actors/Enemies/Egg/Assets/EggEnemy.dae" type="PackedScene" id=1]
+[ext_resource path="res://Abilities/Enemy/Egg/Slam.tscn" type="PackedScene" id=2]
 
 [sub_resource type="GDScript" id=1]
 
@@ -17,6 +18,7 @@ onready var spatial = $Spatial
 onready var model = $Spatial/Model
 onready var anim_player = $Spatial/Model/AnimationPlayer
 onready var skeleton = $Spatial/Model/Armature/Skeleton
+onready var slam_abil = $Abilities/Slam
 
 signal damage_updated
 
@@ -185,10 +187,8 @@ func _turn_towards_direction(dir):
 		model.look_at(Vector3(get_global_position().x + dir.x, 0.0 ,get_global_position().y + dir.y), Vector3(0,1,0))
 
 func startTowardsByName(ability_name, point):
-	#TODO: make this work off egg abilities
-	#if (equipped_weapon != null):
-	#	equipped_weapon.startTowardsByName(self, ability_name, point)
-	pass
+	# If we get more abilities on egg actually check passed name
+	slam_abil.startTowards(point)
 
 func _updateModelPosition():
 	var pos = get_position()
@@ -271,7 +271,7 @@ func _process(delta):
 custom_solver_bias = 0.0
 radius = 1.0
 
-[node name="Egg" type="KinematicBody2D"]
+[node name="Egg" type="KinematicBody2D" index="0"]
 
 input_pickable = false
 collision_layer = 1
@@ -288,5 +288,9 @@ _sections_unfolded = [ "Transform" ]
 [node name="Spatial" type="Spatial" parent="." index="1"]
 
 [node name="Model" parent="Spatial" index="0" instance=ExtResource( 1 )]
+
+[node name="Abilities" type="Node" parent="." index="2"]
+
+[node name="Slam" parent="Abilities" index="0" instance=ExtResource( 2 )]
 
 

@@ -1,0 +1,116 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://Abilities/Assets/Attackindicatormat.material" type="Material" id=1]
+[ext_resource path="res://Abilities/AbilityIndicator.gd" type="Script" id=2]
+
+[sub_resource type="GDScript" id=1]
+
+script/source = "extends \"res://Abilities/BaseAbility.gd\"
+
+const startup = 0.4
+const cooldown = 1.0
+const anim_cooldown = 1.0
+
+func _ready():
+	set_process(false)
+
+func startTowards(point):
+	pointTowards(point)
+	
+	if (_onCooldown() or ability_user == null or ability_user.get_ref() == null or ability_user.get_ref().isOnGlobalCooldown()):
+		hideArea()
+		return
+	
+	ability_user.get_ref().lock()
+	ability_user.get_ref().is_attacking = true
+	ability_user.get_ref().startAnimCooldown(anim_cooldown)
+	ability_user.get_ref()._anim_playing(\"Punch\")
+	ability_user.get_ref()._turn_towards(point)
+	
+	if (ability_user.get_ref().has_method(\"setBusy\")):
+		ability_user.get_ref().setBusy(true)
+		showArea()
+		shown = true
+		#TODO: start appropriate animation
+		#TODO: play whatever noises
+		_beginStartup()
+		set_process(true)
+	
+	ability_user.get_ref().unlock()
+
+func _do():
+	ability_user.get_ref().lock()
+	ability_user.get_ref().is_attacking = false
+	
+	ability_user.get_ref().startGlobalCooldown()
+	ability_user.get_ref().setBusy(false)
+	
+	var bods = collider.get_overlapping_bodies()
+	for b in bods:
+		if (b.has_method(\"takeHit\") and b != ability_user.get_ref()):
+			b.takeHit(5, ability_user)
+	
+	hideArea()
+	shown = false
+	
+	ability_user.get_ref().unlock()
+
+func _process(delta):
+	if (!_onStartup()):
+		set_process(false)
+		_do()
+
+func _on_Collider_body_entered( body ):
+	if (preview and body.has_method(\"setHighlight\")):
+		body.setHighlight(true)
+
+func _on_Collider_body_exited( body ):
+	if (preview and body.has_method(\"setHighlight\")):
+		body.setHighlight(false)
+"
+
+[node name="Slam" type="Node2D" index="0"]
+
+script = SubResource( 1 )
+
+[node name="Collider" type="Area2D" parent="." index="0"]
+
+visible = false
+input_pickable = false
+gravity_vec = Vector2( 0, 1 )
+gravity = 98.0
+linear_damp = 0.1
+angular_damp = 1.0
+monitoring = false
+monitorable = false
+collision_layer = 0
+audio_bus_override = false
+audio_bus_name = "Master"
+_sections_unfolded = [ "Collision", "Pickable" ]
+
+[node name="Shape" type="CollisionPolygon2D" parent="Collider" index="0"]
+
+build_mode = 0
+polygon = PoolVector2Array( -0.0921578, -0.168152, 0.59984, -0.617344, 1.07331, -0.471661, 1.19472, -0.0103283, 1.06117, 0.451004, 0.660542, 0.608828, -0.116439, 0.0867944 )
+_sections_unfolded = [ "Material", "Visibility" ]
+
+[node name="Model" type="ImmediateGeometry" parent="Collider/Shape" index="0"]
+
+visible = false
+layers = 1
+material_override = ExtResource( 1 )
+cast_shadow = 1
+extra_cull_margin = 0.0
+use_in_baked_light = false
+lod_min_distance = 0.0
+lod_min_hysteresis = 0.0
+lod_max_distance = 0.0
+lod_max_hysteresis = 0.0
+script = ExtResource( 2 )
+_sections_unfolded = [ "Geometry" ]
+
+[connection signal="body_entered" from="Collider" to="." method="_on_Collider_body_entered"]
+
+[connection signal="body_exited" from="Collider" to="." method="_on_Collider_body_exited"]
+
+
