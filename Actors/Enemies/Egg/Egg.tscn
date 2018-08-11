@@ -188,6 +188,7 @@ func _turn_towards_direction(dir):
 
 func startTowardsByName(ability_name, point):
 	# If we get more abilities on egg actually check passed name
+	slam_abil.ability_user = weakref(self)
 	slam_abil.startTowards(point)
 
 func _updateModelPosition():
@@ -208,6 +209,8 @@ func setHighlight(highlight):
 
 func setInCombat(val):
 	in_combat = val
+	walk_towards = null
+	pick_up = null
 
 func _anim_playing(anim, start_at = null):
 	if (anim_player.get_current_animation() != anim):
@@ -248,7 +251,7 @@ func _process(delta):
 		if (pick_up != null and pick_up.get_ref() and !pick_up.get_ref().on_ground):
 			pick_up = null
 		
-		if (queued_ability_name != null and !isOnGlobalCooldown()):
+		if (queued_ability_name != null and !isOnGlobalCooldown() and !busy):
 			startTowardsByName(queued_ability_name, queued_ability_point)
 			queued_ability_name = null
 	
@@ -271,7 +274,7 @@ func _process(delta):
 custom_solver_bias = 0.0
 radius = 1.0
 
-[node name="Egg" type="KinematicBody2D" index="0"]
+[node name="Egg" type="KinematicBody2D"]
 
 input_pickable = false
 collision_layer = 1

@@ -491,7 +491,7 @@ func _process(delta):
 		if (pick_up != null and pick_up.get_ref() and !pick_up.get_ref().on_ground):
 			pick_up = null
 		
-		if (queued_ability_name != null and !isOnGlobalCooldown()):
+		if (queued_ability_name != null and !isOnGlobalCooldown() and !busy):
 			startTowardsByName(queued_ability_name, queued_ability_point)
 			queued_ability_name = null
 		
@@ -523,7 +523,7 @@ func _process(delta):
 custom_solver_bias = 0.0
 radius = 10.0
 
-[node name="Actor" type="KinematicBody2D"]
+[node name="Actor" type="KinematicBody2D" index="0"]
 
 input_pickable = true
 collision_layer = 1
@@ -551,6 +551,8 @@ _sections_unfolded = [ "Collision", "Transform" ]
 
 [node name="Skeleton" parent="Spatial/Model/Armature" index="0"]
 
+bones/9/bound_children = [ NodePath("Held_L") ]
+bones/16/bound_children = [ NodePath("Held_R") ]
 _sections_unfolded = [ "bones", "bones/16", "bones/21", "bones/22", "bones/23", "bones/24", "bones/25", "bones/26", "bones/9" ]
 
 [node name="Held_L" type="BoneAttachment" parent="Spatial/Model/Armature/Skeleton" index="4"]

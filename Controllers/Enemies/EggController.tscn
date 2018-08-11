@@ -13,10 +13,14 @@ var AIThread = Thread.new()
 func _think(par):
 	while(par.get_ref()):
 		if (!actor.in_combat and (_checkForStartCombat() or _antagonizeEnemy())):
-			actor.in_combat = true
+			actor.setInCombat(true)
 			#TODO: any stuff that needs to be done when entering combat
 		if (actor.in_combat):
-			OS.delay_msec(100)
+			actor.queueAbilityTowardsByName(\"Slam\", Vector2(100,100))
+			if (actor.isOnGlobalCooldown()):
+				OS.delay_msec(((actor.global_cooldown_ends - global.clock) * 1000) + 10)
+			else:
+				OS.delay_msec(50)
 		else:
 			actor.walkTowards(spawnPos + _randomPointInRadius(8))
 			OS.delay_msec(1000)
@@ -72,7 +76,7 @@ func _randomPointInRadius(rad):
 	return vec.rotated(randf() * 2 * PI)
 "
 
-[node name="Node" type="Node" index="0"]
+[node name="Node" type="Node"]
 
 script = SubResource( 1 )
 
