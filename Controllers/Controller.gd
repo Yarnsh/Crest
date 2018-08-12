@@ -136,3 +136,6 @@ func isInCombat():
 
 func getPosition():
 	return actor.global_transform.origin
+
+func isDead():
+	return actor.is_dead

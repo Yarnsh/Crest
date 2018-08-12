@@ -88,11 +88,15 @@ func toggleInCombat():
 		emit_signal(\"out_combat\")
 
 func setInCombat(val):
-	in_combat = val
-	if (in_combat):
-		emit_signal(\"in_combat\")
-	else:
-		emit_signal(\"out_combat\")
+	if (in_combat != val):
+		in_combat = val
+		if (in_combat):
+			emit_signal(\"in_combat\")
+		else:
+			emit_signal(\"out_combat\")
+		walk_towards = null
+		pick_up = null
+		busy = false
 
 func setBusy(b):
 	busy = b
@@ -267,12 +271,13 @@ func setState(state):
 		_anim_playing(state[\"playing_anim\"], state[\"playing_anim_started\"])
 
 func queueAbilityTowardsByName(abil_name, point):
-	walk_towards = null
-	pick_up = null
-	
-	queued_ability_point = point
-	equipped_weapon.pointTowardsByName(abil_name, point) #TODO: make it depend on slot and whatever
-	queued_ability_name = abil_name
+	if (!busy):
+		walk_towards = null
+		pick_up = null
+		
+		queued_ability_point = point
+		equipped_weapon.pointTowardsByName(abil_name, point) #TODO: make it depend on slot and whatever
+		queued_ability_name = abil_name
 
 func walkTowards(dest):
 	#set current destination of this actor and make it walk
@@ -483,8 +488,8 @@ func _process(delta):
 					_turn_towards(walk_towards)
 				else:
 					if (in_combat):
-						busy = false
 						startGlobalCooldown()
+					busy = false
 			else:
 				translate((walk_towards - global_transform.origin).normalized() * walk_speed * delta)
 		
@@ -523,7 +528,7 @@ func _process(delta):
 custom_solver_bias = 0.0
 radius = 10.0
 
-[node name="Actor" type="KinematicBody2D" index="0"]
+[node name="Actor" type="KinematicBody2D"]
 
 input_pickable = true
 collision_layer = 1
@@ -551,8 +556,6 @@ _sections_unfolded = [ "Collision", "Transform" ]
 
 [node name="Skeleton" parent="Spatial/Model/Armature" index="0"]
 
-bones/9/bound_children = [ NodePath("Held_L") ]
-bones/16/bound_children = [ NodePath("Held_R") ]
 _sections_unfolded = [ "bones", "bones/16", "bones/21", "bones/22", "bones/23", "bones/24", "bones/25", "bones/26", "bones/9" ]
 
 [node name="Held_L" type="BoneAttachment" parent="Spatial/Model/Armature/Skeleton" index="4"]

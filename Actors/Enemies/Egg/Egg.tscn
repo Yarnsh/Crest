@@ -54,7 +54,6 @@ var defense = [2,10,20,40]
 var is_dead = false
 
 var walk_speed = 1.0
-var see_distance = 5.0 #TODO: figure out correct distance
 
 var playing_anim = null
 var playing_anim_started = 0
@@ -150,13 +149,14 @@ func setPosition(pos):
 	_updateModelPosition()
 
 func queueAbilityTowardsByName(abil_name, point):
-	walk_towards = null
-	pick_up = null
-	
-	queued_ability_point = point
-	#TODO: add abilities to the egg
-	#equipped_weapon.pointTowardsByName(abil_name, point) #TODO: make it depend on slot and whatever
-	queued_ability_name = abil_name
+	if (!busy):
+		walk_towards = null
+		pick_up = null
+		
+		queued_ability_point = point
+		#TODO: add abilities to the egg
+		#equipped_weapon.pointTowardsByName(abil_name, point) #TODO: make it depend on slot and whatever
+		queued_ability_name = abil_name
 
 func walkTowards(dest):
 	#set current destination of this actor and make it walk
@@ -208,9 +208,11 @@ func setHighlight(highlight):
 		model.get_child(0).get_child(0).get_child(0).get_mesh().surface_get_material(0).set_next_pass(null)
 
 func setInCombat(val):
-	in_combat = val
-	walk_towards = null
-	pick_up = null
+	if (in_combat != val):
+		in_combat = val
+		walk_towards = null
+		pick_up = null
+		busy = false
 
 func _anim_playing(anim, start_at = null):
 	if (anim_player.get_current_animation() != anim):
@@ -243,8 +245,8 @@ func _process(delta):
 					_turn_towards(walk_towards)
 				else:
 					if (in_combat):
-						busy = false
 						startGlobalCooldown()
+					busy = false
 			else:
 				translate((walk_towards - global_transform.origin).normalized() * walk_speed * delta)
 		
@@ -274,7 +276,7 @@ func _process(delta):
 custom_solver_bias = 0.0
 radius = 1.0
 
-[node name="Egg" type="KinematicBody2D"]
+[node name="Egg" type="KinematicBody2D" index="0"]
 
 input_pickable = false
 collision_layer = 1
@@ -292,8 +294,12 @@ _sections_unfolded = [ "Transform" ]
 
 [node name="Model" parent="Spatial" index="0" instance=ExtResource( 1 )]
 
-[node name="Abilities" type="Node" parent="." index="2"]
+[node name="Abilities" type="Node2D" parent="." index="2"]
+
+_sections_unfolded = [ "Transform" ]
 
 [node name="Slam" parent="Abilities" index="0" instance=ExtResource( 2 )]
+
+_sections_unfolded = [ "Transform" ]
 
 

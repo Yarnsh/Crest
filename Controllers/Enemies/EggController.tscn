@@ -9,14 +9,51 @@ script/source = "extends Node
 onready var actor = $Egg
 var spawnPos = Vector2(0,0)
 
+var enemy_list = []
+
+var get_agro_range = 7.5
+var keep_agro_range = 15.0
+
 var AIThread = Thread.new()
 func _think(par):
-	while(par.get_ref()):
-		if (!actor.in_combat and (_checkForStartCombat() or _antagonizeEnemy())):
+	while(par.get_ref() and !par.get_ref().isDead()):
+		var check_friendlies = _checkForStartCombat()
+		var check_enemies = _antagonizeEnemy()
+		var lost = []
+		for e in enemy_list:
+			if (_distanceTo(e) > keep_agro_range or e.isDead()):
+				lost.append(e)
+		for l in lost:
+			print(\"a\")
+			enemy_list.erase(l)
+			print(\"b\")
+		if (!actor.in_combat and enemy_list.size() > 0):
 			actor.setInCombat(true)
 			#TODO: any stuff that needs to be done when entering combat
+		else: if (actor.in_combat and enemy_list.size() == 0):
+			actor.setInCombat(false)
+			#TODO: any stuff that needs to be done when exiting combat
+		
 		if (actor.in_combat):
-			actor.queueAbilityTowardsByName(\"Slam\", Vector2(100,100))
+			var decided = false
+			var closest_e = null
+			var closest_d = 999.9
+			for e in enemy_list:
+				var dist = _distanceTo(e)
+				if (dist < closest_d):
+					closest_d = dist
+					closest_e = e
+				if (closest_d <= 1.5):
+					actor.queueAbilityTowardsByName(\"Slam\", e.getPosition())
+					decided = true
+					break
+			if (!decided and closest_e != null):
+				actor.walkTowards(getPosition() + ((closest_e.getPosition() - getPosition()).normalized() * (closest_d - 1.2)))
+			
+			print(actor.queued_ability_name)
+			print(actor.walk_towards)
+			print(actor.busy)
+			
 			if (actor.isOnGlobalCooldown()):
 				OS.delay_msec(((actor.global_cooldown_ends - global.clock) * 1000) + 10)
 			else:
@@ -28,15 +65,19 @@ func _think(par):
 func _antagonizeEnemy():
 	for p in actor.world.Players.get_children():
 		#TODO: check if sightline is free
-		if actor.see_distance >= _distanceTo(p):
+		if get_agro_range >= _distanceTo(p):
 			p.setInCombat(true)
+			if (!enemy_list.has(p)):
+				enemy_list.append(p)
 			return true
 	return false
 
 func _checkForStartCombat():
 	for npc in actor.world.NPCs.get_children():
-		#TODO: check for players and stuff
-		if npc.isInCombat(): #TODO: check for visibily and alliedness
+		if get_agro_range >= _distanceTo(npc) and npc.isInCombat(): #TODO: check for visibily and alliedness
+			for e in npc.enemy_list:
+				if (!enemy_list.has(e)):
+					enemy_list.append(e)
 			return true
 	return false
 
@@ -64,6 +105,9 @@ func isInCombat():
 
 func getPosition():
 	return actor.global_transform.origin
+
+func isDead():
+	return actor.is_dead
 
 func _ready():
 	randomize()
