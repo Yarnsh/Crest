@@ -50,10 +50,6 @@ func _think(par):
 			if (!decided and closest_e != null):
 				actor.walkTowards(getPosition() + ((closest_e.getPosition() - getPosition()).normalized() * (closest_d - 1.2)))
 			
-			print(actor.queued_ability_name)
-			print(actor.walk_towards)
-			print(actor.busy)
-			
 			if (actor.isOnGlobalCooldown()):
 				OS.delay_msec(((actor.global_cooldown_ends - global.clock) * 1000) + 10)
 			else:
@@ -120,7 +116,7 @@ func _randomPointInRadius(rad):
 	return vec.rotated(randf() * 2 * PI)
 "
 
-[node name="Node" type="Node"]
+[node name="Node" type="Node" index="0"]
 
 script = SubResource( 1 )
 
