@@ -17,7 +17,6 @@ func _unhandled_input(event):
 	if (event.is_pressed()):
 		if (event.is_action(\"toggle_combat\")):
 			actor.toggleInCombat()
-			HUD.toggleInCombat()
 		if (event.is_action(\"move\")): #TODO: separate combat move from regular
 			attacking = false
 			var clickpos = _get_pos_at_mouse()
