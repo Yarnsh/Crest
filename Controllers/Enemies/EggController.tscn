@@ -25,7 +25,6 @@ var keep_agro_range = 15.0
 var AIThread = Thread.new()
 func _think(par):
 	while(par.get_ref() and !par.get_ref().isDead()):
-		print(name + \" : \" + String(global.clock))
 		var check_friendlies = _checkForStartCombat()
 		var check_enemies = _antagonizeEnemy()
 		var lost = []
@@ -125,14 +124,13 @@ func _randomPointInRadius(rad):
 	return vec.rotated(randf() * 2 * PI)
 
 func _process(delta):
-	print(name + \" dead? \" + String(dead_end))
 	if (dead_confirmed and !isOnDeadCooldown()):
 		queue_free()
 	else: if (!dead_confirmed and actor.is_dead):
 		dead_confirmed = true
 		startDeadCooldown()"
 
-[node name="Node" type="Node" index="0"]
+[node name="Node" type="Node"]
 
 script = SubResource( 1 )
 
