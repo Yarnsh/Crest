@@ -24,6 +24,8 @@ onready var held_r = $Spatial/Model/Armature/Skeleton/Held_R
 signal inventory_updated
 signal equipment_updated
 signal damage_updated
+signal in_combat
+signal out_combat
 
 var highlight_count = 0
 
@@ -80,11 +82,26 @@ func isOnGlobalCooldown():
 
 func toggleInCombat():
 	in_combat = !in_combat
+	if (in_combat):
+		emit_signal(\"in_combat\")
+	else:
+		emit_signal(\"out_combat\")
+
+func setInCombat(val):
+	if (in_combat != val):
+		in_combat = val
+		if (in_combat):
+			emit_signal(\"in_combat\")
+		else:
+			emit_signal(\"out_combat\")
+		walk_towards = null
+		pick_up = null
+		busy = false
 
 func setBusy(b):
 	busy = b
 
-func takeHit(damage):
+func takeHit(damage, source=null):
 	var damage_tier = -1
 	while (defense[damage_tier+1] <= damage or (damage_tier >= 0 and current_wounds[damage_tier] >= max_wounds[damage_tier])):
 		damage_tier += 1
@@ -96,6 +113,11 @@ func takeHit(damage):
 		startAnimCooldown(1.0)
 		_anim_playing(\"Damage\")
 	current_wounds[damage_tier] += 1
+	
+	if (source != null and source.get_ref() != null):
+		#TODO: force attacker into combat as well as self
+		pass
+	
 	emit_signal(\"damage_updated\")
 
 func addItem(id, type):
@@ -171,7 +193,7 @@ func _equipment_state_check(equipment, e_name):
 func setState(state):
 	#set all parameters of the actor, used to resync with server
 	#TODO: optimize signal emission
-	in_combat = state[\"in_combat\"]
+	setInCombat(state[\"in_combat\"])
 	busy = state[\"busy\"]
 	is_attacking = state[\"is_attacking\"]
 	
@@ -249,12 +271,13 @@ func setState(state):
 		_anim_playing(state[\"playing_anim\"], state[\"playing_anim_started\"])
 
 func queueAbilityTowardsByName(abil_name, point):
-	walk_towards = null
-	pick_up = null
-	
-	queued_ability_point = point
-	equipped_weapon.pointTowardsByName(abil_name, point) #TODO: make it depend on slot and whatever
-	queued_ability_name = abil_name
+	if (!busy):
+		walk_towards = null
+		pick_up = null
+		
+		queued_ability_point = point
+		equipped_weapon.pointTowardsByName(abil_name, point) #TODO: make it depend on slot and whatever
+		queued_ability_name = abil_name
 
 func walkTowards(dest):
 	#set current destination of this actor and make it walk
@@ -465,15 +488,15 @@ func _process(delta):
 					_turn_towards(walk_towards)
 				else:
 					if (in_combat):
-						busy = false
 						startGlobalCooldown()
+					busy = false
 			else:
 				translate((walk_towards - global_transform.origin).normalized() * walk_speed * delta)
 		
 		if (pick_up != null and pick_up.get_ref() and !pick_up.get_ref().on_ground):
 			pick_up = null
 		
-		if (queued_ability_name != null and !isOnGlobalCooldown()):
+		if (queued_ability_name != null and !isOnGlobalCooldown() and !busy):
 			startTowardsByName(queued_ability_name, queued_ability_point)
 			queued_ability_name = null
 		
@@ -505,7 +528,7 @@ func _process(delta):
 custom_solver_bias = 0.0
 radius = 10.0
 
-[node name="Actor" type="KinematicBody2D" index="0"]
+[node name="Actor" type="KinematicBody2D"]
 
 input_pickable = true
 collision_layer = 1
@@ -533,8 +556,6 @@ _sections_unfolded = [ "Collision", "Transform" ]
 
 [node name="Skeleton" parent="Spatial/Model/Armature" index="0"]
 
-bones/9/bound_children = [ NodePath("Held_L") ]
-bones/16/bound_children = [ NodePath("Held_R") ]
 _sections_unfolded = [ "bones", "bones/16", "bones/21", "bones/22", "bones/23", "bones/24", "bones/25", "bones/26", "bones/9" ]
 
 [node name="Held_L" type="BoneAttachment" parent="Spatial/Model/Armature/Skeleton" index="4"]

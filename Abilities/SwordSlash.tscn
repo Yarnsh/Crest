@@ -52,7 +52,7 @@ func _do():
 	var bods = collider.get_overlapping_bodies()
 	for b in bods:
 		if (b.has_method(\"takeHit\") and b != ability_user.get_ref()):
-			b.takeHit(15) #TODO: make this depend on weapon and what damage was rolled
+			b.takeHit(15, ability_user) #TODO: make this depend on weapon and what damage was rolled
 	
 	hideArea()
 	shown = false

@@ -21,7 +21,7 @@ func setState(state):
 		print(\"FAILED TO SET STATE \" + self.name)
 
 func setInCombat(combat):
-	actor.in_combat = combat
+	actor.setInCombat(combat)
 
 func walkTowards(dest):
 	actor.walkTowards(dest)

@@ -37,6 +37,12 @@ func toggleInCombat():
 	else:
 		combat.show()
 
+func setInCombat(val):
+	if (!val):
+		combat.hide()
+	else:
+		combat.show()
+
 func updateAbilityBar():
 	var i = 1
 	for a in _controller.get_ref().ability_list:
@@ -68,7 +74,7 @@ func _on_Ability10_pressed():
 	_controller.get_ref()._selectAbility(9)
 "
 
-[node name="HUD" type="Node"]
+[node name="HUD" type="Node" index="0"]
 
 script = SubResource( 1 )
 _sections_unfolded = [ "Margin" ]
