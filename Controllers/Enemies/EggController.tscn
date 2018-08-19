@@ -9,6 +9,14 @@ script/source = "extends Node
 onready var actor = $Egg
 var spawnPos = Vector2(0,0)
 
+var dead_end = 0
+var dead_cooldown = 10.0
+var dead_confirmed = false
+func startDeadCooldown():
+	dead_end = global.clock + dead_cooldown
+func isOnDeadCooldown():
+	return global.clock < dead_end
+
 var enemy_list = []
 
 var get_agro_range = 7.5
@@ -17,6 +25,7 @@ var keep_agro_range = 15.0
 var AIThread = Thread.new()
 func _think(par):
 	while(par.get_ref() and !par.get_ref().isDead()):
+		print(name + \" : \" + String(global.clock))
 		var check_friendlies = _checkForStartCombat()
 		var check_enemies = _antagonizeEnemy()
 		var lost = []
@@ -24,9 +33,7 @@ func _think(par):
 			if (_distanceTo(e) > keep_agro_range or e.isDead()):
 				lost.append(e)
 		for l in lost:
-			print(\"a\")
 			enemy_list.erase(l)
-			print(\"b\")
 		if (!actor.in_combat and enemy_list.size() > 0):
 			actor.setInCombat(true)
 			#TODO: any stuff that needs to be done when entering combat
@@ -57,6 +64,8 @@ func _think(par):
 		else:
 			actor.walkTowards(spawnPos + _randomPointInRadius(8))
 			OS.delay_msec(1000)
+	
+	AIThread.call_deferred(\"wait_to_finish\")
 
 func _antagonizeEnemy():
 	for p in actor.world.Players.get_children():
@@ -114,7 +123,14 @@ func _ready():
 func _randomPointInRadius(rad):
 	var vec = Vector2(0, randf() * rad)
 	return vec.rotated(randf() * 2 * PI)
-"
+
+func _process(delta):
+	print(name + \" dead? \" + String(dead_end))
+	if (dead_confirmed and !isOnDeadCooldown()):
+		queue_free()
+	else: if (!dead_confirmed and actor.is_dead):
+		dead_confirmed = true
+		startDeadCooldown()"
 
 [node name="Node" type="Node" index="0"]
 
