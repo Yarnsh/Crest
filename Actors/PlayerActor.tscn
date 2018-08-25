@@ -41,6 +41,8 @@ func destroyItem(id):
 
 func getState():
 	#get a state that you can regen the entierty of the actor from
+	var state = .getState()
+	
 	var inv = {}
 	for i in inventory:
 		inv[i] = inventory[i].getState()
@@ -61,34 +63,15 @@ func getState():
 	if (equipped_legs):
 		e_legs = equipped_legs.id
 	
-	return {
-		\"id\":self.name,
-		\"global_cooldown_ends\":global_cooldown_ends,
-		\"anim_cooldown_ends\":anim_cooldown_ends,
-		\"in_combat\":in_combat,
-		\"busy\":busy,
-		\"is_attacking\":is_attacking,
-		\"default_weapon\":default_weapon.getState(),
-		\"equipped_weapon\":e_weapon,
-		\"equipped_chest\":e_chest,
-		\"equipped_head\":e_head,
-		\"equipped_arms\":e_arms,
-		\"equipped_legs\":e_legs,
-		\"walk_speed\":walk_speed, 
-		\"inventory\":inv, 
-		\"pos\":get_global_position(),
-		\"walk_towards\":walk_towards,
-		\"walk_path\":walk_path,
-		\"walk_dest\":walk_dest,
-		\"current_wounds\":current_wounds,
-		\"is_dead\":is_dead,
-		\"defense\":defense,
-		\"queued_ability_name\":queued_ability_name,
-		\"queued_ability_point\":queued_ability_point,
-		\"turn_dir\":turn_dir,
-		\"playing_anim\":playing_anim,
-		\"playing_anim_started\":playing_anim_started,
-		}
+	state[\"default_weapon\"] = default_weapon.getState()
+	state[\"equipped_weapon\"] = e_weapon
+	state[\"equipped_chest\"] = e_chest
+	state[\"equipped_head\"] = e_head
+	state[\"equipped_arms\"] = e_arms
+	state[\"equipped_legs\"] = e_legs
+	state[\"inventory\"] = inv
+	
+	return state
 
 func _equipment_state_check(equipment, e_name):
 	if (equipment == null and e_name == null):
@@ -97,17 +80,9 @@ func _equipment_state_check(equipment, e_name):
 		return true
 	return equipment.id != e_name
 func setState(state):
+	.setState(state)
 	#set all parameters of the actor, used to resync with server
 	#TODO: optimize signal emission
-	setInCombat(state[\"in_combat\"])
-	busy = state[\"busy\"]
-	is_attacking = state[\"is_attacking\"]
-	
-	global_cooldown_ends = state[\"global_cooldown_ends\"]
-	anim_cooldown_ends = state[\"anim_cooldown_ends\"]
-	
-	walk_speed = state[\"walk_speed\"]
-	
 	for i in state[\"inventory\"]:
 		if (inventory.has(i)):
 			if (inventory[i].type != state[\"inventory\"][i][\"type\"]):
@@ -157,24 +132,6 @@ func setState(state):
 		emit_signal(\"equipment_updated\")
 	
 	default_weapon.setState(state[\"default_weapon\"])
-	
-	set_global_position(state[\"pos\"])
-	walk_towards = state[\"walk_towards\"]
-	walk_path = state[\"walk_path\"]
-	walk_dest = state[\"walk_dest\"]
-	
-	current_wounds = state[\"current_wounds\"]
-	defense = state[\"defense\"]
-	is_dead = state[\"is_dead\"]
-	emit_signal(\"damage_updated\")
-	
-	queued_ability_name = state[\"queued_ability_name\"]
-	queued_ability_point = state[\"queued_ability_point\"]
-	
-	_turn_towards_direction(state[\"turn_dir\"])
-	
-	if (state[\"playing_anim\"] != null):
-		_anim_playing(state[\"playing_anim\"], state[\"playing_anim_started\"])
 
 func queueAbilityTowardsByName(abil_name, point):
 	if (!busy):
@@ -381,7 +338,7 @@ func _process(delta):
 custom_solver_bias = 0.0
 radius = 10.0
 
-[node name="Actor" type="KinematicBody2D"]
+[node name="Actor" type="KinematicBody2D" index="0"]
 
 input_pickable = true
 collision_layer = 1
@@ -409,6 +366,8 @@ _sections_unfolded = [ "Collision", "Transform" ]
 
 [node name="Skeleton" parent="Spatial/Model/Armature" index="0"]
 
+bones/9/bound_children = [ NodePath("Held_L") ]
+bones/16/bound_children = [ NodePath("Held_R") ]
 _sections_unfolded = [ "bones", "bones/16", "bones/21", "bones/22", "bones/23", "bones/24", "bones/25", "bones/26", "bones/9" ]
 
 [node name="Held_L" type="BoneAttachment" parent="Spatial/Model/Armature/Skeleton" index="4"]

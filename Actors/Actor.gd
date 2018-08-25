@@ -58,9 +58,55 @@ func isOnGlobalCooldown():
 	return global.clock < global_cooldown_ends
 
 func getState():
-	pass
-func setState():
-	pass
+	return {
+		"id":self.name,
+		"global_cooldown_ends":global_cooldown_ends,
+		"anim_cooldown_ends":anim_cooldown_ends,
+		"in_combat":in_combat,
+		"busy":busy,
+		"is_attacking":is_attacking,
+		"walk_speed":walk_speed,
+		"pos":get_global_position(),
+		"walk_towards":walk_towards,
+		"walk_path":walk_path,
+		"walk_dest":walk_dest,
+		"current_wounds":current_wounds,
+		"is_dead":is_dead,
+		"defense":defense,
+		"queued_ability_name":queued_ability_name,
+		"queued_ability_point":queued_ability_point,
+		"turn_dir":turn_dir,
+		"playing_anim":playing_anim,
+		"playing_anim_started":playing_anim_started,
+		}
+
+func setState(state):
+	setInCombat(state["in_combat"])
+	setBusy(state["busy"])
+	is_attacking = state["is_attacking"]
+	
+	global_cooldown_ends = state["global_cooldown_ends"]
+	anim_cooldown_ends = state["anim_cooldown_ends"]
+	
+	walk_speed = state["walk_speed"]
+	
+	set_global_position(state["pos"])
+	walk_towards = state["walk_towards"]
+	walk_path = state["walk_path"]
+	walk_dest = state["walk_dest"]
+	
+	current_wounds = state["current_wounds"]
+	defense = state["defense"]
+	is_dead = state["is_dead"]
+	emit_signal("damage_updated")
+	
+	queued_ability_name = state["queued_ability_name"]
+	queued_ability_point = state["queued_ability_point"]
+	
+	_turn_towards_direction(state["turn_dir"])
+	
+	if (state["playing_anim"] != null):
+		_anim_playing(state["playing_anim"], state["playing_anim_started"])
 
 func toggleInCombat():
 	in_combat = !in_combat
