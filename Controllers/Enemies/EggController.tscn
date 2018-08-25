@@ -55,11 +55,7 @@ func _think(par):
 					break
 			if (!decided and closest_e != null):
 				actor.walkTowards(getPosition() + ((closest_e.getPosition() - getPosition()).normalized() * (closest_d - 1.2)))
-			
-			if (actor.isOnGlobalCooldown()):
-				OS.delay_msec(((actor.global_cooldown_ends - global.clock) * 1000) + 10)
-			else:
-				OS.delay_msec(50)
+			OS.delay_msec(50)
 		else:
 			actor.walkTowards(spawnPos + _randomPointInRadius(8))
 			OS.delay_msec(1000)
@@ -130,7 +126,7 @@ func _process(delta):
 		dead_confirmed = true
 		startDeadCooldown()"
 
-[node name="Node" type="Node"]
+[node name="Node" type="Node" index="0"]
 
 script = SubResource( 1 )
 
