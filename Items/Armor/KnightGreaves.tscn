@@ -1,7 +1,6 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=4 format=2]
 
-[ext_resource path="res://Items/Assets/Fist.png" type="Texture" id=1]
-[ext_resource path="res://Items/Armor/Assets/knightgreaves.dae" type="PackedScene" id=2]
+[ext_resource path="res://Items/Armor/Assets/knightgreaves.dae" type="PackedScene" id=1]
 
 [sub_resource type="GDScript" id=1]
 
@@ -29,20 +28,15 @@ constant_angular_velocity = Vector3( 0, 0, 0 )
 script = SubResource( 1 )
 _sections_unfolded = [ "Collision" ]
 
-[node name="Sprite" type="Sprite" parent="." index="0"]
+[node name="Abilities" type="Node2D" parent="." index="0"]
 
-texture = ExtResource( 1 )
-_sections_unfolded = [ "Offset", "Transform" ]
-
-[node name="Abilities" type="Node2D" parent="." index="1"]
-
-[node name="CollisionShape" type="CollisionShape" parent="." index="2"]
+[node name="CollisionShape" type="CollisionShape" parent="." index="1"]
 
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.126793, 0 )
 shape = SubResource( 2 )
 disabled = false
 
-[node name="Model" parent="." index="3" instance=ExtResource( 2 )]
+[node name="Model" parent="." index="2" instance=ExtResource( 1 )]
 
 transform = Transform( 1, 0, 0, 0, 0.0938568, 0.995586, 0, -0.995586, 0.0938568, 0, 0, 0.479884 )
 
