@@ -21,7 +21,6 @@ onready var inventoryUI = $CanvasLayer/Inventory
 onready var abilityUI = $CanvasLayer/Abilities
 onready var HUD = $CanvasLayer/HUD
 onready var damageUI = $CanvasLayer/Damage
-onready var WalkDest = $WalkDest
 onready var WalkMarker = $WalkMarker
 
 var actor
@@ -112,12 +111,9 @@ func _on_Actor_damage_updated():
 
 func _process(delta):
 	if (actor.walk_towards == null):
-		WalkDest.hide()
 		WalkMarker.hide()
 	else:
 		if (actor.walk_dest != null):
-			WalkDest.set_global_position(actor.walk_dest)
-			WalkDest.show()
 			WalkMarker.transform.origin = Vector3(actor.walk_dest.x, 0 , actor.walk_dest.y)
 			WalkMarker.show()
 	
