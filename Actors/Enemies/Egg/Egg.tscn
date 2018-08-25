@@ -41,6 +41,19 @@ func startTowardsByName(ability_name, point):
 
 func _ready():
 	world = get_node(\"/root/World\")
+	
+	#Set all animations that need to to loop and vice versa
+	for aname in anim_player.get_animation_list():
+		anim_player.get_animation(aname).set_loop(false) #Since if the default is loop or not seems random
+	anim_player.get_animation(\"Idle\").set_loop(true)
+	anim_player.get_animation(\"Idle_combat\").set_loop(true)
+	anim_player.get_animation(\"Idle_rare\").set_loop(true)
+	anim_player.get_animation(\"Walk\").set_loop(true)
+	
+	if (in_combat):
+		_anim_playing(\"Idle_combat\")
+	else:
+		_anim_playing(\"Idle\")
 
 func _process(delta):
 	_updateModelPosition()

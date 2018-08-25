@@ -271,10 +271,10 @@ func _ready():
 	
 	#Set all animations that need to to loop and vice versa
 	for aname in anim_player.get_animation_list():
-		anim_player.get_animation(aname).loop = false #Since if the default is loop or not seems random
-	anim_player.get_animation(\"Idle\").loop = true
-	anim_player.get_animation(\"Idle_Combat\").loop = true
-	anim_player.get_animation(\"Run\").loop = true
+		anim_player.get_animation(aname).set_loop(false) #Since if the default is loop or not seems random
+	anim_player.get_animation(\"Idle\").set_loop(true)
+	anim_player.get_animation(\"Idle_Combat\").set_loop(true)
+	anim_player.get_animation(\"Run\").set_loop(true)
 	
 	if (in_combat):
 		_anim_playing(\"Idle_Combat\")

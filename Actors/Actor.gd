@@ -25,10 +25,9 @@ var busy = false
 var queued_ability_name = null
 var queued_ability_point = Vector2(0,0)
 
-var is_attacking = false
+var current_anim = null
 var startup_ends = 0
 var anim_cooldown_ends = 0
-var attack_towards = null
 func startAnimCooldown(anim_cooldown):
 	anim_cooldown_ends = global.clock + anim_cooldown
 func isOnAnimCooldown():
@@ -41,6 +40,9 @@ var turn_dir = Vector2(0,1)
 var walk_speed = 0.0
 
 var pick_up = null
+
+var is_attacking = false
+var attack_towards = null
 
 var max_wounds = [3,2,1]
 var current_wounds = [0,0,0]
@@ -187,7 +189,8 @@ func _turn_towards_direction(dir):
 		model.look_at(Vector3(get_global_position().x + dir.x, 0.0 ,get_global_position().y + dir.y), Vector3(0,1,0))
 
 func _anim_playing(anim, start_at = null):
-	if (anim_player.get_current_animation() != anim):
+	if (current_anim != anim):
+		current_anim = anim
 		anim_player.play(anim)
 		if (start_at != null):
 			anim_player.seek(global.clock - start_at)
