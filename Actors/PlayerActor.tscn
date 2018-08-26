@@ -23,7 +23,7 @@ var pick_up_range = 0.1
 var inventory = {}
 
 func _init():
-	walk_speed = 6.0
+	walk_speed = 650.0
 	global_cooldown = 5.0
 
 func addItem(id, type):
@@ -294,7 +294,7 @@ func _process(delta):
 				walk_towards = null
 				if (walk_path != null and !walk_path.empty()):
 					var walk3D = walk_path.pop_front()
-					walk_towards = Vector2(walk3D.x, walk3D.z)
+					walk_towards = global.to2D(walk3D)
 					_turn_towards(walk_towards)
 				else:
 					if (in_combat):
@@ -336,7 +336,7 @@ func _process(delta):
 [sub_resource type="CircleShape2D" id=2]
 
 custom_solver_bias = 0.0
-radius = 10.0
+radius = 27.0
 
 [node name="Actor" type="KinematicBody2D" index="0"]
 
@@ -350,9 +350,8 @@ _sections_unfolded = [ "Audio Bus", "Collision", "Pickable", "Transform" ]
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." index="0"]
 
 show_behind_parent = true
-scale = Vector2( 1.91537, 1.91537 )
 shape = SubResource( 2 )
-_sections_unfolded = [ "Material", "Transform", "Visibility" ]
+_sections_unfolded = [ "Material", "Transform", "Visibility", "Z Index" ]
 
 [node name="DefaultWeapon" parent="." index="1" instance=ExtResource( 1 )]
 

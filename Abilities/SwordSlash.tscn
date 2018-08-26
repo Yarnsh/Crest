@@ -87,7 +87,7 @@ _sections_unfolded = [ "Collision", "Pickable", "Transform" ]
 
 modulate = Color( 1, 0, 0, 1 )
 build_mode = 0
-polygon = PoolVector2Array( 0.0127478, -0.0332985, 2.93809, -2.24844, 2.93809, 2.30021 )
+polygon = PoolVector2Array( 0.0127478, -0.0332985, 295.861, -108.231, 295.572, 123.116 )
 _sections_unfolded = [ "Material", "Transform", "Visibility" ]
 
 [node name="Model" type="ImmediateGeometry" parent="Collider/Shape" index="0"]

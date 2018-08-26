@@ -34,5 +34,10 @@ func xzPlaneIntersect(pos, dir):
 		return Vector3(0,0,0) #no value makes sense here but whatever
 	return pos + ((-pos.y / dir.y) * dir)
 
+func to2D(vec):
+	return Vector2(vec.x * 100.0, vec.z * 100.0)
+func to3D(vec):
+	return Vector3(vec.x / 100.0, 0, vec.y / 100.0)
+
 func _process(delta):
 	clock += delta

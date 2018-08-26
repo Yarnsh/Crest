@@ -90,7 +90,7 @@ _sections_unfolded = [ "Collision", "Pickable" ]
 [node name="Shape" type="CollisionPolygon2D" parent="Collider" index="0"]
 
 build_mode = 0
-polygon = PoolVector2Array( -0.0921578, -0.168152, 0.59984, -0.617344, 1.07331, -0.471661, 1.19472, -0.0103283, 1.06117, 0.451004, 0.660542, 0.608828, -0.116439, 0.0867944 )
+polygon = PoolVector2Array( -13.8964, -15.7413, 89.9785, -65.4842, 148.012, -45.9772, 159.228, -1.11108, 147.037, 64.2374, 95.3429, 80.3307, -18.7731, 28.1494 )
 _sections_unfolded = [ "Material", "Visibility" ]
 
 [node name="Model" type="ImmediateGeometry" parent="Collider/Shape" index="0"]

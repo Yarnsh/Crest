@@ -21,7 +21,7 @@ func _unhandled_input(event):
 			attacking = false
 			var clickpos = _get_pos_at_mouse()
 			if (clickpos != null):
-				var clickpos2D = Vector2(clickpos.x, clickpos.z)
+				var clickpos2D = global.to2D(clickpos)
 				actor.walkTowards(clickpos2D)
 				get_node(\"/root/World\").rpc_id(1, \"walkTowards\", clickpos2D)
 		
@@ -57,7 +57,7 @@ func _unhandled_input(event):
 					var mouse_pos = get_viewport().get_mouse_position()
 					var clickpos = global.xzPlaneIntersect(cam3D.project_ray_origin(mouse_pos), cam3D.project_ray_normal(mouse_pos))
 					if (clickpos != null):
-						var clickpos2D = Vector2(clickpos.x, clickpos.z)
+						var clickpos2D = global.to3D(clickpos)
 						actor.queueAbilityTowardsByName(ability_list[sa].get_ref().name, clickpos2D)
 						get_node(\"/root/World\").rpc_id(1, \"queueAbilityTowardsByName\", ability_list[sa].get_ref().name, clickpos2D) #TODO: add what equipment slot later
 				else:
