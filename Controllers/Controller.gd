@@ -1,5 +1,6 @@
 extends Node
-
+var title = "Crest"
+	
 func getState():
 	if (typeof(actor) != TYPE_NIL):
 		return actor.getState()
@@ -110,6 +111,7 @@ func _on_Actor_damage_updated():
 	damageUI.updateDamage()
 
 func _process(delta):
+	OS.set_window_title(title + " | fps: " + str(Engine.get_frames_per_second()))
 	if (actor.walk_towards == null):
 		WalkMarker.hide()
 	else:

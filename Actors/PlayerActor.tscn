@@ -23,7 +23,7 @@ var pick_up_range = 0.1
 var inventory = {}
 
 func _init():
-	walk_speed = 1000.0
+	walk_speed = 650.0
 	global_cooldown = 5.0
 
 func addItem(id, type):
@@ -371,12 +371,12 @@ _sections_unfolded = [ "bones", "bones/16", "bones/21", "bones/22", "bones/23", 
 
 [node name="Held_L" type="BoneAttachment" parent="Spatial/Model/Armature/Skeleton" index="4"]
 
-transform = Transform( -1, 0, -3.53337e-09, 0, 1, 1.75203e-09, 6.66134e-16, -6.66134e-16, -1, 0.685989, 1.32507, 0.00487548 )
+transform = Transform( -1, 0, 4.16988e-09, -3.72529e-09, 1, 6.89546e-11, 1.7493e-15, -7.38743e-09, -1, 0.685988, 1.32506, 0.00487549 )
 bone_name = "Held_L"
 
 [node name="Held_R" type="BoneAttachment" parent="Spatial/Model/Armature/Skeleton" index="5"]
 
-transform = Transform( -1, 0, 3.53338e-09, 0, 1, 1.75204e-09, 1.09635e-15, -6.66134e-16, -1, -0.685989, 1.32507, 0.00487548 )
+transform = Transform( -1, -1.33227e-15, 3.28071e-09, 3.72529e-09, 1, 4.18201e-10, -5.10773e-15, -7.38743e-09, -1, -0.685988, 1.32506, 0.00487549 )
 bone_name = "Held_R"
 
 
