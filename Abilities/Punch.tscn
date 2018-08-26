@@ -76,6 +76,7 @@ func _on_Collider_body_exited( body ):
 [node name="Punch" type="Node2D" index="0"]
 
 script = SubResource( 1 )
+_sections_unfolded = [ "Transform" ]
 
 [node name="Collider" type="Area2D" parent="." index="0"]
 
@@ -90,13 +91,13 @@ monitorable = false
 collision_layer = 0
 audio_bus_override = false
 audio_bus_name = "Master"
-_sections_unfolded = [ "Collision", "Pickable" ]
+_sections_unfolded = [ "Collision", "Pickable", "Transform" ]
 
 [node name="Shape" type="CollisionPolygon2D" parent="Collider" index="0"]
 
 build_mode = 0
-polygon = PoolVector2Array( -0.0108509, -0.353669, 0.451208, -0.353669, 0.451208, 0.361777, -0.0108509, 0.361777 )
-_sections_unfolded = [ "Material", "Visibility" ]
+polygon = PoolVector2Array( 43.0668, -50.9037, -36.8678, -54.8876, -49.3335, 49.1284, 52.5767, 48.9999 )
+_sections_unfolded = [ "Material", "Transform", "Visibility" ]
 
 [node name="Model" type="ImmediateGeometry" parent="Collider/Shape" index="0"]
 

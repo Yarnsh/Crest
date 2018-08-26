@@ -156,7 +156,7 @@ func setPosition(pos):
 
 func _updateModelPosition():
 	var pos = get_position()
-	spatial.transform.origin = Vector3(pos.x, 0, pos.y)
+	spatial.transform.origin = global.to3D(pos)
 	#TODO: make this match to the height of the navmesh at that point
 	return pos
 
@@ -168,13 +168,13 @@ func walkTowards(dest):
 
 func _walk(dest):
 	if (world != null):
-		var close_dest = world.get_closest_point(Vector3(dest.x, 0, dest.y))
+		var close_dest = world.get_closest_point(global.to3D(dest))
 		#TODO: this contains starting point I believe so remove that before doing movement
-		walk_path = Array(world.get_simple_path(Vector3(transform.origin.x, 0, transform.origin.y), close_dest))
+		walk_path = Array(world.get_simple_path(global.to3D(transform.origin), close_dest))
 		var walk3D = walk_path.pop_front()
-		walk_towards = Vector2(walk3D.x, walk3D.z)
+		walk_towards = global.to2D(walk3D)
 		var walkDest3D = walk_path.back()
-		walk_dest = Vector2(walkDest3D.x, walkDest3D.z)
+		walk_dest = global.to2D(walkDest3D)
 	else:
 		walk_towards = dest
 
@@ -182,11 +182,11 @@ func _turn_towards(point):
 	var target = -point + (2 * get_global_position())
 	turn_dir = (target - get_global_position()).normalized()
 	if (get_global_position() != target):
-		model.look_at(Vector3(target.x, 0.0 ,target.y), Vector3(0,1,0))
+		model.look_at(global.to3D(target), Vector3(0,1,0))
 func _turn_towards_direction(dir):
 	turn_dir = dir
 	if (dir.length_squared() > 0.0):
-		model.look_at(Vector3(get_global_position().x + dir.x, 0.0 ,get_global_position().y + dir.y), Vector3(0,1,0))
+		model.look_at(global.to3D(get_global_position() + dir), Vector3(0,1,0))
 
 func _anim_playing(anim, start_at = null):
 	if (current_anim != anim):

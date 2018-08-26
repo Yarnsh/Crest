@@ -19,8 +19,9 @@ func isOnDeadCooldown():
 
 var enemy_list = []
 
-var get_agro_range = 7.5
-var keep_agro_range = 15.0
+var get_agro_range = 750.0
+var keep_agro_range = 1500.0
+var swing_range = 150.0
 
 var AIThread = Thread.new()
 func _think(par):
@@ -43,13 +44,13 @@ func _think(par):
 		if (actor.in_combat):
 			var decided = false
 			var closest_e = null
-			var closest_d = 999.9
+			var closest_d = 999999.9
 			for e in enemy_list:
 				var dist = _distanceTo(e)
 				if (dist < closest_d):
 					closest_d = dist
 					closest_e = e
-				if (closest_d <= 1.5):
+				if (closest_d <= swing_range):
 					actor.queueAbilityTowardsByName(\"Slam\", e.getPosition())
 					decided = true
 					break
@@ -57,7 +58,7 @@ func _think(par):
 				actor.walkTowards(getPosition() + ((closest_e.getPosition() - getPosition()).normalized() * (closest_d - 1.2)))
 			OS.delay_msec(50)
 		else:
-			actor.walkTowards(spawnPos + _randomPointInRadius(8))
+			actor.walkTowards(spawnPos + _randomPointInRadius(800))
 			OS.delay_msec(1000)
 	
 	AIThread.call_deferred(\"wait_to_finish\")
@@ -98,7 +99,7 @@ func setState(state):
 		print(\"FAILED TO SET STATE \" + self.name)
 
 func setSpawnPosition(pos):
-	spawnPos = Vector2(pos.x, pos.z)
+	spawnPos = global.to2D(pos)
 
 func isInCombat():
 	return actor.in_combat

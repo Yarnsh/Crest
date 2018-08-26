@@ -20,7 +20,7 @@ func _unhandled_input(event):
 			attacking = false
 			var clickpos = _get_pos_at_mouse()
 			if (clickpos != null):
-				var clickpos2D = Vector2(clickpos.x, clickpos.z)
+				var clickpos2D = global.to2D(clickpos)
 				actor.walkTowards(clickpos2D)
 		
 		if (event.is_action(\"cancel\")):
@@ -55,7 +55,7 @@ func _unhandled_input(event):
 					var mouse_pos = get_viewport().get_mouse_position()
 					var clickpos = global.xzPlaneIntersect(cam3D.project_ray_origin(mouse_pos), cam3D.project_ray_normal(mouse_pos))
 					if (clickpos != null):
-						var clickpos2D = Vector2(clickpos.x, clickpos.z)
+						var clickpos2D = global.to2D(clickpos)
 						actor.queueAbilityTowardsByName(ability_list[sa].get_ref().name, clickpos2D)
 				else:
 					#TODO: ignore items on the ground if in combat
