@@ -30,7 +30,7 @@ func _think(par):
 		var check_enemies = _antagonizeEnemy()
 		var lost = []
 		for e in enemy_list:
-			if (_distanceTo(e) > keep_agro_range or e.isDead()):
+			if (_checkIsActor(e) and (_distanceTo(e) > keep_agro_range or e.isDead())):
 				lost.append(e)
 		for l in lost:
 			enemy_list.erase(l)
@@ -66,7 +66,7 @@ func _think(par):
 func _antagonizeEnemy():
 	for p in actor.world.Players.get_children():
 		#TODO: check if sightline is free
-		if get_agro_range >= _distanceTo(p):
+		if (_checkIsActor(p) and get_agro_range >= _distanceTo(p)):
 			p.setInCombat(true)
 			if (!enemy_list.has(p)):
 				enemy_list.append(p)
@@ -75,7 +75,7 @@ func _antagonizeEnemy():
 
 func _checkForStartCombat():
 	for npc in actor.world.NPCs.get_children():
-		if get_agro_range >= _distanceTo(npc) and npc.isInCombat(): #TODO: check for visibily and alliedness
+		if (_checkIsActor(npc) and get_agro_range >= _distanceTo(npc) and npc.isInCombat()): #TODO: check for visibily and alliedness
 			for e in npc.enemy_list:
 				if (!enemy_list.has(e)):
 					enemy_list.append(e)
@@ -125,7 +125,10 @@ func _process(delta):
 		queue_free()
 	else: if (!dead_confirmed and actor.is_dead):
 		dead_confirmed = true
-		startDeadCooldown()"
+		startDeadCooldown()
+
+func _checkIsActor(a):
+	return a.has_method(\"getPosition\") and a.has_method(\"isInCombat\")"
 
 [node name="Node" type="Node" index="0"]
 
