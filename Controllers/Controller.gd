@@ -114,14 +114,14 @@ func _process(delta):
 		WalkMarker.hide()
 	else:
 		if (actor.walk_dest != null):
-			WalkMarker.transform.origin = Vector3(actor.walk_dest.x, 0 , actor.walk_dest.y)
+			WalkMarker.transform.origin = global.to3D(actor.walk_dest)
 			WalkMarker.show()
 	
 	if (selected_ability >= 0 and _checkAbilityByIndex(selected_ability)):
 		var mouse_pos = get_viewport().get_mouse_position()
 		var clickpos = global.xzPlaneIntersect(cam3D.project_ray_origin(mouse_pos), cam3D.project_ray_normal(mouse_pos))
 		if (clickpos != null):
-			var clickpos2D = Vector2(clickpos.x, clickpos.z)
+			var clickpos2D = global.to2D(clickpos)
 			ability_list[selected_ability].get_ref().pointTowards(clickpos2D)
 	
 	HUD.setMaxGlobalCooldown(actor.global_cooldown)

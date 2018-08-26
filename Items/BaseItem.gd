@@ -35,9 +35,9 @@ func setState(state):
 		hide()
 
 func setGlobalPosition(pos):
-	global_transform.origin = Vector3(pos.x, 0, pos.y)
+	global_transform.origin = global.to3D(pos)
 func getGlobalPosition():
-	return Vector2(global_transform.origin.x, global_transform.origin.z)
+	return global.to2D(global_transform.origin)
 
 func pickUp():
 	hide()
@@ -53,4 +53,4 @@ func drop(pos):
 func _process(delta):
 	var pos = global_transform.origin
 	if (abilities != null):
-		abilities.set_global_position(Vector2(pos.x, pos.z))
+		abilities.set_global_position(global.to2D(pos))

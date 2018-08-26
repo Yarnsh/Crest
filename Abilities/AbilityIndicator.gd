@@ -7,13 +7,14 @@ func _process(delta):
 	clear()
 	begin(Mesh.PRIMITIVE_TRIANGLE_FAN, null)
 	for x in p:
-		add_vertex(Vector3(x.x, 0, x.y))
-	add_vertex(Vector3(p[0].x, 0, p[0].y))
+		add_vertex(global.to3D(x))
+		print(String(x) + " : " + String(global.to3D(x)))
+	add_vertex(global.to3D(p[0]))
 	end()
 	
-	transform.origin = Vector3(pos.x, 0, pos.y)
+	transform.origin = global.to3D(pos)
 	var look = get_parent().get_parent().get_parent().getPointTowards()
-	look = Vector3(look.x, 0.0, look.y)
-	if (look.x != pos.x and look.z != pos.y):
-		look_at(look, Vector3(0,1,0))
+	var look3D = global.to3D(look)
+	if (look3D.x != pos.x and look3D.z != pos.y):
+		look_at(look3D, Vector3(0,1,0))
 		rotate_y(PI/2.0)
