@@ -55,7 +55,7 @@ func _think(par):
 					decided = true
 					break
 			if (!decided and closest_e != null):
-				actor.walkTowards(getPosition() + ((closest_e.getPosition() - getPosition()).normalized() * (closest_d - 1.2)))
+				actor.walkTowards(getPosition() + ((closest_e.getPosition() - getPosition()).normalized() * (closest_d - 120.0)))
 			OS.delay_msec(50)
 		else:
 			actor.walkTowards(spawnPos + _randomPointInRadius(800))
