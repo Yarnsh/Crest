@@ -8,7 +8,6 @@ func _process(delta):
 	begin(Mesh.PRIMITIVE_TRIANGLE_FAN, null)
 	for x in p:
 		add_vertex(global.to3D(x))
-		print(String(x) + " : " + String(global.to3D(x)))
 	add_vertex(global.to3D(p[0]))
 	end()
 	

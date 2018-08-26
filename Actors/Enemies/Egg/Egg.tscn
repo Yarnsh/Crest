@@ -9,8 +9,6 @@ script/source = "extends \"res://Actors/Actor.gd\"
 
 onready var slam_abil = $Abilities/Slam
 
-onready var inventory_node = $Inventory
-
 func _init():
 	walk_speed = 100.0
 	global_cooldown = 5.0
