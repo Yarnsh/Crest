@@ -39,5 +39,9 @@ func to2D(vec):
 func to3D(vec):
 	return Vector3(vec.x / 100.0, 0, vec.y / 100.0)
 
+func randomPointInRadius(rad):
+	var vec = Vector2(0, randf() * rad)
+	return vec.rotated(randf() * 2 * PI)
+
 func _process(delta):
 	clock += delta

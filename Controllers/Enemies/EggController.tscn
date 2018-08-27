@@ -4,18 +4,7 @@
 
 [sub_resource type="GDScript" id=1]
 
-script/source = "extends Node
-
-onready var actor = $Egg
-var spawnPos = Vector2(0,0)
-
-var dead_end = 0
-var dead_cooldown = 10.0
-var dead_confirmed = false
-func startDeadCooldown():
-	dead_end = global.clock + dead_cooldown
-func isOnDeadCooldown():
-	return global.clock < dead_end
+script/source = "extends \"res://Controllers/Enemies/EnemyController.gd\"
 
 var enemy_list = []
 
@@ -30,7 +19,7 @@ func _think(par):
 		var check_enemies = _antagonizeEnemy()
 		var lost = []
 		for e in enemy_list:
-			if (_checkIsActor(e) and (_distanceTo(e) > keep_agro_range or e.isDead())):
+			if (_checkIsController(e) and (_distanceTo(e) > keep_agro_range or e.isDead())):
 				lost.append(e)
 		for l in lost:
 			enemy_list.erase(l)
@@ -58,7 +47,7 @@ func _think(par):
 				actor.walkTowards(getPosition() + ((closest_e.getPosition() - getPosition()).normalized() * (closest_d - 120.0)))
 			OS.delay_msec(50)
 		else:
-			actor.walkTowards(spawnPos + _randomPointInRadius(800))
+			actor.walkTowards(spawnPos + global.randomPointInRadius(800))
 			OS.delay_msec(1000)
 	
 	AIThread.call_deferred(\"wait_to_finish\")
@@ -66,7 +55,7 @@ func _think(par):
 func _antagonizeEnemy():
 	for p in actor.world.Players.get_children():
 		#TODO: check if sightline is free
-		if (_checkIsActor(p) and get_agro_range >= _distanceTo(p)):
+		if (_checkIsController(p) and get_agro_range >= _distanceTo(p)):
 			p.setInCombat(true)
 			if (!enemy_list.has(p)):
 				enemy_list.append(p)
@@ -75,50 +64,19 @@ func _antagonizeEnemy():
 
 func _checkForStartCombat():
 	for npc in actor.world.NPCs.get_children():
-		if (_checkIsActor(npc) and get_agro_range >= _distanceTo(npc) and npc.isInCombat()): #TODO: check for visibily and alliedness
+		if (_checkIsController(npc) and get_agro_range >= _distanceTo(npc) and npc.isInCombat()): #TODO: check for visibily and alliedness
 			for e in npc.enemy_list:
 				if (!enemy_list.has(e)):
 					enemy_list.append(e)
 			return true
 	return false
 
-func _distanceTo(thing):
-	return getPosition().distance_to(thing.getPosition())
-
-func getState():
-	#TODO: add AI state to gets, grab it from sets
-	if (typeof(actor) != TYPE_NIL):
-		return actor.getState()
-	else:
-		print(\"FAILED TO GET STATE \" + self.name)
-		return null
-func setState(state):
-	if (typeof(actor) != TYPE_NIL):
-		actor.setState(state)
-	else:
-		print(\"FAILED TO SET STATE \" + self.name)
-
-func setSpawnPosition(pos):
-	spawnPos = global.to2D(pos)
-
-func isInCombat():
-	return actor.in_combat
-
-func getPosition():
-	return actor.global_transform.origin
-
-func isDead():
-	return actor.is_dead
-
 func _ready():
 	randomize()
+	actor = $Egg
 	actor.setPosition(spawnPos)
 	var e = AIThread.start(self, \"_think\", weakref(self))
 	print(e)
-
-func _randomPointInRadius(rad):
-	var vec = Vector2(0, randf() * rad)
-	return vec.rotated(randf() * 2 * PI)
 
 func _process(delta):
 	if (dead_confirmed and !isOnDeadCooldown()):
@@ -126,9 +84,7 @@ func _process(delta):
 	else: if (!dead_confirmed and actor.is_dead):
 		dead_confirmed = true
 		startDeadCooldown()
-
-func _checkIsActor(a):
-	return a.has_method(\"getPosition\") and a.has_method(\"isInCombat\")"
+"
 
 [node name="Node" type="Node" index="0"]
 
