@@ -7,9 +7,9 @@
 [ext_resource path="res://Controllers/UI/Abilities.tscn" type="PackedScene" id=5]
 [ext_resource path="res://Controllers/UI/Markermat.material" type="Material" id=6]
 
-[sub_resource type="GDScript" id=2]
+[sub_resource type="GDScript" id=1]
 
-script/source = "extends \"res://Controllers/Controller.gd\"
+script/source = "extends \"res://Controllers/PController.gd\"
 
 func _unhandled_input(event):
 	#TODO: limit inputs if actor is busy, allow readying of actions during cool downs
@@ -96,9 +96,8 @@ func _on_Actor_out_combat():
 	HUD.setInCombat(false)
 "
 
-[sub_resource type="ArrayMesh" id=1]
+[sub_resource type="ArrayMesh" id=2]
 
-resource_name = "Marker"
 blend_shape_mode = 1
 custom_aabb = AABB( 0, 0, 0, 0, 0, 0 )
 surfaces/0 = {
@@ -115,9 +114,9 @@ surfaces/0 = {
 "vertex_count": 29
 }
 
-[node name="Node" type="Node" index="0"]
+[node name="Node" type="Node"]
 
-script = SubResource( 2 )
+script = SubResource( 1 )
 
 [node name="Actor" parent="." index="0" instance=ExtResource( 1 )]
 
@@ -182,10 +181,12 @@ transform = Transform2D( 1, 0, 0, 1, 0, 0 )
 
 margin_right = 189.0
 margin_bottom = 32.0
+rect_clip_content = false
 
 [node name="Inventory" parent="CanvasLayer" index="1" instance=ExtResource( 3 )]
 
 visible = false
+rect_clip_content = false
 _sections_unfolded = [ "Margin", "Rect" ]
 
 [node name="HUD" parent="CanvasLayer" index="2" instance=ExtResource( 4 )]
@@ -197,6 +198,7 @@ margin_left = 1156.0
 margin_top = 11.0
 margin_right = 1223.0
 margin_bottom = 39.0
+rect_clip_content = false
 
 [node name="WalkMarker" type="Spatial" parent="." index="3"]
 
@@ -213,7 +215,7 @@ lod_min_distance = 0.0
 lod_min_hysteresis = 0.0
 lod_max_distance = 0.0
 lod_max_hysteresis = 0.0
-mesh = SubResource( 1 )
+mesh = SubResource( 2 )
 skeleton = NodePath("..")
 material/0 = null
 _sections_unfolded = [ "Geometry" ]

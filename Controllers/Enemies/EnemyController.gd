@@ -1,15 +1,30 @@
-extends Node
+extends "res://Controllers/BaseController.gd"
 
-var actor = null
+var spawnPos = Vector2(0,0)
 
-func isInCombat():
-	return actor.in_combat
+var dead_end = 0
+var dead_cooldown = 10.0
+var dead_confirmed = false
+func startDeadCooldown():
+	dead_end = global.clock + dead_cooldown
+func isOnDeadCooldown():
+	return global.clock < dead_end
 
-func getPosition():
-	return actor.global_transform.origin
+func setSpawnPosition(pos):
+	spawnPos = global.to2D(pos)
 
-func _checkIsController(a):
-	return a.has_method("getPosition") and a.has_method("isInCombat")
+func _distanceTo(thing):
+	return getPosition().distance_to(thing.getPosition())
 
-func isDead():
-	return actor.is_dead
+func getState():
+	#TODO: add AI state to gets, grab it from sets
+	if (typeof(actor) != TYPE_NIL):
+		return actor.getState()
+	else:
+		print("FAILED TO GET STATE " + self.name)
+		return null
+func setState(state):
+	if (typeof(actor) != TYPE_NIL):
+		actor.setState(state)
+	else:
+		print("FAILED TO SET STATE " + self.name)
