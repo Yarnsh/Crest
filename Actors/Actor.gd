@@ -25,7 +25,6 @@ var busy = false
 var queued_ability_name = null
 var queued_ability_point = Vector2(0,0)
 
-var current_anim = null
 var startup_ends = 0
 var anim_cooldown_ends = 0
 func startAnimCooldown(anim_cooldown):
@@ -189,8 +188,7 @@ func _turn_towards_direction(dir):
 		model.look_at(global.to3D(get_global_position() + dir), Vector3(0,1,0))
 
 func _anim_playing(anim, start_at = null):
-	if (current_anim != anim):
-		current_anim = anim
+	if (anim_player.get_assigned_animation() != anim):
 		anim_player.play(anim)
 		if (start_at != null):
 			anim_player.seek(global.clock - start_at)
