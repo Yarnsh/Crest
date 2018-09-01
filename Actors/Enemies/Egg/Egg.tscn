@@ -38,7 +38,7 @@ func startTowardsByName(ability_name, point):
 	slam_abil.startTowards(point)
 
 func _ready():
-	world = get_node(\"/root/World\")
+	updateWorld()
 	
 	#Set all animations that need to to loop and vice versa
 	for aname in anim_player.get_animation_list():
@@ -101,7 +101,7 @@ func _process(delta):
 custom_solver_bias = 0.0
 radius = 25.0
 
-[node name="Egg" type="KinematicBody2D" index="0"]
+[node name="Egg" type="KinematicBody2D"]
 
 input_pickable = false
 collision_layer = 1

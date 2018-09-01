@@ -13,3 +13,6 @@ func _checkIsController(a):
 
 func isDead():
 	return actor.is_dead
+
+func updateWorld():
+	actor.updateWorld()

@@ -207,3 +207,6 @@ func setHighlight(highlight):
 		model.get_child(0).get_child(0).get_child(0).get_mesh().surface_get_material(0).set_next_pass(preload("res://highlightMat.tres"))
 	else:
 		model.get_child(0).get_child(0).get_child(0).get_mesh().surface_get_material(0).set_next_pass(null)
+
+func updateWorld():
+	world = get_parent().get_parent().get_parent()

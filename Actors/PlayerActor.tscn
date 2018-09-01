@@ -267,7 +267,7 @@ func _updateModelPosition():
 	default_weapon.setGlobalPosition(pos)
 
 func _ready():
-	world = get_node(\"/root/World\")
+	updateWorld()
 	
 	#Set all animations that need to to loop and vice versa
 	for aname in anim_player.get_animation_list():
@@ -338,7 +338,7 @@ func _process(delta):
 custom_solver_bias = 0.0
 radius = 27.0
 
-[node name="Actor" type="KinematicBody2D" index="0"]
+[node name="Actor" type="KinematicBody2D"]
 
 input_pickable = true
 collision_layer = 1
@@ -365,18 +365,16 @@ _sections_unfolded = [ "Collision", "Transform" ]
 
 [node name="Skeleton" parent="Spatial/Model/Armature" index="0"]
 
-bones/9/bound_children = [ NodePath("Held_L") ]
-bones/16/bound_children = [ NodePath("Held_R") ]
 _sections_unfolded = [ "bones", "bones/16", "bones/21", "bones/22", "bones/23", "bones/24", "bones/25", "bones/26", "bones/9" ]
 
 [node name="Held_L" type="BoneAttachment" parent="Spatial/Model/Armature/Skeleton" index="4"]
 
-transform = Transform( -1, 0, 4.16988e-09, -3.72529e-09, 1, 6.89546e-11, 1.7493e-15, -7.38743e-09, -1, 0.685988, 1.32506, 0.00487549 )
+transform = Transform( -1, 0, 4.16988e-009, -3.72529e-009, 1, 6.89546e-011, 1.7493e-015, -7.38743e-009, -1, 0.685988, 1.32506, 0.00487549 )
 bone_name = "Held_L"
 
 [node name="Held_R" type="BoneAttachment" parent="Spatial/Model/Armature/Skeleton" index="5"]
 
-transform = Transform( -1, -1.33227e-15, 3.28071e-09, 3.72529e-09, 1, 4.18201e-10, -5.10773e-15, -7.38743e-09, -1, -0.685988, 1.32506, 0.00487549 )
+transform = Transform( -1, -1.33227e-015, 3.28071e-009, 3.72529e-009, 1, 4.18201e-010, -5.10773e-015, -7.38743e-009, -1, -0.685988, 1.32506, 0.00487549 )
 bone_name = "Held_R"
 
 
