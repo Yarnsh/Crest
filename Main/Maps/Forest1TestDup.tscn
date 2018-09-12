@@ -104,7 +104,7 @@ filter/low_hanging_obstacles = false
 filter/ledge_spans = false
 filter/filter_walkable_low_height_spans = false
 
-[node name="Forest1TestDup" type="Navigation"]
+[node name="Forest1TestDup" type="Navigation" index="0"]
 
 transform = Transform( -0.432347, 0, -0.901707, 0, 1, 0, 0.901707, 0, -0.432347, 0, 0, 0 )
 up_vector = Vector3( 0, 1, 0 )
@@ -165,6 +165,8 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -41.143, -4.76837e-007, -30.71
 script = SubResource( 7 )
 
 [node name="Scene Root" parent="." index="4" instance=ExtResource( 9 )]
+
+visible = false
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="Scene Root" index="0"]
 

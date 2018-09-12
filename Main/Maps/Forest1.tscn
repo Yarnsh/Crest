@@ -163,6 +163,8 @@ script = SubResource( 7 )
 
 [node name="Scene Root" parent="." index="4" instance=ExtResource( 9 )]
 
+visible = false
+
 [node name="AnimationPlayer" type="AnimationPlayer" parent="Scene Root" index="0"]
 
 root_node = NodePath("..")

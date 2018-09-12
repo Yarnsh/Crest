@@ -187,7 +187,6 @@ func moveThrough(target):
 
 func _walk(dest):
 	if (world != null):
-		print(world.name)
 		var close_dest = world.get_closest_point(global.to3D(dest))
 		#TODO: this contains starting point I believe so remove that before doing movement
 		walk_path = Array(world.get_simple_path(global.to3D(transform.origin), close_dest))
@@ -231,4 +230,3 @@ func setHighlight(highlight):
 
 func updateWorld():
 	world = get_parent().get_parent().get_parent()
-	print("Actor world: " + world.name)
