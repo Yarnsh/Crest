@@ -1,0 +1,33 @@
+[gd_scene load_steps=2 format=2]
+
+[sub_resource type="GDScript" id=1]
+
+script/source = "extends StaticBody
+
+export(String) var toMap = null
+export(Vector3) var toPoint = Vector3(0,0,0)
+export(float) var moveRange = 0.0
+
+func __TRANSITION():
+	pass
+
+func getGlobalPosition():
+	return global_transform.origin"
+
+[node name="StaticBody" type="StaticBody"]
+
+input_ray_pickable = true
+input_capture_on_drag = false
+collision_layer = 1
+collision_mask = 0
+friction = 1.0
+bounce = 0.0
+constant_linear_velocity = Vector3( 0, 0, 0 )
+constant_angular_velocity = Vector3( 0, 0, 0 )
+script = SubResource( 1 )
+_sections_unfolded = [ "Collision" ]
+toMap = null
+toPoint = Vector3( 0, 0, 0 )
+moveRange = 0.0
+
+

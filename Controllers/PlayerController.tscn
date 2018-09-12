@@ -59,9 +59,11 @@ func _unhandled_input(event):
 						actor.queueAbilityTowardsByName(ability_list[sa].get_ref().name, clickpos2D)
 				else:
 					#TODO: ignore items on the ground if in combat
-					var atClick = _get_item_at_mouse() #TODO: make the check of if to pick up or not based on whats found
+					var atClick = _get_item_at_mouse()
 					if (atClick != null and atClick.has_method(\"__ITEM\")):
 						actor.pickUp(atClick)
+					else: if (atClick != null and atClick.has_method(\"__TRANSITION\")):
+						actor.moveThrough(atClick)
 		
 		else: if (event.is_action(\"inventory\")):
 			_toggle_inventory()
@@ -87,6 +89,9 @@ func _on_Actor_in_combat():
 
 func _on_Actor_out_combat():
 	HUD.setInCombat(false)
+
+func _on_Actor_scene_switch(toMap, toPoint):
+	get_node(\"/root/World\").changeScene(self, toMap, toPoint)
 "
 
 [sub_resource type="ArrayMesh" id=2]
@@ -240,6 +245,8 @@ collision_mask = 1
 [connection signal="inventory_updated" from="Actor" to="." method="_on_Actor_inventory_updated"]
 
 [connection signal="out_combat" from="Actor" to="." method="_on_Actor_out_combat"]
+
+[connection signal="scene_switch" from="Actor" to="." method="_on_Actor_scene_switch"]
 
 
 [editable path="Actor"]

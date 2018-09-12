@@ -32,6 +32,21 @@ func _update_all_clients(par):
 		
 		rpc(\"updateWorld\", playerMap, itemMap)
 
+func changeScene(controller, to_map, to_position):
+	#var map = get_node(to_map)
+	#if (map == null):
+	var map = load(\"res://Main/Maps/\" + to_map + \".tscn\").instance()
+	
+	var oldmap = controller.get_parent().get_parent()
+	controller.get_parent().remove_child(controller)
+	#remove_child(oldmap)
+	oldmap.call_deferred(\"free\")
+	#oldmap.disable()
+	add_child(map)
+	map.Players.add_child(controller)
+	controller.setPosition(global.to2D(to_position))
+	controller.actor.updateWorld()
+
 #----------------------------------
 # Spawner functions
 #----------------------------------

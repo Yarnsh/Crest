@@ -12,9 +12,43 @@ var get_agro_range = 750.0
 var keep_agro_range = 1500.0
 var swing_range = 150.0
 
-var AIThread = Thread.new()
-func _think(par):
-	while(par.get_ref() and !par.get_ref().isDead()):
+func _antagonizeEnemy():
+	for p in actor.world.Players.get_children():
+		#TODO: check if sightline is free
+		if (_checkIsController(p) and get_agro_range >= _distanceTo(p)):
+			p.setInCombat(true)
+			if (!enemy_list.has(p)):
+				enemy_list.append(p)
+			return true
+	return false
+
+func _checkForStartCombat():
+	for npc in actor.world.NPCs.get_children():
+		if (_checkIsController(npc) and get_agro_range >= _distanceTo(npc) and npc.isInCombat()): #TODO: check for visibily and alliedness
+			for e in npc.enemy_list:
+				if (!enemy_list.has(e)):
+					enemy_list.append(e)
+			return true
+	return false
+
+func _ready():
+	randomize()
+	actor = $Egg
+	actor.setPosition(spawnPos)
+
+var ai_cooldown_ends = 0
+func startAICooldown(ai_cooldown):
+	ai_cooldown_ends = global.clock + ai_cooldown
+func isOnAICooldown():
+	return global.clock < ai_cooldown_ends
+
+func _process(delta):
+	if (dead_confirmed and !isOnDeadCooldown()):
+		queue_free()
+	else: if (!dead_confirmed and actor.is_dead):
+		dead_confirmed = true
+		startDeadCooldown()
+	else: if (!isOnAICooldown()):
 		var check_friendlies = _checkForStartCombat()
 		var check_enemies = _antagonizeEnemy()
 		var lost = []
@@ -45,48 +79,13 @@ func _think(par):
 					break
 			if (!decided and closest_e != null):
 				actor.walkTowards(getPosition() + ((closest_e.getPosition() - getPosition()).normalized() * (closest_d - 120.0)))
-			OS.delay_msec(50)
+			startAICooldown(0.050)
 		else:
 			actor.walkTowards(spawnPos + global.randomPointInRadius(800))
-			OS.delay_msec(1000)
-	
-	AIThread.call_deferred(\"wait_to_finish\")
-
-func _antagonizeEnemy():
-	for p in actor.world.Players.get_children():
-		#TODO: check if sightline is free
-		if (_checkIsController(p) and get_agro_range >= _distanceTo(p)):
-			p.setInCombat(true)
-			if (!enemy_list.has(p)):
-				enemy_list.append(p)
-			return true
-	return false
-
-func _checkForStartCombat():
-	for npc in actor.world.NPCs.get_children():
-		if (_checkIsController(npc) and get_agro_range >= _distanceTo(npc) and npc.isInCombat()): #TODO: check for visibily and alliedness
-			for e in npc.enemy_list:
-				if (!enemy_list.has(e)):
-					enemy_list.append(e)
-			return true
-	return false
-
-func _ready():
-	randomize()
-	actor = $Egg
-	actor.setPosition(spawnPos)
-	var e = AIThread.start(self, \"_think\", weakref(self))
-	print(e)
-
-func _process(delta):
-	if (dead_confirmed and !isOnDeadCooldown()):
-		queue_free()
-	else: if (!dead_confirmed and actor.is_dead):
-		dead_confirmed = true
-		startDeadCooldown()
+			startAICooldown(1.000)
 "
 
-[node name="Node" type="Node" index="0"]
+[node name="Node" type="Node"]
 
 script = SubResource( 1 )
 
