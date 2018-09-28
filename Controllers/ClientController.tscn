@@ -66,6 +66,9 @@ func _unhandled_input(event):
 					if (atClick != null and atClick.has_method(\"__ITEM\")):
 						actor.pickUp(atClick)
 						get_node(\"/root/World\").rpc_id(1, \"pickUp\", atClick.name)
+					else: if (atClick != null and atClick.has_method(\"__TRANSITION\")):
+						actor.moveThrough(atClick)
+						get_node(\"/root/World\").rpc_id(1, \"moveThrough\", atClick.name)
 		
 		else: if (event.is_action(\"inventory\")):
 			_toggle_inventory()

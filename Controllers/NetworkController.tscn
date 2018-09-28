@@ -29,6 +29,9 @@ func walkTowards(dest):
 func pickUp(item):
 	actor.pickUp(item)
 
+func moveThrough(target):
+	actor.moveThrough(target)
+
 func dropItem(id):
 	actor.dropItem(id)
 

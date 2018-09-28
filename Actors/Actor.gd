@@ -11,6 +11,7 @@ signal equipment_updated
 signal damage_updated
 signal in_combat
 signal out_combat
+signal scene_switch(to_map, to_point)
 
 var world
 onready var spatial = $Spatial
@@ -39,6 +40,7 @@ var turn_dir = Vector2(0,1)
 var walk_speed = 0.0
 
 var pick_up = null
+var move_through = null
 
 var is_attacking = false
 var attack_towards = null
@@ -163,7 +165,25 @@ func walkTowards(dest):
 	queued_ability_name = null
 	if (!busy):
 		_walk(dest)
+		move_through = null
 		pick_up = null
+
+func pickUp(item):
+	#TODO: check if item is able to be reached
+	#TODO: ignore this in combat probably
+	queued_ability_name = null
+	move_through = null
+	if (item != null and !busy):
+		pick_up = weakref(item)
+		_walk(pick_up.get_ref().getGlobalPosition())
+
+func moveThrough(target):
+	#TODO: ignore this in combat probably
+	queued_ability_name = null
+	pick_up = null
+	if (target != null and !busy):
+		move_through = weakref(target)
+		_walk(global.to2D(target.getGlobalPosition()))
 
 func _walk(dest):
 	if (world != null):
@@ -208,3 +228,6 @@ func setHighlight(highlight):
 		model.get_child(0).get_child(0).get_child(0).get_mesh().surface_get_material(0).set_next_pass(preload("res://highlightMat.tres"))
 	else:
 		model.get_child(0).get_child(0).get_child(0).get_mesh().surface_get_material(0).set_next_pass(null)
+
+func updateWorld():
+	world = get_parent().get_parent().get_parent()

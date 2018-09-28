@@ -137,18 +137,11 @@ func queueAbilityTowardsByName(abil_name, point):
 	if (!busy):
 		walk_towards = null
 		pick_up = null
+		move_through = null
 		
 		queued_ability_point = point
 		equipped_weapon.pointTowardsByName(abil_name, point) #TODO: make it depend on slot and whatever
 		queued_ability_name = abil_name
-
-func pickUp(item):
-	#TODO: check if item is able to be reached
-	#TODO: ignore this in combat probably
-	queued_ability_name = null
-	if (item != null and !busy):
-		pick_up = weakref(item)
-		_walk(pick_up.get_ref().getGlobalPosition())
 
 func dropItem(id):
 	if (inventory.has(id)):
@@ -267,7 +260,7 @@ func _updateModelPosition():
 	default_weapon.setGlobalPosition(pos)
 
 func _ready():
-	world = get_node(\"/root/World\")
+	updateWorld()
 	
 	#Set all animations that need to to loop and vice versa
 	for aname in anim_player.get_animation_list():
@@ -318,6 +311,12 @@ func _process(delta):
 			pick_up.get_ref().pickUp()
 			pick_up = null
 			emit_signal(\"inventory_updated\")
+		
+		if (move_through != null and move_through.get_ref() and (global.to2D(move_through.get_ref().getGlobalPosition()) - global_transform.origin).length() < move_through.get_ref().moveRange):
+			emit_signal(\"scene_switch\", move_through.get_ref().toMap, move_through.get_ref().toPoint)
+			print(move_through.get_ref().toMap)
+			walk_towards = null
+			move_through = null
 	
 	#Make sure the right animation is playing
 	if (!is_dead):
@@ -338,7 +337,7 @@ func _process(delta):
 custom_solver_bias = 0.0
 radius = 27.0
 
-[node name="Actor" type="KinematicBody2D" index="0"]
+[node name="Actor" type="KinematicBody2D"]
 
 input_pickable = true
 collision_layer = 1
@@ -365,18 +364,16 @@ _sections_unfolded = [ "Collision", "Transform" ]
 
 [node name="Skeleton" parent="Spatial/Model/Armature" index="0"]
 
-bones/9/bound_children = [ NodePath("Held_L") ]
-bones/16/bound_children = [ NodePath("Held_R") ]
 _sections_unfolded = [ "bones", "bones/16", "bones/21", "bones/22", "bones/23", "bones/24", "bones/25", "bones/26", "bones/9" ]
 
 [node name="Held_L" type="BoneAttachment" parent="Spatial/Model/Armature/Skeleton" index="4"]
 
-transform = Transform( -1, 0, 4.16988e-09, -3.72529e-09, 1, 6.89546e-11, 1.7493e-15, -7.38743e-09, -1, 0.685988, 1.32506, 0.00487549 )
+transform = Transform( -1, 0, 4.16988e-009, -3.72529e-009, 1, 6.89546e-011, 1.7493e-015, -7.38743e-009, -1, 0.685988, 1.32506, 0.00487549 )
 bone_name = "Held_L"
 
 [node name="Held_R" type="BoneAttachment" parent="Spatial/Model/Armature/Skeleton" index="5"]
 
-transform = Transform( -1, -1.33227e-15, 3.28071e-09, 3.72529e-09, 1, 4.18201e-10, -5.10773e-15, -7.38743e-09, -1, -0.685988, 1.32506, 0.00487549 )
+transform = Transform( -1, -1.33227e-015, 3.28071e-009, 3.72529e-009, 1, 4.18201e-010, -5.10773e-015, -7.38743e-009, -1, -0.685988, 1.32506, 0.00487549 )
 bone_name = "Held_R"
 
 
