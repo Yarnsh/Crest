@@ -190,10 +190,11 @@ func _walk(dest):
 		var close_dest = world.get_closest_point(global.to3D(dest))
 		#TODO: this contains starting point I believe so remove that before doing movement
 		walk_path = Array(world.get_simple_path(global.to3D(transform.origin), close_dest))
-		var walk3D = walk_path.pop_front()
-		walk_towards = global.to2D(walk3D)
-		var walkDest3D = walk_path.back()
-		walk_dest = global.to2D(walkDest3D)
+		if (!walk_path.empty()):
+			var walkDest3D = walk_path.back()
+			walk_dest = global.to2D(walkDest3D)
+			var walk3D = walk_path.pop_front()
+			walk_towards = global.to2D(walk3D)
 	else:
 		walk_towards = dest
 
