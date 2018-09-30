@@ -55,8 +55,10 @@ func _spawn_single_player():
 	var new_player = preload(\"res://Controllers/PlayerController.tscn\").instance()
 	new_player.set_name(\"1\")
 	#TODO: player initialization
+	
 	Players[new_player.name] = new_player
 	$Forest1.Players.add_child(new_player) # Temporary
+	new_player.setPosition(Vector2(0,5500))
 	return new_player
 
 func _spawn_network_player(id):
@@ -281,8 +283,9 @@ remote func queueAbilityTowardsByName(ability_name, point):
 	if (sender != null and sender.has_method(\"queueAbilityTowardsByName\")):
 		sender.queueAbilityTowardsByName(ability_name, point)
 "
+_sections_unfolded = [ "Resource" ]
 
-[node name="World" type="Node" index="0"]
+[node name="World" type="Node"]
 
 script = SubResource( 1 )
 

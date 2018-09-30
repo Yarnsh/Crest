@@ -1,6 +1,7 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://Items/Armor/Assets/knighthelm.dae" type="PackedScene" id=1]
+[ext_resource path="res://Items/Armor/Assets/Helm.material" type="Material" id=2]
 
 [sub_resource type="GDScript" id=1]
 
@@ -39,6 +40,11 @@ disabled = false
 [node name="Model" parent="." index="2" instance=ExtResource( 1 )]
 
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.39011, 0 )
+
+[node name="KnightHelm" parent="Model/Armature/Skeleton" index="0"]
+
+material/0 = ExtResource( 2 )
+_sections_unfolded = [ "material" ]
 
 
 [editable path="Model"]

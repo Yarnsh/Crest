@@ -112,7 +112,7 @@ surfaces/0 = {
 "vertex_count": 29
 }
 
-[node name="Node" type="Node"]
+[node name="Node" type="Node" index="0"]
 
 script = SubResource( 1 )
 
@@ -146,7 +146,7 @@ _sections_unfolded = [ "Drag Margin", "Smoothing", "Transform" ]
 
 [node name="Camera" type="Camera" parent="Actor/Spatial" index="1"]
 
-transform = Transform( 0.717471, 0.450118, -0.53163, 0.0108616, 0.755868, 0.654633, 0.696504, -0.475455, 0.537424, -3.36765, 4.99419, 3.67113 )
+transform = Transform( 0.939693, 0.241845, -0.241845, 0, 0.707107, 0.707107, 0.34202, -0.664463, 0.664463, -1.5, 5, 4 )
 keep_aspect = 1
 cull_mask = 1048575
 environment = null
@@ -159,6 +159,7 @@ fov = 70.0
 size = 1.0
 near = 0.05
 far = 160.0
+_sections_unfolded = [ "Transform" ]
 
 [node name="ClickCast" type="RayCast2D" parent="." index="1"]
 
