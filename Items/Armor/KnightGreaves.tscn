@@ -1,6 +1,7 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://Items/Armor/Assets/knightgreaves.dae" type="PackedScene" id=1]
+[ext_resource path="res://Items/Armor/Assets/Greaves.material" type="Material" id=2]
 
 [sub_resource type="GDScript" id=1]
 
@@ -15,7 +16,7 @@ const slot = \"Legs\"
 
 extents = Vector3( 0.205317, 0.163399, 0.47738 )
 
-[node name="StaticBody" type="StaticBody"]
+[node name="StaticBody" type="StaticBody" index="0"]
 
 input_ray_pickable = true
 input_capture_on_drag = false
@@ -39,6 +40,11 @@ disabled = false
 [node name="Model" parent="." index="2" instance=ExtResource( 1 )]
 
 transform = Transform( 1, 0, 0, 0, 0.0938568, 0.995586, 0, -0.995586, 0.0938568, 0, 0, 0.479884 )
+
+[node name="KnightGreaves" parent="Model/Armature/Skeleton" index="0"]
+
+material/0 = ExtResource( 2 )
+_sections_unfolded = [ "material" ]
 
 
 [editable path="Model"]
