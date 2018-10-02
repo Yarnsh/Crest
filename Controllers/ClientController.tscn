@@ -184,7 +184,6 @@ transform = Transform2D( 1, 0, 0, 1, 0, 0 )
 
 margin_right = 189.0
 margin_bottom = 32.0
-rect_clip_content = false
 
 [node name="Inventory" parent="CanvasLayer" index="1" instance=ExtResource( 3 )]
 

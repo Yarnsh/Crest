@@ -69,7 +69,6 @@ func _unhandled_input(event):
 			_toggle_inventory()
 		else: if (event.is_action(\"abilities\")):
 			_toggle_abilities()
-
 func setInCombat(combat):
 	actor.setInCombat(combat)
 	HUD.setInCombat(combat)
