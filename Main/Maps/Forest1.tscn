@@ -1,17 +1,16 @@
-[gd_scene load_steps=22 format=2]
+[gd_scene load_steps=17 format=2]
 
 [ext_resource path="res://Main/Maps/Map.gd" type="Script" id=1]
 [ext_resource path="res://Main/Maps/Elements/Transition.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Controllers/Enemies/Spawners/EggSpawner.tscn" type="PackedScene" id=3]
 [ext_resource path="res://Items/Armor/KnightChest.tscn" type="PackedScene" id=4]
-[ext_resource path="res://Items/Armor/KnightGreaves.tscn" type="PackedScene" id=5]
-[ext_resource path="res://Items/Armor/KnightHelm.tscn" type="PackedScene" id=6]
-[ext_resource path="res://Items/Armor/KnightGauntlets.tscn" type="PackedScene" id=7]
-[ext_resource path="res://Items/SwordItem.tscn" type="PackedScene" id=8]
+[ext_resource path="res://Items/SwordItem.tscn" type="PackedScene" id=5]
+[ext_resource path="res://Items/Armor/KnightGauntlets.tscn" type="PackedScene" id=6]
+[ext_resource path="res://Items/Armor/KnightGreaves.tscn" type="PackedScene" id=7]
+[ext_resource path="res://Items/Armor/KnightHelm.tscn" type="PackedScene" id=8]
 [ext_resource path="res://Main/Maps/Assets/TallForestF1-nav.dae" type="PackedScene" id=9]
 [ext_resource path="res://Main/Tree_env.tres" type="Environment" id=10]
 [ext_resource path="res://Main/Maps/Assets/TallForestF1.dae" type="PackedScene" id=11]
-[ext_resource path="res://Main/Maps/Assets/TreeShader.tres" type="Material" id=12]
 
 [sub_resource type="BoxShape" id=1]
 
@@ -28,42 +27,6 @@ func _ready():
 	get_parent().call_deferred(\"add_child\", new_npc)
 	get_parent().call_deferred(\"remove_child\", self)
 	queue_free()
-"
-
-[sub_resource type="GDScript" id=3]
-
-script/source = "extends \"res://Items/ArmorItem.gd\"
-
-const type = \"Armor/KnightChest\"
-const slot = \"Chest\"
-
-"
-
-[sub_resource type="GDScript" id=4]
-
-script/source = "extends \"res://Items/ArmorItem.gd\"
-
-const type = \"Armor/KnightGreaves\"
-const slot = \"Legs\"
-
-"
-
-[sub_resource type="GDScript" id=5]
-
-script/source = "extends \"res://Items/ArmorItem.gd\"
-
-const type = \"Armor/KnightHelm\"
-const slot = \"Head\"
-
-"
-
-[sub_resource type="GDScript" id=6]
-
-script/source = "extends \"res://Items/ArmorItem.gd\"
-
-const type = \"Armor/KnightGauntlets\"
-const slot = \"Arms\"
-
 "
 
 [sub_resource type="GDScript" id=7]
@@ -136,30 +99,26 @@ script = SubResource( 2 )
 
 [node name="Items" type="Node" parent="." index="3"]
 
-[node name="knightarmor_001" parent="Items" index="0" instance=ExtResource( 4 )]
+[node name="StaticBody5" parent="Items" index="0" instance=ExtResource( 4 )]
 
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 17.1965, 0, -2.74572 )
-script = SubResource( 3 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 17.555, 0, -3.16544 )
 
-[node name="StaticBody" parent="Items" index="1" instance=ExtResource( 5 )]
-
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 16.2666, 0, -4.6809 )
-script = SubResource( 4 )
-
-[node name="StaticBody2" parent="Items" index="2" instance=ExtResource( 6 )]
-
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 17.8073, -4.76837e-007, -4.45191 )
-script = SubResource( 5 )
-
-[node name="StaticBody3" parent="Items" index="3" instance=ExtResource( 7 )]
-
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 16.8274, -4.76837e-007, -1.44688 )
-script = SubResource( 6 )
-
-[node name="StaticBody4" parent="Items" index="4" instance=ExtResource( 8 )]
+[node name="StaticBody4" parent="Items" index="1" instance=ExtResource( 5 )]
 
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 15.9508, -4.76837e-007, -2.49213 )
 script = SubResource( 7 )
+
+[node name="StaticBody" parent="Items" index="2" instance=ExtResource( 6 )]
+
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 15.8424, 0, -4.02393 )
+
+[node name="StaticBody2" parent="Items" index="3" instance=ExtResource( 7 )]
+
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 17.1143, 0, -4.68139 )
+
+[node name="StaticBody3" parent="Items" index="4" instance=ExtResource( 8 )]
+
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 18.6964, 0, -4.4038 )
 
 [node name="Scene Root" parent="." index="4" instance=ExtResource( 9 )]
 
@@ -231,11 +190,6 @@ environment = ExtResource( 10 )
 [node name="Scene Root2" parent="." index="7" instance=ExtResource( 11 )]
 
 _sections_unfolded = [ "Transform" ]
-
-[node name="Circle" parent="Scene Root2" index="0"]
-
-material/0 = ExtResource( 12 )
-_sections_unfolded = [ "material" ]
 
 
 [editable path="Scene Root2"]
