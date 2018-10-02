@@ -137,7 +137,7 @@ func setBusy(b):
 
 func takeHit(damage, source=null):
 	var damage_tier = -1
-	while (defense[damage_tier+1] <= damage or (damage_tier >= 0 and current_wounds[damage_tier] >= max_wounds[damage_tier])):
+	while (current_defense[damage_tier+1] <= damage or (damage_tier >= 0 and current_wounds[damage_tier] >= max_wounds[damage_tier])):
 		damage_tier += 1
 		if (damage_tier >= max_wounds.size()):
 			is_dead = true
@@ -146,7 +146,7 @@ func takeHit(damage, source=null):
 	if (damage_tier >= 0):
 		startAnimCooldown(1.0)
 		_anim_playing("Damage")
-	current_wounds[damage_tier] += 1
+		current_wounds[damage_tier] += 1
 	
 	if (source != null and source.get_ref() != null):
 		setInCombat(true)
