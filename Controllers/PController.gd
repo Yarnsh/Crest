@@ -104,6 +104,7 @@ func _on_Actor_equipment_updated():
 	abilityUI.updateAbilities()
 	_checkAbilityHotslots()
 	HUD.updateAbilityBar()
+	damageUI.updateDamage()
 
 func _on_Actor_damage_updated():
 	damageUI.updateDamage()

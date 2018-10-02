@@ -48,6 +48,7 @@ var attack_towards = null
 var max_wounds = [3,2,1]
 var current_wounds = [0,0,0]
 var defense = [2,10,20,40]
+var current_defense = defense
 var is_dead = false
 
 var playing_anim = null
@@ -76,6 +77,7 @@ func getState():
 		"current_wounds":current_wounds,
 		"is_dead":is_dead,
 		"defense":defense,
+		"current_defense":current_defense,
 		"queued_ability_name":queued_ability_name,
 		"queued_ability_point":queued_ability_point,
 		"turn_dir":turn_dir,
@@ -100,6 +102,7 @@ func setState(state):
 	
 	current_wounds = state["current_wounds"]
 	defense = state["defense"]
+	current_defense = state["current_defense"]
 	is_dead = state["is_dead"]
 	emit_signal("damage_updated")
 	
@@ -134,7 +137,7 @@ func setBusy(b):
 
 func takeHit(damage, source=null):
 	var damage_tier = -1
-	while (defense[damage_tier+1] <= damage or (damage_tier >= 0 and current_wounds[damage_tier] >= max_wounds[damage_tier])):
+	while (current_defense[damage_tier+1] <= damage or (damage_tier >= 0 and current_wounds[damage_tier] >= max_wounds[damage_tier])):
 		damage_tier += 1
 		if (damage_tier >= max_wounds.size()):
 			is_dead = true
@@ -143,7 +146,7 @@ func takeHit(damage, source=null):
 	if (damage_tier >= 0):
 		startAnimCooldown(1.0)
 		_anim_playing("Damage")
-	current_wounds[damage_tier] += 1
+		current_wounds[damage_tier] += 1
 	
 	if (source != null and source.get_ref() != null):
 		setInCombat(true)
