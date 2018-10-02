@@ -152,7 +152,7 @@ shader_param/speed = 0.1
 shader_param/tex_albedo = ExtResource( 15 )
 _sections_unfolded = [ "shader_param" ]
 
-[node name="Forest1TestDup" type="Navigation" index="0"]
+[node name="Forest1TestDup" type="Navigation"]
 
 up_vector = Vector3( 0, 1, 0 )
 script = ExtResource( 1 )

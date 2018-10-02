@@ -73,7 +73,7 @@ func _on_Collider_body_exited( body ):
 		body.setHighlight(false)
 "
 
-[node name="Punch" type="Node2D" index="0"]
+[node name="Punch" type="Node2D"]
 
 script = SubResource( 1 )
 _sections_unfolded = [ "Transform" ]
