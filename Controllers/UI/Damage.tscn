@@ -37,9 +37,9 @@ func updateDamage():
 		severe.remove_child(c)
 		c.queue_free()
 	
-	lightlabel.text = String(_actor.get_ref().defense[0])
-	moderatelabel.text = String(_actor.get_ref().defense[1])
-	severelabel.text = String(_actor.get_ref().defense[2])
+	lightlabel.text = String(_actor.get_ref().current_defense[0])
+	moderatelabel.text = String(_actor.get_ref().current_defense[1])
+	severelabel.text = String(_actor.get_ref().current_defense[2])
 	
 	for i in range(0, _actor.get_ref().max_wounds[0]):
 		var box = TextureRect.new()
