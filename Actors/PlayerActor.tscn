@@ -101,7 +101,7 @@ func setState(state):
 			unequipItem(\"Weapon\")
 		else:
 			equipItem(equipped_weapon_name)
-		emit_signal(\"equipment_updated\")
+		emit_signal_equipment_updated()
 	
 	var equipped_chest_name = state[\"equipped_chest\"]
 	if (_equipment_state_check(equipped_chest, equipped_chest_name)):
@@ -109,28 +109,28 @@ func setState(state):
 			unequipItem(\"Chest\")
 		else:
 			equipItem(equipped_chest_name)
-		emit_signal(\"equipment_updated\")
+		emit_signal_equipment_updated()
 	var equipped_head_name = state[\"equipped_head\"]
 	if (_equipment_state_check(equipped_head, equipped_head_name)):
 		if (equipped_head_name == null):
 			unequipItem(\"head\")
 		else:
 			equipItem(equipped_head_name)
-		emit_signal(\"equipment_updated\")
+		emit_signal_equipment_updated()
 	var equipped_arms_name = state[\"equipped_arms\"]
 	if (_equipment_state_check(equipped_arms, equipped_arms_name)):
 		if (equipped_arms_name == null):
 			unequipItem(\"arms\")
 		else:
 			equipItem(equipped_arms_name)
-		emit_signal(\"equipment_updated\")
+		emit_signal_equipment_updated()
 	var equipped_legs_name = state[\"equipped_legs\"]
 	if (_equipment_state_check(equipped_legs, equipped_legs_name)):
 		if (equipped_legs_name == null):
 			unequipItem(\"legs\")
 		else:
 			equipItem(equipped_legs_name)
-		emit_signal(\"equipment_updated\")
+		emit_signal_equipment_updated()
 	
 	default_weapon.setState(state[\"default_weapon\"])
 
@@ -174,7 +174,7 @@ func equipItem(id):
 		print(\"MISSING ITEM \" + String(id))
 	
 	emit_signal(\"inventory_updated\")
-	emit_signal(\"equipment_updated\")
+	emit_signal_equipment_updated()
 
 func unequipItem(type):
 	#TODO: dont allow changing weapons during busy time
@@ -191,7 +191,7 @@ func unequipItem(type):
 		equipped_legs = null
 	_unsetEquipmentModel(type)
 	emit_signal(\"inventory_updated\")
-	emit_signal(\"equipment_updated\")
+	emit_signal_equipment_updated()
 
 func _setEquipmentModel(type):
 	_unsetEquipmentModel(type)
@@ -331,6 +331,24 @@ func _process(delta):
 					_anim_playing(\"Idle\")
 	else:
 		_anim_playing(\"Death\")
+
+func emit_signal_equipment_updated():
+	current_defense = defense
+	if equipped_chest != null:
+		current_defense = add_def(current_defense, equipped_chest.defense)
+	if equipped_head != null:
+		current_defense = add_def(current_defense, equipped_head.defense)
+	if equipped_arms != null:
+		current_defense = add_def(current_defense, equipped_arms.defense)
+	if equipped_legs != null:
+		current_defense = add_def(current_defense, equipped_legs.defense)
+	emit_signal(\"equipment_updated\")
+func add_def(a, b):
+	var c = []
+	var i = 0
+	for ai in a:
+		c.append(ai + b[i])
+	return c
 "
 
 [sub_resource type="CircleShape2D" id=2]
