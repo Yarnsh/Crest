@@ -9,8 +9,9 @@
 [ext_resource path="res://Items/Armor/KnightGreaves.tscn" type="PackedScene" id=7]
 [ext_resource path="res://Items/Armor/KnightHelm.tscn" type="PackedScene" id=8]
 [ext_resource path="res://Main/Maps/Assets/TallForestF1-nav.dae" type="PackedScene" id=9]
-[ext_resource path="res://Main/Tree_env.tres" type="Environment" id=10]
+[ext_resource path="res://Main/Maps/Tree_env.tres" type="Environment" id=10]
 [ext_resource path="res://Main/Maps/Assets/TallForestF1.dae" type="PackedScene" id=11]
+
 
 [sub_resource type="BoxShape" id=1]
 
