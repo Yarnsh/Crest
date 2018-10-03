@@ -111,7 +111,7 @@ surfaces/0 = {
 "vertex_count": 29
 }
 
-[node name="Node" type="Node" index="0"]
+[node name="Node" type="Node"]
 
 script = SubResource( 1 )
 
@@ -193,7 +193,6 @@ margin_bottom = 1054.0
 [node name="Inventory" parent="CanvasLayer" index="1" instance=ExtResource( 3 )]
 
 visible = false
-rect_clip_content = false
 _sections_unfolded = [ "Margin", "Rect" ]
 
 [node name="HUD" parent="CanvasLayer" index="2" instance=ExtResource( 4 )]

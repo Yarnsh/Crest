@@ -11,7 +11,7 @@
 script/source = "extends PanelContainer
 
 var world
-onready var itemList = $HBoxContainer/PanelContainer/ItemList
+onready var itemList = $HBoxContainer/TabContainer/Items/Panel/ScrollContainer/VBoxContainer
 onready var equipedWeaponIcon = $HBoxContainer/Equipment/Weapon/VBoxContainer/TextureRect
 onready var equipedHeadIcon = $HBoxContainer/Equipment/Head/VBoxContainer/TextureRect
 onready var equipedChestIcon = $HBoxContainer/Equipment/Chest/VBoxContainer/TextureRect
@@ -26,16 +26,22 @@ func init(myController):
 	controller = myController
 
 func updateItems(items):
-	var selected = itemList.get_selected_items()
-	itemList.clear()
-	var i = 0
+	#var selected = itemList.get_selected_items()
+	
+	var itemUI =  load(\"res://Controllers/UI/Item.tscn\");
+	var i = 0;
+	for t in itemList.get_children():
+		itemList.remove_child(t);
+	
 	for t in items:
-		itemList.add_icon_item(global.itemInventoryIcons[items[t].type])
-		itemList.set_item_metadata(i, weakref(items[t]))
-		i = i + 1
-	for s in selected:
-		#TODO: check that the thing to select is there still, just to avoid error messages
-		itemList.select(s)
+		var item = itemUI.instance();
+		i = i+1
+		item.get_node(\"Button/HBoxContainer/Equip\").connect(\"pressed\", self, \"_on_Equip_pressed\",[i,weakref(items[t])]);
+		item.get_node(\"Button/HBoxContainer/Drop\").connect(\"pressed\", self, \"_on_Drop_pressed\",[i,weakref(items[t])]);
+		itemList.add_child(item);
+func set_selected(selecteditem):
+	var selected = selecteditem;
+	_on_Equip_pressed(selected);
 
 func updateEquipment(eweapon, ehead, echest, earms, elegs):
 	if (eweapon == null):
@@ -69,17 +75,13 @@ func toggle():
 	else:
 		show()
 
-func _on_Drop_pressed():
-	var selected = itemList.get_selected_items()
-	if (selected.size() > 0):
-		var item = itemList.get_item_metadata(selected[0])
-		controller.drop_item(item.get_ref().id)
+func _on_Drop_pressed(selected,item):
+	if (selected > 0):
+		controller.drop_item(item.get_ref().id);
 
-func _on_Equip_pressed():
-	var selected = itemList.get_selected_items()
-	if (selected.size() > 0):
-		var item = itemList.get_item_metadata(selected[0])
-		controller.equip_item(item.get_ref().id)
+func _on_Equip_pressed(selected,item):
+	if (selected > 0):
+		controller.equip_item(item.get_ref().id);
 
 func _on_UnequipWeapon_pressed():
 	controller.unequip_item(\"Weapon\")
@@ -106,6 +108,7 @@ anchor_bottom = 0.0
 margin_right = 603.0
 margin_bottom = 414.0
 rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
 mouse_filter = 0
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
@@ -123,6 +126,7 @@ margin_top = 7.0
 margin_right = 596.0
 margin_bottom = 501.0
 rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
 mouse_filter = 1
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
@@ -130,61 +134,116 @@ size_flags_vertical = 1
 alignment = 0
 _sections_unfolded = [ "Grow Direction" ]
 
-[node name="PanelContainer" type="PanelContainer" parent="HBoxContainer" index="0"]
+[node name="TabContainer" type="TabContainer" parent="HBoxContainer" index="0"]
 
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_right = 393.0
+margin_right = 408.0
 margin_bottom = 494.0
+rect_min_size = Vector2( 300, 300 )
 rect_pivot_offset = Vector2( 0, 0 )
-mouse_filter = 0
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 3
-size_flags_vertical = 1
-_sections_unfolded = [ "Size Flags" ]
-
-[node name="ItemList" type="ItemList" parent="HBoxContainer/PanelContainer" index="0"]
-
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_left = 7.0
-margin_top = 7.0
-margin_right = 386.0
-margin_bottom = 487.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = true
-focus_mode = 2
+rect_clip_content = false
 mouse_filter = 0
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
-items = [  ]
-select_mode = 0
-max_columns = 6
-same_column_width = true
-fixed_column_width = 64
-icon_mode = 1
-fixed_icon_size = Vector2( 0, 0 )
-_sections_unfolded = [ "Columns", "Icon", "Size Flags" ]
+tab_align = 1
+tabs_visible = true
+_sections_unfolded = [ "Margin", "Rect" ]
+
+[node name="Items" type="Tabs" parent="HBoxContainer/TabContainer" index="0"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 4.0
+margin_top = 32.0
+margin_right = -4.0
+margin_bottom = -4.0
+rect_min_size = Vector2( 400, 0 )
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+tab_align = 1
+scrolling_enabled = true
+_sections_unfolded = [ "Rect" ]
+
+[node name="Panel" type="Panel" parent="HBoxContainer/TabContainer/Items" index="0"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = -2.0
+margin_right = 400.0
+margin_bottom = 456.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+_sections_unfolded = [ "Margin" ]
+
+[node name="ScrollContainer" type="ScrollContainer" parent="HBoxContainer/TabContainer/Items/Panel" index="0"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 401.0
+margin_bottom = 456.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = true
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+scroll_horizontal_enabled = false
+scroll_horizontal = 0
+scroll_vertical_enabled = true
+scroll_vertical = 0
+scroll_deadzone = 0
+_sections_unfolded = [ "Scroll" ]
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/TabContainer/Items/Panel/ScrollContainer" index="0"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+alignment = 0
+_sections_unfolded = [ "custom_constants" ]
 
 [node name="ItemDescription" type="PanelContainer" parent="HBoxContainer" index="1"]
 
+visible = false
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = 397.0
-margin_right = 505.0
+margin_left = 304.0
+margin_right = 412.0
 margin_bottom = 494.0
 rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
 mouse_filter = 0
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
+_sections_unfolded = [ "Rect" ]
 
 [node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/ItemDescription" index="0"]
 
@@ -197,6 +256,7 @@ margin_top = 7.0
 margin_right = 101.0
 margin_bottom = 487.0
 rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
 mouse_filter = 1
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
@@ -212,6 +272,7 @@ anchor_bottom = 0.0
 margin_right = 43.0
 margin_bottom = 480.0
 rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
 focus_mode = 2
 mouse_filter = 0
 mouse_default_cursor_shape = 0
@@ -235,6 +296,7 @@ margin_left = 47.0
 margin_right = 94.0
 margin_bottom = 480.0
 rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
 focus_mode = 2
 mouse_filter = 0
 mouse_default_cursor_shape = 0
@@ -254,15 +316,17 @@ anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = 509.0
-margin_right = 589.0
+margin_left = 412.0
+margin_right = 492.0
 margin_bottom = 494.0
 rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
 mouse_filter = 0
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
 alignment = 0
+_sections_unfolded = [ "Anchor", "Rect" ]
 
 [node name="Weapon" type="PanelContainer" parent="HBoxContainer/Equipment" index="0"]
 
@@ -273,6 +337,7 @@ anchor_bottom = 0.0
 margin_right = 80.0
 margin_bottom = 70.0
 rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
 mouse_filter = 0
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
@@ -289,6 +354,7 @@ margin_top = 7.0
 margin_right = 73.0
 margin_bottom = 63.0
 rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
 mouse_filter = 1
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
@@ -304,6 +370,7 @@ anchor_bottom = 0.0
 margin_right = 66.0
 margin_bottom = 32.0
 rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
 mouse_filter = 1
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
@@ -321,6 +388,7 @@ margin_top = 36.0
 margin_right = 66.0
 margin_bottom = 56.0
 rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
 focus_mode = 2
 mouse_filter = 0
 mouse_default_cursor_shape = 0
@@ -344,6 +412,7 @@ margin_top = 74.0
 margin_right = 80.0
 margin_bottom = 176.0
 rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
 mouse_filter = 0
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
@@ -360,6 +429,7 @@ margin_top = 7.0
 margin_right = 73.0
 margin_bottom = 95.0
 rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
 mouse_filter = 1
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
@@ -375,6 +445,7 @@ anchor_bottom = 0.0
 margin_right = 66.0
 margin_bottom = 64.0
 rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
 mouse_filter = 1
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
@@ -392,6 +463,7 @@ margin_top = 68.0
 margin_right = 66.0
 margin_bottom = 88.0
 rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
 focus_mode = 2
 mouse_filter = 0
 mouse_default_cursor_shape = 0
@@ -415,6 +487,7 @@ margin_top = 180.0
 margin_right = 80.0
 margin_bottom = 282.0
 rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
 mouse_filter = 0
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
@@ -431,6 +504,7 @@ margin_top = 7.0
 margin_right = 73.0
 margin_bottom = 95.0
 rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
 mouse_filter = 1
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
@@ -446,6 +520,7 @@ anchor_bottom = 0.0
 margin_right = 66.0
 margin_bottom = 64.0
 rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
 mouse_filter = 1
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
@@ -463,6 +538,7 @@ margin_top = 68.0
 margin_right = 66.0
 margin_bottom = 88.0
 rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
 focus_mode = 2
 mouse_filter = 0
 mouse_default_cursor_shape = 0
@@ -486,6 +562,7 @@ margin_top = 286.0
 margin_right = 80.0
 margin_bottom = 388.0
 rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
 mouse_filter = 0
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
@@ -502,6 +579,7 @@ margin_top = 7.0
 margin_right = 73.0
 margin_bottom = 95.0
 rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
 mouse_filter = 1
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
@@ -517,6 +595,7 @@ anchor_bottom = 0.0
 margin_right = 66.0
 margin_bottom = 64.0
 rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
 mouse_filter = 1
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
@@ -534,6 +613,7 @@ margin_top = 68.0
 margin_right = 66.0
 margin_bottom = 88.0
 rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
 focus_mode = 2
 mouse_filter = 0
 mouse_default_cursor_shape = 0
@@ -557,6 +637,7 @@ margin_top = 392.0
 margin_right = 80.0
 margin_bottom = 494.0
 rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
 mouse_filter = 0
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
@@ -573,6 +654,7 @@ margin_top = 7.0
 margin_right = 73.0
 margin_bottom = 95.0
 rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
 mouse_filter = 1
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
@@ -588,6 +670,7 @@ anchor_bottom = 0.0
 margin_right = 66.0
 margin_bottom = 64.0
 rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
 mouse_filter = 1
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
@@ -605,6 +688,7 @@ margin_top = 68.0
 margin_right = 66.0
 margin_bottom = 88.0
 rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
 focus_mode = 2
 mouse_filter = 0
 mouse_default_cursor_shape = 0

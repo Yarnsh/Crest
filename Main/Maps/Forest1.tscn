@@ -75,14 +75,13 @@ script = ExtResource( 1 )
 
 [node name="ToForest2" parent="." index="0" instance=ExtResource( 2 )]
 
-transform = Transform( 0.901722, 0, -0.432316, 0, 1, 0, 0.432316, 0, 0.901722, -2.97793, 3.66853, -78.6536 )
+transform = Transform( 0.901722, 0, -0.432316, 0, 1, 0, 0.432316, 0, 0.901722, -9.1759, -4.52003, 58.7756 )
 toMap = "Forest1TestDup"
 moveRange = 200.0
 
 [node name="CollisionShape" type="CollisionShape" parent="ToForest2" index="0"]
 
-transform = Transform( 1, 7.45058e-009, 0, 1.86265e-009, 1, 3.72529e-009, 0, 7.45058e-009, 1, 0, 0, 0 )
-visible = false
+transform = Transform( 0.99978, -0.0174591, 0.011646, 0.0135495, 0.960742, 0.277111, -0.0160269, -0.276893, 0.960767, 0.458115, -4.76837e-007, 0.955532 )
 shape = SubResource( 1 )
 disabled = false
 
@@ -104,7 +103,7 @@ script = SubResource( 2 )
 
 [node name="StaticBody5" parent="Items" index="0" instance=ExtResource( 4 )]
 
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 17.555, 0, -3.16544 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -8.19223, 0, 52.608 )
 
 [node name="StaticBody4" parent="Items" index="1" instance=ExtResource( 5 )]
 
@@ -113,11 +112,11 @@ script = SubResource( 3 )
 
 [node name="StaticBody" parent="Items" index="2" instance=ExtResource( 6 )]
 
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 15.8424, 0, -4.02393 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -3.40176, 0, 57.8565 )
 
 [node name="StaticBody2" parent="Items" index="3" instance=ExtResource( 7 )]
 
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 17.1143, 0, -4.68139 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -8.65394, 0, 55.7785 )
 
 [node name="StaticBody3" parent="Items" index="4" instance=ExtResource( 8 )]
 
