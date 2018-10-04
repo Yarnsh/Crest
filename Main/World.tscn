@@ -10,6 +10,8 @@ onready var Players = {}
 onready var NPCs = {}
 onready var Items = {}
 
+var inactive_map_data = {}
+
 var _update_all_clients_thread = Thread.new()
 func _update_all_clients(par):
 	while(true):
@@ -33,16 +35,16 @@ func _update_all_clients(par):
 		rpc(\"updateWorld\", playerMap, itemMap)
 
 func changeScene(controller, to_map, to_position):
-	#var map = get_node(to_map)
-	#if (map == null):
 	var map = load(\"res://Main/Maps/\" + to_map + \".tscn\").instance()
 	
 	var oldmap = controller.get_parent().get_parent()
 	controller.get_parent().remove_child(controller)
-	#remove_child(oldmap)
+	#TODO: check if players are on the map before removing it
+	inactive_map_data[oldmap.name] = oldmap.getState()
 	oldmap.call_deferred(\"free\")
-	#oldmap.disable()
 	add_child(map)
+	if (inactive_map_data.has(map.name)):
+		map.setState(inactive_map_data[map.name])
 	map.Players.add_child(controller)
 	controller.setPosition(global.to2D(to_position))
 	controller.actor.updateWorld()
@@ -285,7 +287,7 @@ remote func queueAbilityTowardsByName(ability_name, point):
 "
 _sections_unfolded = [ "Resource" ]
 
-[node name="World" type="Node"]
+[node name="World" type="Node" index="0"]
 
 script = SubResource( 1 )
 
