@@ -8,6 +8,7 @@
 script/source = "extends \"res://Items/WeaponItem.gd\"
 
 const type = \"SwordItem\"
+const iname = \"Iron Sword\"
 const slot = \"Weapon\"
 
 onready var r_mesh = $Model/Sword

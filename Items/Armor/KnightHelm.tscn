@@ -8,6 +8,7 @@
 script/source = "extends \"res://Items/ArmorItem.gd\"
 
 const type = \"Armor/KnightHelm\"
+const iname = \"Knight's Helm\"
 const slot = \"Head\"
 
 const defense = [10,10,10,10]
@@ -17,7 +18,7 @@ const defense = [10,10,10,10]
 
 extents = Vector3( 0.0921618, 0.143815, 0.145605 )
 
-[node name="StaticBody" type="StaticBody"]
+[node name="StaticBody" type="StaticBody" index="0"]
 
 input_ray_pickable = true
 input_capture_on_drag = false

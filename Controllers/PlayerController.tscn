@@ -111,7 +111,7 @@ surfaces/0 = {
 "vertex_count": 29
 }
 
-[node name="Node" type="Node" index="0"]
+[node name="Node" type="Node"]
 
 script = SubResource( 1 )
 
@@ -163,11 +163,6 @@ size = 1.0
 near = 0.05
 far = 160.0
 _sections_unfolded = [ "Transform" ]
-
-[node name="DirectionalLight" parent="Actor" index="5"]
-
-visible = true
-light_cull_mask = -1
 
 [node name="ClickCast" type="RayCast2D" parent="." index="1"]
 

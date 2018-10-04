@@ -7,6 +7,7 @@
 script/source = "extends \"res://Items/ArmorItem.gd\"
 
 const type = \"Armor/KnightChest\"
+const iname = \"Knight's Plate\"
 const slot = \"Chest\"
 const defense = [10,10,10,10]
 "

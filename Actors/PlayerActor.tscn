@@ -356,7 +356,7 @@ func add_def(a, b):
 custom_solver_bias = 0.0
 radius = 27.0
 
-[node name="Actor" type="KinematicBody2D" index="0"]
+[node name="Actor" type="KinematicBody2D"]
 
 input_pickable = true
 collision_layer = 1
@@ -383,8 +383,6 @@ _sections_unfolded = [ "Collision", "Transform" ]
 
 [node name="Skeleton" parent="Spatial/Model/Armature" index="0"]
 
-bones/9/bound_children = [ NodePath("Held_L") ]
-bones/16/bound_children = [ NodePath("Held_R") ]
 _sections_unfolded = [ "bones", "bones/16", "bones/21", "bones/22", "bones/23", "bones/24", "bones/25", "bones/26", "bones/9" ]
 
 [node name="BodyDefault" parent="Spatial/Model/Armature/Skeleton" index="0"]
