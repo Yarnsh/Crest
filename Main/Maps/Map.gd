@@ -11,15 +11,21 @@ func _load_item(state):
 	item.set_name(item.id)
 	return item
 
+func _remove_item(id):
+	var i = Items.get_node(String(id))
+	if (i != null):
+		Items.remove_child(i)
+		i.free()
+
 func getState():
-	state = {}
+	var state = {}
 	state["Items"] = {}
 	for item in Items.get_children():
 		state["Items"][item.name] = item.getState()
 	return state
 func setState(state):
 	var items = state["Items"]
-	for i in Items.children():
+	for i in Items.get_children():
 		var id = i.name
 		if (items.has(id)):
 			if (items[id] != null):
