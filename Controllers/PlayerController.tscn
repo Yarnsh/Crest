@@ -111,7 +111,7 @@ surfaces/0 = {
 "vertex_count": 29
 }
 
-[node name="Node" type="Node"]
+[node name="Node" type="Node" index="0"]
 
 script = SubResource( 1 )
 
@@ -166,6 +166,7 @@ _sections_unfolded = [ "Transform" ]
 
 [node name="DirectionalLight" parent="Actor" index="5"]
 
+visible = true
 light_cull_mask = -1
 
 [node name="ClickCast" type="RayCast2D" parent="." index="1"]
@@ -241,35 +242,6 @@ enabled = false
 exclude_parent = true
 cast_to = Vector3( 0, -1, 0 )
 collision_mask = 1
-
-[node name="DirectionalLight" type="DirectionalLight" parent="." index="5"]
-
-transform = Transform( 0.663526, 0.366953, -0.65198, -0.0789768, 0.900939, 0.426699, 0.743973, -0.231635, 0.626777, -0.795166, 8.40671, 14.0422 )
-visible = false
-layers = 1
-light_color = Color( 1, 1, 1, 1 )
-light_energy = 1.0
-light_indirect_energy = 0.0
-light_negative = false
-light_specular = 0.5
-light_bake_mode = 1
-light_cull_mask = -1
-shadow_enabled = false
-shadow_color = Color( 0, 0, 0, 1 )
-shadow_bias = 0.1
-shadow_contact = 0.0
-shadow_reverse_cull_face = false
-editor_only = false
-directional_shadow_mode = 2
-directional_shadow_split_1 = 0.1
-directional_shadow_split_2 = 0.2
-directional_shadow_split_3 = 0.5
-directional_shadow_blend_splits = false
-directional_shadow_normal_bias = 0.8
-directional_shadow_bias_split_scale = 0.25
-directional_shadow_depth_range = 0
-directional_shadow_max_distance = 200.0
-_sections_unfolded = [ "Directional Shadow", "Light", "Shadow" ]
 
 [connection signal="damage_updated" from="Actor" to="." method="_on_Actor_damage_updated"]
 

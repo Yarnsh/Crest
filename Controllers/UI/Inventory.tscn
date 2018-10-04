@@ -26,7 +26,6 @@ func init(myController):
 	controller = myController
 
 func updateItems(items):
-	#var selected = itemList.get_selected_items()
 	
 	var itemUI =  load(\"res://Controllers/UI/Item.tscn\");
 	var i = 0;
@@ -39,6 +38,7 @@ func updateItems(items):
 		item.get_node(\"Button/HBoxContainer/Equip\").connect(\"pressed\", self, \"_on_Equip_pressed\",[i,weakref(items[t])]);
 		item.get_node(\"Button/HBoxContainer/Drop\").connect(\"pressed\", self, \"_on_Drop_pressed\",[i,weakref(items[t])]);
 		itemList.add_child(item);
+		
 func set_selected(selecteditem):
 	var selected = selecteditem;
 	_on_Equip_pressed(selected);
@@ -99,7 +99,7 @@ func _on_UnequipHead_pressed():
 	controller.unequip_item(\"Head\")
 "
 
-[node name="Inventory" type="PanelContainer" index="0"]
+[node name="Inventory" type="PanelContainer"]
 
 anchor_left = 0.0
 anchor_top = 0.0
