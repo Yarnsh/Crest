@@ -30,13 +30,14 @@ func _ready():
 	queue_free()
 "
 
-[sub_resource type="GDScript" id=6]
+[sub_resource type="GDScript" id=3]
 
 script/source = "extends \"res://Items/WeaponItem.gd\"
 
 const type = \"SwordItem\"
 const iname = \"Iron Sword\"
 const slot = \"Weapon\"
+const desc = \"A rather large Iron Sword. As it was not folded over a thousand times, it has only modest cutting power.\"
 
 onready var r_mesh = $Model/Sword
 
@@ -69,7 +70,7 @@ filter/low_hanging_obstacles = false
 filter/ledge_spans = false
 filter/filter_walkable_low_height_spans = false
 
-[node name="Forest1" type="Navigation"]
+[node name="Forest1" type="Navigation" index="0"]
 
 up_vector = Vector3( 0, 1, 0 )
 script = ExtResource( 1 )
@@ -118,19 +119,10 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -8.65394, 0, 55.7785 )
 
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -6.11538, 0, 54.3133 )
 
-[node name="StaticBody4" type="StaticBody" parent="Items" index="4" instance=ExtResource( 8 )]
+[node name="StaticBody4" parent="Items" index="4" instance=ExtResource( 8 )]
 
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -9.56368, 0.0157345, 53.9309 )
-input_ray_pickable = true
-input_capture_on_drag = false
-collision_layer = 1
-collision_mask = 0
-friction = 1.0
-bounce = 0.0
-constant_linear_velocity = Vector3( 0, 0, 0 )
-constant_angular_velocity = Vector3( 0, 0, 0 )
-script = SubResource( 6 )
-_sections_unfolded = [ "Collision" ]
+script = SubResource( 3 )
 
 [node name="Scene Root" parent="." index="4" instance=ExtResource( 9 )]
 
