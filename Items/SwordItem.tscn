@@ -10,6 +10,7 @@ script/source = "extends \"res://Items/WeaponItem.gd\"
 const type = \"SwordItem\"
 const iname = \"Iron Sword\"
 const slot = \"Weapon\"
+const desc = \"A rather large Iron Sword. As it was not folded over a thousand times, it has only modest cutting power.\"
 
 onready var r_mesh = $Model/Sword
 

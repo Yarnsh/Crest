@@ -10,6 +10,7 @@ script/source = "extends \"res://Items/ArmorItem.gd\"
 const type = \"Armor/KnightGreaves\"
 const iname = \"Knight's Greaves\"
 const slot = \"Legs\"
+const desc = \"Iron armor that protects the lower body. Very heavy, meaning that every day is leg day.\"
 
 const defense = [10,10,10,10]
 "
@@ -18,7 +19,7 @@ const defense = [10,10,10,10]
 
 extents = Vector3( 0.205317, 0.163399, 0.47738 )
 
-[node name="StaticBody" type="StaticBody"]
+[node name="StaticBody" type="StaticBody" index="0"]
 
 input_ray_pickable = true
 input_capture_on_drag = false

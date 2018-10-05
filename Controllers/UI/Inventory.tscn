@@ -1,11 +1,10 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://Items/Assets/Fist.png" type="Texture" id=1]
 [ext_resource path="res://Items/Armor/Assets/head.png" type="Texture" id=2]
 [ext_resource path="res://Items/Armor/Assets/chest.png" type="Texture" id=3]
 [ext_resource path="res://Items/Armor/Assets/arms.png" type="Texture" id=4]
 [ext_resource path="res://Items/Armor/Assets/legs.png" type="Texture" id=5]
-[ext_resource path="res://Actors/PlayerActor.tscn" type="PackedScene" id=6]
 
 [sub_resource type="GDScript" id=1]
 
@@ -19,7 +18,10 @@ onready var equipedHeadIcon = $HBoxContainer/Equipment/Head/VBoxContainer/Textur
 onready var equipedChestIcon = $HBoxContainer/Equipment/Chest/VBoxContainer/TextureRect
 onready var equipedArmsIcon = $HBoxContainer/Equipment/Arms/VBoxContainer/TextureRect
 onready var equipedLegsIcon = $HBoxContainer/Equipment/Legs/VBoxContainer/TextureRect
+onready var Desc = $HBoxContainer/ItemDescription/VboxContainer/Panel/Desc
 var controller = null
+var itemlast = null;
+
 
 func _ready():
 	world = get_node(\"/root/World\")
@@ -31,6 +33,7 @@ func updateItems(items):
 	
 	var itemUI =  load(\"res://Controllers/UI/Item.tscn\");
 	var i = 0;
+	
 	for t in armorList.get_children():
 		armorList.remove_child(t);
 	for t in weaponList.get_children():
@@ -41,6 +44,8 @@ func updateItems(items):
 		#var Name = item.set_node(\"Button/HBoxContainer/Name\")
 		i = i+1
 		item.get_node(\"Button/HBoxContainer/Drop\").connect(\"pressed\", self, \"_on_Drop_pressed\",[i,weakref(items[t])]);
+		item.get_node(\"Button\").connect(\"pressed\", self, \"selectitem\",[items[t],item]);
+		
 		if ((items[t].slot == \"Head\") or (items[t].slot == \"Chest\") or (items[t].slot == \"Arms\") or (items[t].slot == \"Legs\")):
 			armorList.add_child(item);
 		else:
@@ -75,6 +80,13 @@ func updateItems(items):
 			else:
 				item.equipped = true;
 				item._update();
+		else: if (items[t].slot == \"Weapon\"):
+			if (!controller.actor.equipped_weapon or controller.actor.equipped_weapon.id != items[t].id):
+				item.equipped = false;
+				item._update();
+			else:
+				item.equipped = true;
+				item._update();
 			
 			
 			
@@ -90,6 +102,8 @@ func updateItems(items):
 				item.get_node(\"Button/HBoxContainer/Equip\").connect(\"pressed\", self, \"_on_UnequipArms_pressed\");
 			else: if (items[t].slot == \"Legs\"):
 				item.get_node(\"Button/HBoxContainer/Equip\").connect(\"pressed\", self, \"_on_UnequipLegs_pressed\");
+			else: if (items[t].slot == \"Weapon\"):
+				item.get_node(\"Button/HBoxContainer/Equip\").connect(\"pressed\", self, \"_on_UnequipWeapon_pressed\");
 			
 
 		if ((items[t].slot == \"Head\") or (items[t].slot == \"Chest\") or (items[t].slot == \"Arms\") or (items[t].slot == \"Legs\")):
@@ -100,9 +114,17 @@ func updateItems(items):
 		else: if (items[t].slot == \"Weapon\"):
 			item.get_node(\"Button/HBoxContainer/Name\").text = items[t].iname;
 		
-func set_selected(selecteditem):
-	var selected = selecteditem;
-	_on_Equip_pressed(selected);
+
+func selectitem(id,item):
+	
+	self.get_node(\"HBoxContainer/ItemDescription/VBoxContainer/Panel/Desc\").text = id.desc;
+	if (itemlast != null):
+		itemlast.selected= false;
+		itemlast._update();
+	item.selected = true;
+	item._update();
+	itemlast = item;
+	
 
 func updateEquipment(eweapon, ehead, echest, earms, elegs):
 	if (eweapon == null):
@@ -161,361 +183,15 @@ func _on_UnequipHead_pressed():
 	controller.unequip_item(\"Head\")
 "
 
-[sub_resource type="GDScript" id=2]
-
-script/source = "extends \"res://Actors/Actor.gd\"
-
-onready var held_l = $Spatial/Model/Armature/Skeleton/Held_L
-onready var held_r = $Spatial/Model/Armature/Skeleton/Held_R
-
-onready var inventory_node = $Inventory
-
-onready var default_weapon = $DefaultWeapon
-onready var equipped_weapon = default_weapon
-var equipped_chest = null
-var equipped_head = null
-var equipped_arms = null
-var equipped_legs = null
-
-var pick_up_range = 0.1
-var inventory = {}
-
-func _init():
-	walk_speed = 650.0
-	global_cooldown = 5.0
-
-func addItem(id, type):
-	var new_item = load(\"res://Items/\" + type + \".tscn\").instance()
-	new_item.id = id
-	new_item.set_name(new_item.id)
-	inventory_node.add_child(new_item)
-	inventory[id] = new_item
-func destroyItem(id):
-	var item = inventory_node.find_node(id)
-	if (item != null):
-		inventory_node.remove_child(item)
-		inventory.erase(id)
-		item.free()
-
-func getState():
-	#get a state that you can regen the entierty of the actor from
-	var state = .getState()
-	
-	var inv = {}
-	for i in inventory:
-		inv[i] = inventory[i].getState()
-	
-	var e_weapon = null
-	if (equipped_weapon):
-		e_weapon = equipped_weapon.id
-	var e_chest = null
-	if (equipped_chest):
-		e_chest = equipped_chest.id
-	var e_head = null
-	if (equipped_head):
-		e_head = equipped_head.id
-	var e_arms = null
-	if (equipped_arms):
-		e_arms = equipped_arms.id
-	var e_legs = null
-	if (equipped_legs):
-		e_legs = equipped_legs.id
-	
-	state[\"default_weapon\"] = default_weapon.getState()
-	state[\"equipped_weapon\"] = e_weapon
-	state[\"equipped_chest\"] = e_chest
-	state[\"equipped_head\"] = e_head
-	state[\"equipped_arms\"] = e_arms
-	state[\"equipped_legs\"] = e_legs
-	state[\"inventory\"] = inv
-	
-	return state
-
-func _equipment_state_check(equipment, e_name):
-	if (equipment == null and e_name == null):
-		return false
-	if !(equipment != null and e_name != null):
-		return true
-	return equipment.id != e_name
-func setState(state):
-	.setState(state)
-	#set all parameters of the actor, used to resync with server
-	#TODO: optimize signal emission
-	for i in state[\"inventory\"]:
-		if (inventory.has(i)):
-			if (inventory[i].type != state[\"inventory\"][i][\"type\"]):
-				destroyItem(i)
-				addItem(i, state[\"inventory\"][i][\"type\"])
-			inventory[i].setState(state[\"inventory\"][i])
-		else:
-			addItem(i, state[\"inventory\"][i][\"type\"])
-			inventory[i].setState(state[\"inventory\"][i])
-	emit_signal(\"inventory_updated\")
-	
-	var equipped_weapon_name = state[\"equipped_weapon\"]
-	if (_equipment_state_check(equipped_weapon, equipped_weapon_name)):
-		if (equipped_weapon_name == default_weapon.id):
-			unequipItem(\"Weapon\")
-		else:
-			equipItem(equipped_weapon_name)
-		emit_signal_equipment_updated()
-	
-	var equipped_chest_name = state[\"equipped_chest\"]
-	if (_equipment_state_check(equipped_chest, equipped_chest_name)):
-		if (equipped_chest_name == null):
-			unequipItem(\"Chest\")
-		else:
-			equipItem(equipped_chest_name)
-		emit_signal_equipment_updated()
-	var equipped_head_name = state[\"equipped_head\"]
-	if (_equipment_state_check(equipped_head, equipped_head_name)):
-		if (equipped_head_name == null):
-			unequipItem(\"head\")
-		else:
-			equipItem(equipped_head_name)
-		emit_signal_equipment_updated()
-	var equipped_arms_name = state[\"equipped_arms\"]
-	if (_equipment_state_check(equipped_arms, equipped_arms_name)):
-		if (equipped_arms_name == null):
-			unequipItem(\"arms\")
-		else:
-			equipItem(equipped_arms_name)
-		emit_signal_equipment_updated()
-	var equipped_legs_name = state[\"equipped_legs\"]
-	if (_equipment_state_check(equipped_legs, equipped_legs_name)):
-		if (equipped_legs_name == null):
-			unequipItem(\"legs\")
-		else:
-			equipItem(equipped_legs_name)
-		emit_signal_equipment_updated()
-	
-	default_weapon.setState(state[\"default_weapon\"])
-
-func queueAbilityTowardsByName(abil_name, point):
-	if (!busy):
-		walk_towards = null
-		pick_up = null
-		move_through = null
-		
-		queued_ability_point = point
-		equipped_weapon.pointTowardsByName(abil_name, point) #TODO: make it depend on slot and whatever
-		queued_ability_name = abil_name
-
-func dropItem(id):
-	if (inventory.has(id)):
-		if (equipped_weapon.id != id
-		and (!equipped_chest or equipped_chest.id != id)):
-			inventory_node.remove_child(inventory[id])
-			world.Items.add_child(inventory[id])
-			inventory[id].drop(get_global_position())
-			inventory.erase(id)
-			emit_signal(\"inventory_updated\")
-
-func equipItem(id):
-	#TODO: dont allow any equipment changing during busy time
-	#TODO: dont allow any equipment changing in combat
-	if (inventory.has(id)):
-		var item = inventory[id]
-		if (item.slot == \"Weapon\"):
-			equipped_weapon = item
-		else: if (item.slot == \"Chest\"):
-			equipped_chest = item
-		else: if (item.slot == \"Head\"):
-			equipped_head = item
-		else: if (item.slot == \"Arms\"):
-			equipped_arms = item
-		else: if (item.slot == \"Legs\"):
-			equipped_legs = item
-		_setEquipmentModel(item.slot)
-	else:
-		print(\"MISSING ITEM \" + String(id))
-	
-	emit_signal(\"inventory_updated\")
-	emit_signal_equipment_updated()
-
-func unequipItem(type):
-	#TODO: dont allow changing weapons during busy time
-	#TODO: dont allow any equipment changing in combat
-	if (type == \"Weapon\"):
-		equipped_weapon = default_weapon
-	else: if (type == \"Chest\"):
-		equipped_chest = null
-	else: if (type == \"Head\"):
-		equipped_head = null
-	else: if (type == \"Arms\"):
-		equipped_arms = null
-	else: if (type == \"Legs\"):
-		equipped_legs = null
-	_unsetEquipmentModel(type)
-	emit_signal(\"inventory_updated\")
-	emit_signal_equipment_updated()
-
-func _setEquipmentModel(type):
-	_unsetEquipmentModel(type)
-	var mesh
-	var wrmesh
-	var wlmesh
-	if (type == \"Weapon\" and equipped_weapon):
-		if (equipped_weapon.rMesh()):
-			wrmesh = equipped_weapon.rMesh().duplicate()
-		if (equipped_weapon.lMesh()):
-			wlmesh = equipped_weapon.lMesh().duplicate()
-	else: if (type == \"Chest\" and equipped_chest):
-		mesh = equipped_chest.mesh.duplicate()
-		skeleton.get_node(\"BodyDefault\").hide()
-	else: if (type == \"Head\" and equipped_head):
-		mesh = equipped_head.mesh.duplicate()
-		skeleton.get_node(\"HeadDefault\").hide()
-	else: if (type == \"Arms\" and equipped_arms):
-		mesh = equipped_arms.mesh.duplicate()
-		skeleton.get_node(\"HandsDefault\").hide()
-	else: if (type == \"Legs\" and equipped_legs):
-		mesh = equipped_legs.mesh.duplicate()
-		skeleton.get_node(\"LegsDefault\").hide()
-	
-	if (mesh):
-		mesh.name = type
-		skeleton.add_child(mesh)
-	if (wrmesh):
-		wrmesh.name = type + \"R\"
-		held_r.add_child(wrmesh)
-	if (wlmesh):
-		wlmesh.name = type + \"L\"
-		held_l.add_child(wlmesh)
-
-func _unsetEquipmentModel(type):
-	var mesh = skeleton.get_node(type)
-	if (mesh):
-		skeleton.remove_child(mesh)
-		mesh.queue_free()
-	var wrmesh = held_r.get_node(type + \"R\")
-	if (wrmesh):
-		skeleton.remove_child(wrmesh)
-		wrmesh.queue_free()
-	var wlmesh = held_l.get_node(type + \"L\")
-	if (wlmesh):
-		skeleton.remove_child(wlmesh)
-		wlmesh.queue_free()
-	
-	if (type == \"Chest\"):
-		skeleton.get_node(\"BodyDefault\").show()
-	if (type == \"Head\"):
-		skeleton.get_node(\"HeadDefault\").show()
-	if (type == \"Arms\"):
-		skeleton.get_node(\"HandsDefault\").show()
-	if (type == \"Legs\"):
-		skeleton.get_node(\"LegsDefault\").show()
-
-func startTowardsByName(ability_name, point): #TODO: make this require which equipment the ability is from
-	if (equipped_weapon != null):
-		equipped_weapon.startTowardsByName(self, ability_name, point)
-
-func _updateModelPosition():
-	var pos = ._updateModelPosition()
-	#TODO: make this match to the height of the navmesh at that point
-	for i in inventory_node.get_children():
-		i.setGlobalPosition(pos)
-	default_weapon.setGlobalPosition(pos)
-
-func _ready():
-	updateWorld()
-	
-	#Set all animations that need to to loop and vice versa
-	for aname in anim_player.get_animation_list():
-		anim_player.get_animation(aname).set_loop(false) #Since if the default is loop or not seems random
-	anim_player.get_animation(\"Idle\").set_loop(true)
-	anim_player.get_animation(\"Idle_Combat\").set_loop(true)
-	anim_player.get_animation(\"Run\").set_loop(true)
-	
-	if (in_combat):
-		_anim_playing(\"Idle_Combat\")
-	else:
-		_anim_playing(\"Idle\")
-
-func _process(delta):
-	_updateModelPosition()
-	#TODO: limit inputs when attacking
-	if (!is_dead):
-		#TODO: make the actor walk, interact, attack, and all that, client side based on parameters passed by controller
-		if (walk_towards != null and !isOnGlobalCooldown()):
-			if (in_combat):
-				busy = true
-			if (((walk_towards - global_transform.origin)).length() <= walk_speed * delta):
-				translate((walk_towards - global_transform.origin))
-				walk_towards = null
-				if (walk_path != null and !walk_path.empty()):
-					var walk3D = walk_path.pop_front()
-					walk_towards = global.to2D(walk3D)
-					_turn_towards(walk_towards)
-				else:
-					if (in_combat):
-						startGlobalCooldown()
-					busy = false
-			else:
-				translate((walk_towards - global_transform.origin).normalized() * walk_speed * delta)
-		
-		if (pick_up != null and pick_up.get_ref() and !pick_up.get_ref().on_ground):
-			pick_up = null
-		
-		if (queued_ability_name != null and !isOnGlobalCooldown() and !busy):
-			startTowardsByName(queued_ability_name, queued_ability_point)
-			queued_ability_name = null
-		
-		#TODO: put on a lock on destructive item interactions like picking things up
-		if (pick_up != null and pick_up.get_ref() and (pick_up.get_ref().getGlobalPosition() - global_transform.origin).length() < pick_up_range):
-			inventory[pick_up.get_ref().id] = pick_up.get_ref()
-			world.Items.remove_child(pick_up.get_ref())
-			inventory_node.add_child(pick_up.get_ref())
-			pick_up.get_ref().pickUp()
-			pick_up = null
-			emit_signal(\"inventory_updated\")
-		
-		if (move_through != null and move_through.get_ref() and (global.to2D(move_through.get_ref().getGlobalPosition()) - global_transform.origin).length() < move_through.get_ref().moveRange):
-			emit_signal(\"scene_switch\", move_through.get_ref().toMap, move_through.get_ref().toPoint)
-			print(move_through.get_ref().toMap)
-			walk_towards = null
-			move_through = null
-	
-	#Make sure the right animation is playing
-	if (!is_dead):
-		if (!isOnAnimCooldown()):
-			if (!is_attacking and walk_towards and !isOnGlobalCooldown()):
-				_anim_playing(\"Run\")
-			else:
-				if (in_combat):
-					_anim_playing(\"Idle_Combat\")
-				else:
-					_anim_playing(\"Idle\")
-	else:
-		_anim_playing(\"Death\")
-
-func emit_signal_equipment_updated():
-	current_defense = defense
-	if equipped_chest != null:
-		current_defense = add_def(current_defense, equipped_chest.defense)
-	if equipped_head != null:
-		current_defense = add_def(current_defense, equipped_head.defense)
-	if equipped_arms != null:
-		current_defense = add_def(current_defense, equipped_arms.defense)
-	if equipped_legs != null:
-		current_defense = add_def(current_defense, equipped_legs.defense)
-	emit_signal(\"equipment_updated\")
-func add_def(a, b):
-	var c = []
-	var i = 0
-	for ai in a:
-		c.append(ai + b[i])
-	return c
-"
-
 [node name="Inventory" type="PanelContainer" index="0"]
 
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_right = 603.0
-margin_bottom = 414.0
+margin_right = 640.0
+margin_bottom = 640.0
+rect_min_size = Vector2( 640, 640 )
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 0
@@ -523,6 +199,7 @@ mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
 script = SubResource( 1 )
+_sections_unfolded = [ "Rect" ]
 
 [node name="HBoxContainer" type="HBoxContainer" parent="." index="0"]
 
@@ -532,8 +209,8 @@ anchor_right = 0.0
 anchor_bottom = 0.0
 margin_left = 7.0
 margin_top = 7.0
-margin_right = 703.0
-margin_bottom = 501.0
+margin_right = 633.0
+margin_bottom = 637.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 1
@@ -541,17 +218,18 @@ mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
 alignment = 0
-_sections_unfolded = [ "Grow Direction" ]
+_sections_unfolded = [ "Grow Direction", "Rect" ]
 
 [node name="TabContainer" type="TabContainer" parent="HBoxContainer" index="0"]
 
+editor/display_folded = true
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_right = 408.0
-margin_bottom = 494.0
-rect_min_size = Vector2( 408, 300 )
+margin_bottom = 630.0
+rect_min_size = Vector2( 408, 630 )
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 0
@@ -589,7 +267,8 @@ anchor_right = 0.0
 anchor_bottom = 0.0
 margin_top = -2.0
 margin_right = 400.0
-margin_bottom = 456.0
+margin_bottom = 538.0
+rect_min_size = Vector2( 0, 596 )
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 0
@@ -642,7 +321,7 @@ anchor_top = 0.0
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 4.0
-margin_top = 24.0
+margin_top = 32.0
 margin_right = -4.0
 margin_bottom = -4.0
 rect_min_size = Vector2( 400, 0 )
@@ -665,6 +344,7 @@ anchor_bottom = 0.0
 margin_top = -2.0
 margin_right = 400.0
 margin_bottom = 456.0
+rect_min_size = Vector2( 0, 596 )
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 0
@@ -711,15 +391,13 @@ _sections_unfolded = [ "Rect", "custom_constants" ]
 
 [node name="ItemDescription" type="PanelContainer" parent="HBoxContainer" index="1"]
 
-editor/display_folded = true
-visible = false
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = 304.0
-margin_right = 412.0
-margin_bottom = 494.0
+margin_left = 412.0
+margin_right = 626.0
+margin_bottom = 630.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 0
@@ -728,7 +406,7 @@ size_flags_horizontal = 1
 size_flags_vertical = 1
 _sections_unfolded = [ "Rect" ]
 
-[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/ItemDescription" index="0"]
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/ItemDescription" index="0"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -736,8 +414,66 @@ anchor_right = 0.0
 anchor_bottom = 0.0
 margin_left = 7.0
 margin_top = 7.0
-margin_right = 101.0
-margin_bottom = 487.0
+margin_right = 207.0
+margin_bottom = 623.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+alignment = 2
+
+[node name="Panel" type="Panel" parent="HBoxContainer/ItemDescription/VBoxContainer" index="0"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 296.0
+margin_right = 200.0
+margin_bottom = 616.0
+rect_min_size = Vector2( 200, 320 )
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+_sections_unfolded = [ "Rect" ]
+
+[node name="Desc" type="Label" parent="HBoxContainer/ItemDescription/VBoxContainer/Panel" index="0"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 10.0
+margin_top = 10.0
+margin_right = 193.0
+margin_bottom = 313.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 4
+autowrap = true
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/ItemDescription" index="1"]
+
+visible = false
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 210.0
+margin_bottom = 623.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 1
@@ -754,7 +490,7 @@ anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_right = 43.0
-margin_bottom = 480.0
+margin_bottom = 616.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 focus_mode = 2
@@ -779,7 +515,7 @@ anchor_right = 0.0
 anchor_bottom = 0.0
 margin_left = 47.0
 margin_right = 94.0
-margin_bottom = 480.0
+margin_bottom = 616.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 focus_mode = 2
@@ -798,6 +534,7 @@ align = 1
 [node name="Equipment" type="VBoxContainer" parent="HBoxContainer" index="2"]
 
 editor/display_folded = true
+visible = false
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
@@ -1191,79 +928,6 @@ group = null
 text = "Unequip"
 flat = false
 align = 1
-
-[node name="ViewportContainer" type="ViewportContainer" parent="HBoxContainer" index="3"]
-
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_left = 496.0
-margin_right = 696.0
-margin_bottom = 494.0
-rect_min_size = Vector2( 200, 200 )
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-mouse_filter = 0
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 1
-stretch = false
-stretch_shrink = 1
-_sections_unfolded = [ "Material", "Rect", "Visibility" ]
-
-[node name="Viewport" type="Viewport" parent="HBoxContainer/ViewportContainer" index="0"]
-
-arvr = false
-size = Vector2( 200, 200 )
-own_world = false
-world = null
-transparent_bg = false
-msaa = 0
-hdr = true
-disable_3d = false
-usage = 2
-debug_draw = 0
-render_target_v_flip = false
-render_target_clear_mode = 0
-render_target_update_mode = 3
-audio_listener_enable_2d = false
-audio_listener_enable_3d = false
-physics_object_picking = false
-gui_disable_input = false
-gui_snap_controls_to_pixels = true
-shadow_atlas_size = 0
-shadow_atlas_quad_0 = 2
-shadow_atlas_quad_1 = 2
-shadow_atlas_quad_2 = 3
-shadow_atlas_quad_3 = 4
-_sections_unfolded = [ "Render Target", "Rendering" ]
-
-[node name="Camera" type="Camera" parent="HBoxContainer/ViewportContainer/Viewport" index="0"]
-
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.872205, 3.32214 )
-keep_aspect = 1
-cull_mask = 1048575
-environment = null
-h_offset = 0.0
-v_offset = 0.0
-doppler_tracking = 0
-projection = 0
-current = false
-fov = 70.0
-size = 1.0
-near = 0.05
-far = 100.0
-
-[node name="Actor" type="KinematicBody2D" parent="HBoxContainer/ViewportContainer/Viewport" index="1" instance=ExtResource( 6 )]
-
-position = Vector2( -3.30305, 4.21223 )
-input_pickable = true
-collision_layer = 1
-collision_mask = 1
-collision/safe_margin = 0.08
-script = SubResource( 2 )
-_sections_unfolded = [ "Audio Bus", "Collision", "Pickable", "Transform" ]
 
 [connection signal="pressed" from="HBoxContainer/ItemDescription/HBoxContainer/Drop" to="." method="_on_Drop_pressed"]
 

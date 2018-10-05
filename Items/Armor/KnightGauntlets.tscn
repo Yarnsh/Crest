@@ -9,6 +9,7 @@ script/source = "extends \"res://Items/ArmorItem.gd\"
 const type = \"Armor/KnightGauntlets\"
 const iname = \"Knight's Gauntlets\"
 const slot = \"Arms\"
+const desc = \"Iron Armor that protects the arms. There was once a man with arms who accomplished many great things, but met his end when his unprotected arms were removed.\"
 
 const defense = [10,10,10,10]
 "

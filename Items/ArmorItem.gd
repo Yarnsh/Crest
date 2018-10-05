@@ -2,6 +2,7 @@ extends "res://Items/BaseItem.gd"
 
 const type = "ArmorItem"
 const iname = "NAME"
+const desc = ""
 const defense = [0,0,0,0]
 
 onready var mesh = ($Model).get_child(0).get_child(0).get_child(0)
