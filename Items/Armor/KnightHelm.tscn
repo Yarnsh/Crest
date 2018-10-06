@@ -3,7 +3,7 @@
 [ext_resource path="res://Items/Armor/Assets/knighthelm.dae" type="PackedScene" id=1]
 [ext_resource path="res://Items/Armor/Assets/Helm.material" type="Material" id=2]
 
-[sub_resource type="GDScript" id=1]
+[sub_resource type="GDScript" id=8]
 
 script/source = "extends \"res://Items/ArmorItem.gd\"
 
@@ -11,9 +11,8 @@ const type = \"Armor/KnightHelm\"
 const iname = \"Knight's Helm\"
 const slot = \"Head\"
 const desc = \"Iron armor that protects the face. Its generic design provides good defense while keeping you from standing out.\"
-
 const defense = [10,10,10,10]
-"
+const weight = 8"
 
 [sub_resource type="BoxShape" id=2]
 
@@ -29,7 +28,7 @@ friction = 1.0
 bounce = 0.0
 constant_linear_velocity = Vector3( 0, 0, 0 )
 constant_angular_velocity = Vector3( 0, 0, 0 )
-script = SubResource( 1 )
+script = SubResource( 8 )
 _sections_unfolded = [ "Collision" ]
 
 [node name="Abilities" type="Node2D" parent="." index="0"]

@@ -3,6 +3,8 @@ extends "res://Items/BaseItem.gd"
 const type = "WeaponItem"
 const slot = "Weapon"
 const desc = ""
+const attack = 0
+const defense = [0,0,0,0]
 
 func getAbilities():
 	return abilities.get_children()

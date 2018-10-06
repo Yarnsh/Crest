@@ -20,10 +20,10 @@ func _update():
 		EquipButton.text = "Unequip";
 	else:
 		EquipButton.text = "Equip";
-	if (selected == true):
-		Selectbox.hide()
-	else:
-		Selectbox.show()
+#	if (selected == true):
+#		#Selectbox.hide()
+#	else:
+#		#Selectbox.show()
 
 
 #func _process(delta):
