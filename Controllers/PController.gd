@@ -22,6 +22,7 @@ onready var inventoryUI = $CanvasLayer/Inventory
 onready var abilityUI = $CanvasLayer/Abilities
 onready var HUD = $CanvasLayer/HUD
 onready var damageUI = $CanvasLayer/Damage
+onready var respawnUI = $CanvasLayer/Respawn
 onready var WalkMarker = $WalkMarker
 
 var attacking = false 
@@ -49,6 +50,7 @@ func _ready():
 	abilityUI.init(self)
 	HUD.init(self)
 	damageUI.init(self)
+	respawnUI.init(self)
 	
 	inventoryUI.updateItems(actor.inventory)
 	abilityUI.updateAbilities()
@@ -108,6 +110,10 @@ func _on_Actor_equipment_updated():
 
 func _on_Actor_damage_updated():
 	damageUI.updateDamage()
+	if (actor.is_dead):
+		respawnUI.show()
+	else:
+		respawnUI.hide()
 
 func _process(delta):
 	OS.set_window_title(title + " | fps: " + str(Engine.get_frames_per_second()))

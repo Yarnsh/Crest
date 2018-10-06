@@ -147,7 +147,10 @@ func queueAbilityTowardsByName(abil_name, point):
 func dropItem(id):
 	if (inventory.has(id)):
 		if (equipped_weapon.id != id
-		and (!equipped_chest or equipped_chest.id != id)):
+		and (!equipped_chest or equipped_chest.id != id)
+		and (!equipped_arms or equipped_arms.id != id)
+		and (!equipped_legs or equipped_legs.id != id)
+		and (!equipped_head or equipped_head.id != id)):
 			inventory_node.remove_child(inventory[id])
 			world.Items.add_child(inventory[id])
 			inventory[id].drop(get_global_position())
