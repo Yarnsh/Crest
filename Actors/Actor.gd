@@ -61,6 +61,12 @@ func startGlobalCooldown():
 func isOnGlobalCooldown():
 	return global.clock < global_cooldown_ends
 
+var respawn_map = "Forest1" #Temporary until we figure out how to set respawn locations
+var respawn_point = Vector3(0,0,0)
+func setSpawn(map, point):
+	respawn_map = map
+	respawn_point = point
+
 func getState():
 	return {
 		"id":self.name,
@@ -113,6 +119,13 @@ func setState(state):
 	
 	if (state["playing_anim"] != null):
 		_anim_playing(state["playing_anim"], state["playing_anim_started"])
+
+func reset():
+	in_combat = false
+	emit_signal("out_combat")
+	current_wounds = [0,0,0]
+	is_dead = false
+	emit_signal("damage_updated")
 
 func toggleInCombat():
 	in_combat = !in_combat
