@@ -1,0 +1,102 @@
+[gd_scene format=2]
+
+[node name="Respawn" type="PanelContainer"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." index="0"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 188.0
+margin_bottom = 453.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+alignment = 0
+
+[node name="Label" type="Label" parent="VBoxContainer" index="0"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 181.0
+margin_bottom = 422.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 4
+text = "         _,.-------.,_
+     ,;~'             '~;,
+   ,;                     ;,
+  ;                         ;
+ ,'                         ',
+,;                           ;,
+; ;      .           .      ; ;
+| ;   ______       ______   ; |
+|  `/~\"     ~\" . \"~     \"~\\'  |
+|  ~  ,-~~~^~, | ,~^~~~-,  ~  |
+ |   |        }:{        |   |
+ |   l       / | \\       !   |
+ .~  (__,.--\" .^. \"--.,__)  ~.
+ |     ---;' / | \\ `;---     |
+  \\__.       \\/^\\/       .__/
+   V| \\                 / |V
+    | |T~\\___!___!___/~T| |
+    | |`IIII_I_I_I_IIII'| |
+    |  \\,III I I I III,/  |
+     \\   `~~~~~~~~~~'    /
+       \\   .       .   /     
+         \\.    ^    ./
+           ^~~~^~~~^
+		
+		You ded."
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+_sections_unfolded = [ "custom_fonts" ]
+
+[node name="Button" type="Button" parent="VBoxContainer" index="1"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 426.0
+margin_right = 181.0
+margin_bottom = 446.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+toggle_mode = false
+enabled_focus_mode = 2
+shortcut = null
+group = null
+text = "Respawn"
+flat = false
+align = 1
+
+
