@@ -11,6 +11,9 @@ export(float) var moveRange = 0.0
 func __TRANSITION():
 	pass
 
+func highlight():
+	pass #TODO: make this to something, also clean it up when not somehow
+
 func getGlobalPosition():
 	return global_transform.origin"
 

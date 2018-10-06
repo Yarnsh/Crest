@@ -25,6 +25,9 @@ onready var damageUI = $CanvasLayer/Damage
 onready var respawnUI = $CanvasLayer/Respawn
 onready var WalkMarker = $WalkMarker
 
+var mouse_arrow = load("res://arrow.png")
+var mouse_highlight = load("res://highlight.png")
+
 var attacking = false 
 
 var ability_list = [null,null,null,null,null,null,null,null,null,null] #Hold weak_refs to abilities of the actor
@@ -124,12 +127,26 @@ func _process(delta):
 			WalkMarker.transform.origin = global.to3D(actor.walk_dest)
 			WalkMarker.show()
 	
+	var mouse = mouse_arrow
 	if (selected_ability >= 0 and _checkAbilityByIndex(selected_ability)):
 		var mouse_pos = get_viewport().get_mouse_position()
 		var clickpos = global.xzPlaneIntersect(cam3D.project_ray_origin(mouse_pos), cam3D.project_ray_normal(mouse_pos))
 		if (clickpos != null):
 			var clickpos2D = global.to2D(clickpos)
 			ability_list[selected_ability].get_ref().pointTowards(clickpos2D)
+	else:
+		var mouse_pos = get_viewport().get_mouse_position()
+		var from = cam3D.project_ray_origin(mouse_pos)
+		var to = cam3D.project_ray_normal(mouse_pos) * 1000.0
+		mouseCast.transform.origin = from
+		mouseCast.cast_to = to
+		mouseCast.force_raycast_update()
+		if (mouseCast.is_colliding()):
+			var point_at = mouseCast.get_collider()
+			if (point_at.has_method("highlight")):
+				point_at.highlight()
+				mouse = mouse_highlight
+	Input.set_custom_mouse_cursor(mouse)
 	
 	HUD.setMaxGlobalCooldown(actor.global_cooldown)
 	HUD.setCurrentCooldown(actor.global_cooldown_ends - global.clock)
