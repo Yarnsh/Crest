@@ -6,6 +6,7 @@ extends PanelContainer
 onready var ButtonMain = $Button
 onready var EquipButton = $Button/HBoxContainer/Equip
 onready var DropButton = $Button/HBoxContainer/Drop
+onready var Selectbox = $CSelect
 var selected = false;
 var equipped = false;
 
@@ -20,9 +21,9 @@ func _update():
 	else:
 		EquipButton.text = "Equip";
 	if (selected == true):
-		ButtonMain.icon = preload("res://Controllers/UI/images/arrow.png");
+		Selectbox.hide()
 	else:
-		ButtonMain.icon = null
+		Selectbox.show()
 
 
 #func _process(delta):
