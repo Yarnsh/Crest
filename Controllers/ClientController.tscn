@@ -94,6 +94,7 @@ func unequip_item(type):
 
 func respawn():
 	pass #TODO: make actor respawn through network only
+	actor.reset()
 
 func _on_Actor_in_combat():
 	HUD.setInCombat(true)
@@ -203,7 +204,6 @@ margin_left = 1156.0
 margin_top = 11.0
 margin_right = 1223.0
 margin_bottom = 39.0
-rect_clip_content = false
 
 [node name="Respawn" parent="CanvasLayer" index="4" instance=ExtResource( 6 )]
 

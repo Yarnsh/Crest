@@ -85,7 +85,8 @@ func unequip_item(type):
 	actor.unequipItem(type)
 
 func respawn():
-	pass #TODO: make actor respawn
+	get_node(\"/root/World\").changeScene(self, actor.respawn_map, actor.respawn_point)
+	actor.reset()
 
 func _on_Actor_in_combat():
 	HUD.setInCombat(true)
@@ -115,7 +116,7 @@ surfaces/0 = {
 "vertex_count": 29
 }
 
-[node name="Node" type="Node" index="0"]
+[node name="Node" type="Node"]
 
 script = SubResource( 1 )
 
