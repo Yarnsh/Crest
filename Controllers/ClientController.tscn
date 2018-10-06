@@ -92,6 +92,8 @@ func unequip_item(type):
 	actor.unequipItem(type)
 	get_node(\"/root/World\").rpc_id(1, \"unequipItem\", type)
 
+func respawn():
+	pass #TODO: make actor respawn through network only
 
 func _on_Actor_in_combat():
 	HUD.setInCombat(true)
@@ -118,7 +120,7 @@ surfaces/0 = {
 "vertex_count": 29
 }
 
-[node name="Node" type="Node" index="0"]
+[node name="Node" type="Node"]
 
 script = SubResource( 1 )
 

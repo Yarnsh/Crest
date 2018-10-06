@@ -84,6 +84,8 @@ func equip_item(id):
 func unequip_item(type):
 	actor.unequipItem(type)
 
+func respawn():
+	pass #TODO: make actor respawn
 
 func _on_Actor_in_combat():
 	HUD.setInCombat(true)
@@ -199,7 +201,6 @@ margin_left = 1128.0
 margin_top = 8.0
 margin_right = 1142.0
 margin_bottom = 22.0
-rect_clip_content = false
 
 [node name="Respawn" parent="CanvasLayer" index="4" instance=ExtResource( 6 )]
 

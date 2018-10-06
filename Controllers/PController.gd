@@ -50,6 +50,7 @@ func _ready():
 	abilityUI.init(self)
 	HUD.init(self)
 	damageUI.init(self)
+	respawnUI.init(self)
 	
 	inventoryUI.updateItems(actor.inventory)
 	abilityUI.updateAbilities()
