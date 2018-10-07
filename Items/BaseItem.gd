@@ -4,6 +4,8 @@ var id
 var on_ground = true
 const type = "BaseItem"
 const slot = "None"
+const iname = "NAME"
+const desc = ""
 #TODO: have a lock for item interactions
 
 onready var abilities = $Abilities

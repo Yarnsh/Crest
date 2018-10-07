@@ -7,7 +7,7 @@
 
 script/source = "extends \"res://Abilities/BaseAbility.gd\"
 
-const ability_art = preload(\"res://Abilities/Assets/Slash.png\")
+const ability_art = preload(\"res://Abilities/Assets/images/Slash.png\")
 const ability_name = \"Slash\"
 const ability_desc = \"Swing. Your. Sword. From side to side CMON YOU KNOW YOU FUCK DO THE MARIO!\"
 
@@ -95,7 +95,7 @@ _sections_unfolded = [ "Material", "Transform", "Visibility" ]
 visible = false
 layers = 1
 material_override = ExtResource( 1 )
-cast_shadow = 1
+cast_shadow = 0
 extra_cull_margin = 0.0
 use_in_baked_light = false
 lod_min_distance = 0.0

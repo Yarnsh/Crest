@@ -40,7 +40,9 @@ func _ready():
 script/source = "extends \"res://Items/WeaponItem.gd\"
 
 const type = \"SwordItem\"
+const iname = \"Iron Sword\"
 const slot = \"Weapon\"
+const desc = \"A rather large Iron Sword. As it was not folded over a thousand times, it has only modest cutting power.\"
 
 onready var r_mesh = $Model/Sword
 
@@ -131,12 +133,13 @@ script = ExtResource( 1 )
 
 [node name="ToForest2" parent="." index="0" instance=ExtResource( 2 )]
 
-transform = Transform( 0.901722, 0, -0.432316, 0, 1, 0, 0.432316, 0, 0.901722, -2.97793, 3.66853, -78.6536 )
+transform = Transform( 0.901722, 0, -0.432316, 0, 1, 0, 0.432316, 0, 0.901722, -9.1759, -4.52003, 58.7756 )
 toMap = "Forest1TestDup"
 moveRange = 200.0
 
 [node name="CollisionShape" type="CollisionShape" parent="ToForest2" index="0"]
 
+transform = Transform( 0.99978, -0.0174591, 0.011646, 0.0135495, 0.960742, 0.277111, -0.0160269, -0.276893, 0.960767, 0.458115, -4.76837e-007, 0.955532 )
 shape = SubResource( 1 )
 disabled = false
 
@@ -158,24 +161,24 @@ script = SubResource( 2 )
 
 [node name="StaticBody5" parent="Items" index="0" instance=ExtResource( 4 )]
 
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 17.555, 0, -3.16544 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -8.19223, 0, 52.608 )
 
-[node name="StaticBody4" parent="Items" index="1" instance=ExtResource( 5 )]
+[node name="StaticBody" parent="Items" index="1" instance=ExtResource( 5 )]
 
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 15.9508, -4.76837e-007, -2.49213 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -7.26338, 0, 55.2033 )
+
+[node name="StaticBody2" parent="Items" index="2" instance=ExtResource( 6 )]
+
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -8.65394, 0, 55.7785 )
+
+[node name="StaticBody3" parent="Items" index="3" instance=ExtResource( 7 )]
+
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -6.11538, 0, 54.3133 )
+
+[node name="StaticBody4" parent="Items" index="4" instance=ExtResource( 8 )]
+
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -9.56368, 0.0157345, 53.9309 )
 script = SubResource( 3 )
-
-[node name="StaticBody" parent="Items" index="2" instance=ExtResource( 6 )]
-
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 15.8424, 0, -4.02393 )
-
-[node name="StaticBody2" parent="Items" index="3" instance=ExtResource( 7 )]
-
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 17.1143, 0, -4.68139 )
-
-[node name="StaticBody3" parent="Items" index="4" instance=ExtResource( 8 )]
-
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 18.6964, 0, -4.4038 )
 
 [node name="StaticBody6" parent="Items" index="5" instance=ExtResource( 9 )]
 

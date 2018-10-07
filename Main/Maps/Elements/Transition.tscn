@@ -16,6 +16,7 @@ func highlight():
 
 func getGlobalPosition():
 	return global_transform.origin"
+_sections_unfolded = [ "Resource" ]
 
 [node name="StaticBody" type="StaticBody"]
 
