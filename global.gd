@@ -27,6 +27,11 @@ var itemInventoryIcons = {
 	"Armor/KnightChest":preload("res://Items/Armor/Assets/knightchest.png"),
 	"Armor/KnightGauntlets":preload("res://Items/Armor/Assets/knightgauntlets.png"),
 	"Armor/KnightGreaves":preload("res://Items/Armor/Assets/knightgreaves.png"),
+	
+	"Armor/HunterHelm":preload("res://Items/Armor/Assets/knighthelm.png"),
+	"Armor/HunterChest":preload("res://Items/Armor/Assets/knightchest.png"),
+	"Armor/HunterGauntlets":preload("res://Items/Armor/Assets/knightgauntlets.png"),
+	"Armor/HunterGreaves":preload("res://Items/Armor/Assets/knightgreaves.png"),
 	}
 
 func xzPlaneIntersect(pos, dir):
