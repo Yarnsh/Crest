@@ -50,9 +50,10 @@ func updateAbilityBar():
 	var i = 1
 	for a in _controller.get_ref().ability_list:
 		var slot = ability_bar.find_node(\"Ability\" + String(i))
-
+		slot.set_button_icon(preload(\"res://Abilities/Assets/images/Nullicon.png\"))
 		if (a != null and a.get_ref()):
 			slot.set_button_icon(a.get_ref().ability_art)
+			
 		i += 1
 
 func _on_Ability1_pressed():

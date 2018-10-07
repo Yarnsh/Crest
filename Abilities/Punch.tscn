@@ -7,7 +7,7 @@
 
 script/source = "extends \"res://Abilities/BaseAbility.gd\"
 
-const ability_art = preload(\"res://Abilities/Assets/Punch.png\")
+const ability_art = preload(\"res://Abilities/Assets/images/Punch.png\")
 const ability_name = \"Punch\"
 const ability_desc = \"Hope you've been lifting.\"
 
@@ -73,7 +73,7 @@ func _on_Collider_body_exited( body ):
 		body.setHighlight(false)
 "
 
-[node name="Punch" type="Node2D"]
+[node name="Punch" type="Node2D" index="0"]
 
 script = SubResource( 1 )
 _sections_unfolded = [ "Transform" ]
@@ -104,7 +104,7 @@ _sections_unfolded = [ "Material", "Transform", "Visibility" ]
 visible = false
 layers = 1
 material_override = ExtResource( 1 )
-cast_shadow = 1
+cast_shadow = 0
 extra_cull_margin = 0.0
 use_in_baked_light = false
 lod_min_distance = 0.0
