@@ -17,6 +17,7 @@ var itemInventoryIcons = {
 	"FistItem":preload("res://Items/Assets/Fist.png"),
 	"PotionItem":preload("res://Items/Assets/Potion.png"),
 	"SwordItem":preload("res://Items/Assets/Sword.png"),
+	"BowItem":preload("res://Items/Assets/Sword.png"),
 	
 	"Armor/Head":preload("res://Items/Armor/Assets/head.png"),
 	"Armor/Chest":preload("res://Items/Armor/Assets/chest.png"),

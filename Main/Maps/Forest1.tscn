@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=2]
+[gd_scene load_steps=28 format=2]
 
 [ext_resource path="res://Main/Maps/Map.gd" type="Script" id=1]
 [ext_resource path="res://Main/Maps/Elements/Transition.tscn" type="PackedScene" id=2]
@@ -12,10 +12,11 @@
 [ext_resource path="res://Items/Armor/HunterGauntlets.tscn" type="PackedScene" id=10]
 [ext_resource path="res://Items/Armor/HunterGreaves.tscn" type="PackedScene" id=11]
 [ext_resource path="res://Items/Armor/HunterHelm.tscn" type="PackedScene" id=12]
-[ext_resource path="res://Main/Maps/Assets/TallForestF1-nav.dae" type="PackedScene" id=13]
-[ext_resource path="res://Main/Maps/Tree_env.tres" type="Environment" id=14]
-[ext_resource path="res://Main/Maps/Assets/TallForestF1.dae" type="PackedScene" id=15]
-[ext_resource path="res://Main/Maps/Assets/TreeShader.tres" type="Material" id=16]
+[ext_resource path="res://Items/BowItem.tscn" type="PackedScene" id=13]
+[ext_resource path="res://Main/Maps/Assets/TallForestF1-nav.dae" type="PackedScene" id=14]
+[ext_resource path="res://Main/Maps/Tree_env.tres" type="Environment" id=15]
+[ext_resource path="res://Main/Maps/Assets/TallForestF1.dae" type="PackedScene" id=16]
+[ext_resource path="res://Main/Maps/Assets/TreeShader.tres" type="Material" id=17]
 
 [sub_resource type="BoxShape" id=2]
 
@@ -84,6 +85,18 @@ const slot = \"Head\"
 
 const defense = [2,2,2,2]
 "
+
+[sub_resource type="GDScript" id=10]
+
+script/source = "extends \"res://Items/WeaponItem.gd\"
+
+const type = \"BowItem\"
+const slot = \"Weapon\"
+
+onready var r_mesh = $Model/Armature/Skeleton/Bow
+
+func rMesh():
+	return r_mesh"
 
 [sub_resource type="ConcavePolygonShape" id=8]
 
@@ -220,7 +233,21 @@ constant_angular_velocity = Vector3( 0, 0, 0 )
 script = SubResource( 7 )
 _sections_unfolded = [ "Collision", "Transform" ]
 
-[node name="Scene Root" parent="." index="4" instance=ExtResource( 13 )]
+[node name="StaticBody10" type="StaticBody" parent="Items" index="9" instance=ExtResource( 13 )]
+
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.317092, 0, 55.6567 )
+input_ray_pickable = true
+input_capture_on_drag = false
+collision_layer = 1
+collision_mask = 0
+friction = 1.0
+bounce = 0.0
+constant_linear_velocity = Vector3( 0, 0, 0 )
+constant_angular_velocity = Vector3( 0, 0, 0 )
+script = SubResource( 10 )
+_sections_unfolded = [ "Collision", "Transform" ]
+
+[node name="Scene Root" parent="." index="4" instance=ExtResource( 14 )]
 
 visible = false
 
@@ -285,15 +312,15 @@ _sections_unfolded = [ "Light", "Shadow" ]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." index="6"]
 
-environment = ExtResource( 14 )
+environment = ExtResource( 15 )
 
-[node name="Scene Root2" parent="." index="7" instance=ExtResource( 15 )]
+[node name="Scene Root2" parent="." index="7" instance=ExtResource( 16 )]
 
 _sections_unfolded = [ "Transform" ]
 
 [node name="Level" parent="Scene Root2" index="0"]
 
-material/0 = ExtResource( 16 )
+material/0 = ExtResource( 17 )
 _sections_unfolded = [ "material" ]
 
 
