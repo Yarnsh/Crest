@@ -4,7 +4,7 @@
 
 [sub_resource type="GDScript" id=1]
 
-script/source = "extends \"res://Controllers/Enemies/EnemyController.gd\"
+script/source = "extends \"res://Controllers/NPCController.gd\"
 
 var enemy_list = []
 
@@ -85,7 +85,7 @@ func _process(delta):
 			startAICooldown(1.000)
 "
 
-[node name="Node" type="Node"]
+[node name="Node" type="Node" index="0"]
 
 script = SubResource( 1 )
 
