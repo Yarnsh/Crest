@@ -41,7 +41,7 @@ void fragment(){
 render_priority = 0
 shader = SubResource( 1 )
 shader_param/redres = 48.0
-shader_param/greenres = 48.0
+shader_param/greenres = 80.0
 shader_param/blueres = 48.0
 shader_param/alphares = 48.0
 shader_param/red = ExtResource( 4 )

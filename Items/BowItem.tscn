@@ -9,7 +9,11 @@
 script/source = "extends \"res://Items/WeaponItem.gd\"
 
 const type = \"BowItem\"
+const iname = \"Hunter's Bow\"
 const slot = \"Weapon\"
+const attack = 8
+const defense = [0,0,0,0]
+const desc = \"A standard Bow made from wood. Can be used to attack from a distance.\"
 
 onready var l_mesh = $Model/Armature/Skeleton/Bow
 

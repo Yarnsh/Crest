@@ -160,7 +160,7 @@ _sections_unfolded = [ "Transform" ]
 
 [node name="ToForest1" parent="." index="0" instance=ExtResource( 2 )]
 
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 50, 5, -29 )
+transform = Transform( 0.977216, 0.0268151, -0.210548, 0, 0.991987, 0.126338, 0.212249, -0.123459, 0.969385, 50.4727, 4.94761, -29.8358 )
 _sections_unfolded = [ "Collision", "Transform" ]
 toMap = "Forest1"
 toPoint = Vector3( -7.5, 0, 59 )
@@ -168,14 +168,14 @@ moveRange = 200.0
 
 [node name="CollisionShape" type="CollisionShape" parent="ToForest1" index="0"]
 
-transform = Transform( 1, 0, 0, 0, 0.998718, 0.050623, 0, -0.050623, 0.998718, 0, 0, 0 )
+visible = false
 shape = SubResource( 1 )
 disabled = false
 _sections_unfolded = [ "Transform" ]
 
-[node name="MeshInstance" type="MeshInstance" parent="ToForest1" index="1"]
+[node name="Mesh" type="MeshInstance" parent="ToForest1" index="1"]
 
-transform = Transform( 1, 0, 0, 0, 5.63751, 0, 0, 0, 1, 58.5529, 0, 4.25891 )
+transform = Transform( 3, 0, 0, 0, 6, 0, 0, 0, 1, 0, 0, 0 )
 visible = false
 layers = 1
 material_override = null
@@ -189,6 +189,7 @@ lod_max_hysteresis = 0.0
 mesh = SubResource( 2 )
 skeleton = NodePath("..")
 material/0 = null
+_sections_unfolded = [ "Geometry", "Transform", "Visibility" ]
 
 [node name="Players" type="Node" parent="." index="1"]
 
@@ -234,7 +235,7 @@ script = SubResource( 8 )
 
 [node name="DirectionalLight" type="DirectionalLight" parent="." index="4"]
 
-transform = Transform( -0.873498, 0.450667, 0.18412, 0.123707, -0.160312, 0.979283, 0.470847, 0.878179, 0.0842818, -30.7818, 26.7696, 33.4473 )
+transform = Transform( -0.875028, 0.450666, -0.176708, -0.274061, -0.160312, 0.948256, 0.399019, 0.878179, 0.263788, -30.7818, 26.7696, 33.4473 )
 layers = 1
 light_color = Color( 1, 1, 1, 1 )
 light_energy = 1.0

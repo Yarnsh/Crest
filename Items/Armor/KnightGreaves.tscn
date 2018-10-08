@@ -3,21 +3,22 @@
 [ext_resource path="res://Items/Armor/Assets/knightgreaves.dae" type="PackedScene" id=1]
 [ext_resource path="res://Items/Armor/Assets/Greaves.material" type="Material" id=2]
 
-[sub_resource type="GDScript" id=1]
+[sub_resource type="GDScript" id=9]
 
 script/source = "extends \"res://Items/ArmorItem.gd\"
 
 const type = \"Armor/KnightGreaves\"
+const iname = \"Knight's Greaves\"
 const slot = \"Legs\"
-
+const desc = \"Iron armor that protects the lower body. Very heavy, meaning that every day is leg day.\"
 const defense = [10,10,10,10]
-"
+const weight = 10"
 
 [sub_resource type="BoxShape" id=2]
 
 extents = Vector3( 0.205317, 0.163399, 0.47738 )
 
-[node name="StaticBody" type="StaticBody" index="0"]
+[node name="StaticBody" type="StaticBody"]
 
 input_ray_pickable = true
 input_capture_on_drag = false
@@ -27,7 +28,7 @@ friction = 1.0
 bounce = 0.0
 constant_linear_velocity = Vector3( 0, 0, 0 )
 constant_angular_velocity = Vector3( 0, 0, 0 )
-script = SubResource( 1 )
+script = SubResource( 9 )
 _sections_unfolded = [ "Collision" ]
 
 [node name="Abilities" type="Node2D" parent="." index="0"]

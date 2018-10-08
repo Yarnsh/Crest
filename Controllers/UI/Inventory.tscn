@@ -1,23 +1,34 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=15 format=2]
 
-[ext_resource path="res://Items/Assets/Fist.png" type="Texture" id=1]
-[ext_resource path="res://Items/Armor/Assets/head.png" type="Texture" id=2]
-[ext_resource path="res://Items/Armor/Assets/chest.png" type="Texture" id=3]
-[ext_resource path="res://Items/Armor/Assets/arms.png" type="Texture" id=4]
-[ext_resource path="res://Items/Armor/Assets/legs.png" type="Texture" id=5]
+[ext_resource path="res://Controllers/UI/Themes/Goldbordertheme.tres" type="Theme" id=1]
+[ext_resource path="res://Controllers/UI/Themes/Styleboxes/Simpleborder.tres" type="StyleBox" id=2]
+[ext_resource path="res://Controllers/UI/images/ATKicon.png" type="Texture" id=3]
+[ext_resource path="res://Controllers/UI/images/LDicon.png" type="Texture" id=4]
+[ext_resource path="res://Controllers/UI/images/MDicon.png" type="Texture" id=5]
+[ext_resource path="res://Controllers/UI/images/SDicon.png" type="Texture" id=6]
+[ext_resource path="res://Controllers/UI/images/Wticon.png" type="Texture" id=7]
+[ext_resource path="res://Controllers/UI/Themes/Styleboxes/BorderNeutral.tres" type="StyleBox" id=8]
+[ext_resource path="res://Items/Assets/Fist.png" type="Texture" id=9]
+[ext_resource path="res://Items/Armor/Assets/head.png" type="Texture" id=10]
+[ext_resource path="res://Items/Armor/Assets/chest.png" type="Texture" id=11]
+[ext_resource path="res://Items/Armor/Assets/arms.png" type="Texture" id=12]
+[ext_resource path="res://Items/Armor/Assets/legs.png" type="Texture" id=13]
 
 [sub_resource type="GDScript" id=1]
 
 script/source = "extends PanelContainer
 
 var world
-onready var itemList = $HBoxContainer/PanelContainer/ItemList
+onready var armorList = $HBoxContainer/TabContainer/Armor/Panel/ScrollContainer/VBoxContainer
+onready var weaponList = $HBoxContainer/TabContainer/Weapons/Panel/ScrollContainer/VBoxContainer
 onready var equipedWeaponIcon = $HBoxContainer/Equipment/Weapon/VBoxContainer/TextureRect
 onready var equipedHeadIcon = $HBoxContainer/Equipment/Head/VBoxContainer/TextureRect
 onready var equipedChestIcon = $HBoxContainer/Equipment/Chest/VBoxContainer/TextureRect
 onready var equipedArmsIcon = $HBoxContainer/Equipment/Arms/VBoxContainer/TextureRect
 onready var equipedLegsIcon = $HBoxContainer/Equipment/Legs/VBoxContainer/TextureRect
+onready var Desc = $HBoxContainer/ItemDescription/VboxContainer/Panel/Desc
 var controller = null
+var itemlast = null;
 
 func _ready():
 	world = get_node(\"/root/World\")
@@ -26,16 +37,134 @@ func init(myController):
 	controller = myController
 
 func updateItems(items):
-	var selected = itemList.get_selected_items()
-	itemList.clear()
-	var i = 0
+	
+	var ArmorUI =  load(\"res://Controllers/UI/ArmorItem.tscn\");
+	var WeaponUI =  load(\"res://Controllers/UI/WeaponItem.tscn\");
+	var i = 0;
+	
+	self.get_node(\"HBoxContainer/ItemDescription/VBoxContainer/Panel/Desc\").text = \"\";
+	
+	
+	for t in armorList.get_children():
+		armorList.remove_child(t);
+	for t in weaponList.get_children():
+		weaponList.remove_child(t);
+	
 	for t in items:
-		itemList.add_icon_item(global.itemInventoryIcons[items[t].type])
-		itemList.set_item_metadata(i, weakref(items[t]))
-		i = i + 1
-	for s in selected:
-		#TODO: check that the thing to select is there still, just to avoid error messages
-		itemList.select(s)
+		var item = null;
+		if ((items[t].slot == \"Head\") or (items[t].slot == \"Chest\") or (items[t].slot == \"Arms\") or (items[t].slot == \"Legs\")):
+			item = ArmorUI.instance();
+		else:
+			item = WeaponUI.instance();
+		#var Name = item.set_node(\"Button/HBoxContainer/Name\")
+		i = i+1
+		if item != null :
+			item.get_node(\"Button/HBoxContainer/Drop\").connect(\"pressed\", self, \"_on_Drop_pressed\",[i,weakref(items[t]),item]);
+			item.get_node(\"Button\").connect(\"pressed\", self, \"selectitem\",[items[t],item]);
+		
+		
+		
+		if ((items[t].slot == \"Head\") or (items[t].slot == \"Chest\") or (items[t].slot == \"Arms\") or (items[t].slot == \"Legs\")):
+			armorList.add_child(item);
+		else:
+			weaponList.add_child(item);
+		
+		
+		if (items[t].slot == \"Head\"):
+			item.get_node(\"Button\").icon = preload(\"res://Controllers/UI/images/headicon.png\")
+			if (!controller.actor.equipped_head or controller.actor.equipped_head.id != items[t].id):
+				item.equipped = false;
+				item._update();
+			else:
+				item.equipped = true;
+				item._update();
+		else: if (items[t].slot == \"Chest\"):
+			item.get_node(\"Button\").icon = preload(\"res://Controllers/UI/images/chesticon.png\")
+			if (!controller.actor.equipped_chest or controller.actor.equipped_chest.id != items[t].id):
+				item.equipped = false;
+				item._update();
+			else:
+				item.equipped = true;
+				item._update();
+		else: if (items[t].slot == \"Arms\"):
+			item.get_node(\"Button\").icon = preload(\"res://Controllers/UI/images/armsicon.png\")
+			if (!controller.actor.equipped_arms or controller.actor.equipped_arms.id != items[t].id):
+				item.equipped = false;
+				item._update();
+			else:
+				item.equipped = true;
+				item._update();
+		else: if (items[t].slot == \"Legs\"):
+			item.get_node(\"Button\").icon = preload(\"res://Controllers/UI/images/legsicon.png\")
+			if (!controller.actor.equipped_legs or controller.actor.equipped_legs.id != items[t].id):
+				item.equipped = false;
+				item._update();
+			else:
+				item.equipped = true;
+				item._update();
+		else: if (items[t].slot == \"Weapon\"):
+			item.get_node(\"Button\").icon = preload(\"res://Controllers/UI/images/swordicon.png\")
+			if (!controller.actor.equipped_weapon or controller.actor.equipped_weapon.id != items[t].id):
+				item.equipped = false;
+				item._update();
+			else:
+				item.equipped = true;
+				item._update();
+			
+			
+			
+			
+		if (item.equipped == false):
+			item.get_node(\"Button/HBoxContainer/Equip\").connect(\"pressed\", self, \"_on_Equip_pressed\",[i,weakref(items[t])]);
+			#selectitem(items[t],item);
+		else:
+			if (items[t].slot == \"Head\"):
+				item.get_node(\"Button/HBoxContainer/Equip\").connect(\"pressed\", self, \"_on_UnequipHead_pressed\");
+				#selectitem(items[t],item);
+			else: if (items[t].slot == \"Chest\"):
+				item.get_node(\"Button/HBoxContainer/Equip\").connect(\"pressed\", self, \"_on_UnequipChest_pressed\");
+			#	selectitem(items[t],item);
+			else: if (items[t].slot == \"Arms\"):
+				item.get_node(\"Button/HBoxContainer/Equip\").connect(\"pressed\", self, \"_on_UnequipArms_pressed\");
+				#selectitem(items[t],item);
+			else: if (items[t].slot == \"Legs\"):
+				item.get_node(\"Button/HBoxContainer/Equip\").connect(\"pressed\", self, \"_on_UnequipLegs_pressed\");
+				#selectitem(items[t],item);
+			else: if (items[t].slot == \"Weapon\"):
+				item.get_node(\"Button/HBoxContainer/Equip\").connect(\"pressed\", self, \"_on_UnequipWeapon_pressed\");
+				#selectitem(items[t],item);
+			
+
+		if ((items[t].slot == \"Head\") or (items[t].slot == \"Chest\") or (items[t].slot == \"Arms\") or (items[t].slot == \"Legs\")):
+			item.get_node(\"Button/HBoxContainer/Name\").text = items[t].iname;
+			item.get_node(\"Button/HBoxContainer/LDef\").text = str(items[t].defense[0]);
+			item.get_node(\"Button/HBoxContainer/MDef\").text = str(items[t].defense[1]);
+			item.get_node(\"Button/HBoxContainer/SDef\").text = str(items[t].defense[2]);
+			item.get_node(\"Button/HBoxContainer/Weight\").text = str(items[t].weight);
+		else: if (items[t].slot == \"Weapon\"):
+			item.get_node(\"Button/HBoxContainer/Name\").text = items[t].iname;
+			item.get_node(\"Button/HBoxContainer/Attack\").text = str(items[t].attack);
+			item.get_node(\"Button/HBoxContainer/LDef\").text = str(items[t].defense[0]);
+			item.get_node(\"Button/HBoxContainer/MDef\").text = str(items[t].defense[1]);
+			item.get_node(\"Button/HBoxContainer/SDef\").text = str(items[t].defense[2]);
+		
+
+func selectitem(id,item):
+	
+	self.get_node(\"HBoxContainer/ItemDescription/VBoxContainer/Panel/Desc\").text = id.desc;
+	if (itemlast != null):
+		itemlast.selected= false;
+		itemlast._update();
+	item.selected = true;
+	item._update();
+	itemlast = item;
+
+func deselectitem(item):
+	
+	self.get_node(\"HBoxContainer/ItemDescription/VBoxContainer/Panel/Desc\").text = \"\";
+	item.selected = false;
+	item._update();
+	
 
 func updateEquipment(eweapon, ehead, echest, earms, elegs):
 	if (eweapon == null):
@@ -69,17 +198,15 @@ func toggle():
 	else:
 		show()
 
-func _on_Drop_pressed():
-	var selected = itemList.get_selected_items()
-	if (selected.size() > 0):
-		var item = itemList.get_item_metadata(selected[0])
-		controller.drop_item(item.get_ref().id)
+func _on_Drop_pressed(selected,item,itemslot):
+	if (selected > 0):
+		deselectitem(itemslot)
+		controller.drop_item(item.get_ref().id);
 
-func _on_Equip_pressed():
-	var selected = itemList.get_selected_items()
-	if (selected.size() > 0):
-		var item = itemList.get_item_metadata(selected[0])
-		controller.equip_item(item.get_ref().id)
+func _on_Equip_pressed(selected,item):
+	if (selected > 0):
+		controller.equip_item(item.get_ref().id);
+		
 
 func _on_UnequipWeapon_pressed():
 	controller.unequip_item(\"Weapon\")
@@ -97,20 +224,21 @@ func _on_UnequipHead_pressed():
 	controller.unequip_item(\"Head\")
 "
 
-[node name="Inventory" type="PanelContainer" index="0"]
+[node name="Inventory" type="PanelContainer"]
 
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_right = 603.0
-margin_bottom = 414.0
 rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
 mouse_filter = 0
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
+theme = ExtResource( 1 )
 script = SubResource( 1 )
+_sections_unfolded = [ "Rect", "Theme" ]
 
 [node name="HBoxContainer" type="HBoxContainer" parent="." index="0"]
 
@@ -120,73 +248,559 @@ anchor_right = 0.0
 anchor_bottom = 0.0
 margin_left = 7.0
 margin_top = 7.0
-margin_right = 596.0
-margin_bottom = 501.0
+margin_right = 741.0
+margin_bottom = 637.0
 rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
 mouse_filter = 1
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
 alignment = 0
-_sections_unfolded = [ "Grow Direction" ]
+_sections_unfolded = [ "Grow Direction", "Margin", "Rect" ]
 
-[node name="PanelContainer" type="PanelContainer" parent="HBoxContainer" index="0"]
-
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_right = 393.0
-margin_bottom = 494.0
-rect_pivot_offset = Vector2( 0, 0 )
-mouse_filter = 0
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 3
-size_flags_vertical = 1
-_sections_unfolded = [ "Size Flags" ]
-
-[node name="ItemList" type="ItemList" parent="HBoxContainer/PanelContainer" index="0"]
+[node name="TabContainer" type="TabContainer" parent="HBoxContainer" index="0"]
 
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = 7.0
-margin_top = 7.0
-margin_right = 386.0
-margin_bottom = 487.0
+margin_right = 490.0
+margin_bottom = 630.0
+rect_min_size = Vector2( 490, 630 )
 rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = true
-focus_mode = 2
+rect_clip_content = false
 mouse_filter = 0
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
-items = [  ]
-select_mode = 0
-max_columns = 6
-same_column_width = true
-fixed_column_width = 64
-icon_mode = 1
-fixed_icon_size = Vector2( 0, 0 )
-_sections_unfolded = [ "Columns", "Icon", "Size Flags" ]
+theme = ExtResource( 1 )
+tab_align = 0
+tabs_visible = true
+_sections_unfolded = [ "Margin", "Rect", "Theme" ]
+
+[node name="Weapons" type="Tabs" parent="HBoxContainer/TabContainer" index="0"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 7.0
+margin_top = 28.0
+margin_right = -7.0
+margin_bottom = -7.0
+rect_min_size = Vector2( 454, 0 )
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+tab_align = 1
+scrolling_enabled = true
+_sections_unfolded = [ "Rect", "custom_styles" ]
+
+[node name="Panel" type="Panel" parent="HBoxContainer/TabContainer/Weapons" index="0"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 6.0
+margin_top = 25.0
+margin_right = 464.0
+margin_bottom = 589.0
+rect_min_size = Vector2( 458, 564 )
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+custom_styles/panel = ExtResource( 2 )
+_sections_unfolded = [ "Margin", "Rect", "Theme", "custom_styles" ]
+
+[node name="ScrollContainer" type="ScrollContainer" parent="HBoxContainer/TabContainer/Weapons/Panel" index="0"]
+
+editor/display_folded = true
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 1.0
+margin_right = 471.0
+margin_bottom = 564.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = true
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+scroll_horizontal_enabled = false
+scroll_horizontal = 0
+scroll_vertical_enabled = true
+scroll_vertical = 0
+scroll_deadzone = 0
+_sections_unfolded = [ "Rect", "Scroll" ]
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/TabContainer/Weapons/Panel/ScrollContainer" index="0"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+custom_constants/separation = 2
+alignment = 0
+_sections_unfolded = [ "Rect", "custom_constants" ]
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="HBoxContainer/TabContainer/Weapons" index="1"]
+
+editor/display_folded = true
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 54.0
+margin_right = -10.0
+margin_bottom = -571.0
+rect_min_size = Vector2( 412, 24 )
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+alignment = 0
+_sections_unfolded = [ "Margin", "Rect" ]
+
+[node name="Label" type="Label" parent="HBoxContainer/TabContainer/Weapons/HBoxContainer2" index="0"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 154.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 154, 24 )
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 4
+text = "Name"
+valign = 1
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+_sections_unfolded = [ "Rect" ]
+
+[node name="VSeparator3" type="VSeparator" parent="HBoxContainer/TabContainer/Weapons/HBoxContainer2" index="1"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 158.0
+margin_right = 162.0
+margin_bottom = 24.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+
+[node name="Label2" type="TextureRect" parent="HBoxContainer/TabContainer/Weapons/HBoxContainer2" index="2"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 166.0
+margin_right = 186.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 20, 0 )
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+texture = ExtResource( 3 )
+stretch_mode = 0
+_sections_unfolded = [ "Margin", "Rect" ]
+
+[node name="VSeparator" type="VSeparator" parent="HBoxContainer/TabContainer/Weapons/HBoxContainer2" index="3"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 190.0
+margin_right = 194.0
+margin_bottom = 24.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+
+[node name="Label5" type="TextureRect" parent="HBoxContainer/TabContainer/Weapons/HBoxContainer2" index="4"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 198.0
+margin_right = 218.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 20, 20 )
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+texture = ExtResource( 4 )
+stretch_mode = 0
+_sections_unfolded = [ "Rect" ]
+
+[node name="Label4" type="TextureRect" parent="HBoxContainer/TabContainer/Weapons/HBoxContainer2" index="5"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 222.0
+margin_right = 242.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 20, 0 )
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+texture = ExtResource( 5 )
+stretch_mode = 0
+_sections_unfolded = [ "Rect" ]
+
+[node name="Label3" type="TextureRect" parent="HBoxContainer/TabContainer/Weapons/HBoxContainer2" index="6"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 246.0
+margin_right = 266.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 20, 0 )
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+texture = ExtResource( 6 )
+stretch_mode = 0
+_sections_unfolded = [ "Rect" ]
+
+[node name="VSeparator2" type="VSeparator" parent="HBoxContainer/TabContainer/Weapons/HBoxContainer2" index="7"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 270.0
+margin_right = 274.0
+margin_bottom = 24.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+
+[node name="Armor" type="Tabs" parent="HBoxContainer/TabContainer" index="1"]
+
+visible = false
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 7.0
+margin_top = 28.0
+margin_right = -7.0
+margin_bottom = -7.0
+rect_min_size = Vector2( 400, 0 )
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+tab_align = 1
+scrolling_enabled = true
+_sections_unfolded = [ "Rect" ]
+
+[node name="Panel" type="Panel" parent="HBoxContainer/TabContainer/Armor" index="0"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 6.0
+margin_top = 25.0
+margin_right = 460.0
+margin_bottom = 589.0
+rect_min_size = Vector2( 458, 564 )
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+custom_styles/panel = ExtResource( 2 )
+_sections_unfolded = [ "Margin", "Rect", "Theme", "Visibility", "custom_styles" ]
+
+[node name="ScrollContainer" type="ScrollContainer" parent="HBoxContainer/TabContainer/Armor/Panel" index="0"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 1.0
+margin_right = 471.0
+margin_bottom = 564.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = true
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+scroll_horizontal_enabled = false
+scroll_horizontal = 0
+scroll_vertical_enabled = true
+scroll_vertical = 0
+scroll_deadzone = 0
+_sections_unfolded = [ "Rect", "Scroll", "Theme" ]
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/TabContainer/Armor/Panel/ScrollContainer" index="0"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+custom_constants/separation = 2
+alignment = 0
+_sections_unfolded = [ "Rect", "custom_constants" ]
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/TabContainer/Armor" index="1"]
+
+editor/display_folded = true
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 54.0
+margin_right = 466.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 412, 24 )
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+alignment = 0
+_sections_unfolded = [ "Margin", "Rect" ]
+
+[node name="Label" type="Label" parent="HBoxContainer/TabContainer/Armor/HBoxContainer" index="0"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 154.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 154, 24 )
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 4
+text = "Name"
+valign = 1
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+_sections_unfolded = [ "Rect" ]
+
+[node name="VSeparator" type="VSeparator" parent="HBoxContainer/TabContainer/Armor/HBoxContainer" index="1"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 158.0
+margin_right = 162.0
+margin_bottom = 24.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+
+[node name="Label5" type="TextureRect" parent="HBoxContainer/TabContainer/Armor/HBoxContainer" index="2"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 166.0
+margin_right = 186.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 20, 20 )
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+texture = ExtResource( 4 )
+stretch_mode = 0
+_sections_unfolded = [ "Rect" ]
+
+[node name="Label4" type="TextureRect" parent="HBoxContainer/TabContainer/Armor/HBoxContainer" index="3"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 190.0
+margin_right = 210.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 20, 0 )
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+texture = ExtResource( 5 )
+stretch_mode = 0
+_sections_unfolded = [ "Rect" ]
+
+[node name="Label3" type="TextureRect" parent="HBoxContainer/TabContainer/Armor/HBoxContainer" index="4"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 214.0
+margin_right = 234.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 20, 0 )
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+texture = ExtResource( 6 )
+stretch_mode = 0
+_sections_unfolded = [ "Rect" ]
+
+[node name="VSeparator2" type="VSeparator" parent="HBoxContainer/TabContainer/Armor/HBoxContainer" index="5"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 238.0
+margin_right = 242.0
+margin_bottom = 24.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+
+[node name="Label2" type="TextureRect" parent="HBoxContainer/TabContainer/Armor/HBoxContainer" index="6"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 246.0
+margin_right = 266.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 20, 0 )
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+texture = ExtResource( 7 )
+stretch_mode = 0
+_sections_unfolded = [ "Margin", "Rect" ]
+
+[node name="VSeparator3" type="VSeparator" parent="HBoxContainer/TabContainer/Armor/HBoxContainer" index="7"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 270.0
+margin_right = 274.0
+margin_bottom = 24.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
 
 [node name="ItemDescription" type="PanelContainer" parent="HBoxContainer" index="1"]
 
+editor/display_folded = true
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = 397.0
-margin_right = 505.0
-margin_bottom = 494.0
+margin_left = 494.0
+margin_top = 22.0
+margin_right = 734.0
+margin_bottom = 630.0
+rect_min_size = Vector2( 240, 608 )
 rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
 mouse_filter = 0
 mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 1
+size_flags_horizontal = 0
+size_flags_vertical = 8
+custom_styles/panel = ExtResource( 8 )
+_sections_unfolded = [ "Anchor", "Grow Direction", "Margin", "Rect", "Size Flags", "custom_styles" ]
 
-[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/ItemDescription" index="0"]
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/ItemDescription" index="0"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -194,9 +808,90 @@ anchor_right = 0.0
 anchor_bottom = 0.0
 margin_left = 7.0
 margin_top = 7.0
-margin_right = 101.0
-margin_bottom = 487.0
+margin_right = 233.0
+margin_bottom = 601.0
 rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+alignment = 2
+_sections_unfolded = [ "Rect" ]
+
+[node name="SkillsPanel" type="Panel" parent="HBoxContainer/ItemDescription/VBoxContainer" index="0"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 2.0
+margin_right = 226.0
+margin_bottom = 270.0
+rect_min_size = Vector2( 0, 268 )
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+custom_styles/panel = ExtResource( 2 )
+_sections_unfolded = [ "Margin", "Rect", "custom_styles" ]
+
+[node name="Panel" type="Panel" parent="HBoxContainer/ItemDescription/VBoxContainer" index="1"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 274.0
+margin_right = 226.0
+margin_bottom = 594.0
+rect_min_size = Vector2( 200, 320 )
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+custom_styles/panel = ExtResource( 2 )
+_sections_unfolded = [ "Rect", "custom_styles" ]
+
+[node name="Desc" type="Label" parent="HBoxContainer/ItemDescription/VBoxContainer/Panel" index="0"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 10.0
+margin_top = 10.0
+margin_right = 193.0
+margin_bottom = 313.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 4
+autowrap = true
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/ItemDescription" index="1"]
+
+editor/display_folded = true
+visible = false
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 233.0
+margin_bottom = 601.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
 mouse_filter = 1
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
@@ -209,9 +904,10 @@ anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_right = 43.0
-margin_bottom = 480.0
+margin_right = 45.0
+margin_bottom = 594.0
 rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
 focus_mode = 2
 mouse_filter = 0
 mouse_default_cursor_shape = 0
@@ -231,10 +927,11 @@ anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = 47.0
-margin_right = 94.0
-margin_bottom = 480.0
+margin_left = 49.0
+margin_right = 98.0
+margin_bottom = 594.0
 rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
 focus_mode = 2
 mouse_filter = 0
 mouse_default_cursor_shape = 0
@@ -250,19 +947,23 @@ align = 1
 
 [node name="Equipment" type="VBoxContainer" parent="HBoxContainer" index="2"]
 
+editor/display_folded = true
+visible = false
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = 509.0
-margin_right = 589.0
-margin_bottom = 494.0
+margin_left = 738.0
+margin_right = 820.0
+margin_bottom = 630.0
 rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
 mouse_filter = 0
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
 alignment = 0
+_sections_unfolded = [ "Anchor", "Rect" ]
 
 [node name="Weapon" type="PanelContainer" parent="HBoxContainer/Equipment" index="0"]
 
@@ -270,9 +971,10 @@ anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_right = 80.0
-margin_bottom = 70.0
+margin_right = 82.0
+margin_bottom = 78.0
 rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
 mouse_filter = 0
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
@@ -286,9 +988,10 @@ anchor_right = 0.0
 anchor_bottom = 0.0
 margin_left = 7.0
 margin_top = 7.0
-margin_right = 73.0
-margin_bottom = 63.0
+margin_right = 75.0
+margin_bottom = 71.0
 rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
 mouse_filter = 1
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
@@ -301,14 +1004,15 @@ anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_right = 66.0
+margin_right = 68.0
 margin_bottom = 32.0
 rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
 mouse_filter = 1
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
-texture = ExtResource( 1 )
+texture = ExtResource( 9 )
 stretch_mode = 0
 
 [node name="UnequipWeapon" type="Button" parent="HBoxContainer/Equipment/Weapon/VBoxContainer" index="1"]
@@ -318,9 +1022,10 @@ anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_top = 36.0
-margin_right = 66.0
-margin_bottom = 56.0
+margin_right = 68.0
+margin_bottom = 64.0
 rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
 focus_mode = 2
 mouse_filter = 0
 mouse_default_cursor_shape = 0
@@ -336,14 +1041,16 @@ align = 1
 
 [node name="Head" type="PanelContainer" parent="HBoxContainer/Equipment" index="1"]
 
+editor/display_folded = true
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_top = 74.0
-margin_right = 80.0
-margin_bottom = 176.0
+margin_top = 82.0
+margin_right = 82.0
+margin_bottom = 192.0
 rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
 mouse_filter = 0
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
@@ -357,9 +1064,10 @@ anchor_right = 0.0
 anchor_bottom = 0.0
 margin_left = 7.0
 margin_top = 7.0
-margin_right = 73.0
-margin_bottom = 95.0
+margin_right = 75.0
+margin_bottom = 103.0
 rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
 mouse_filter = 1
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
@@ -372,14 +1080,15 @@ anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_right = 66.0
+margin_right = 68.0
 margin_bottom = 64.0
 rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
 mouse_filter = 1
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
-texture = ExtResource( 2 )
+texture = ExtResource( 10 )
 stretch_mode = 0
 
 [node name="UnequipHead" type="Button" parent="HBoxContainer/Equipment/Head/VBoxContainer" index="1"]
@@ -389,9 +1098,10 @@ anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_top = 68.0
-margin_right = 66.0
-margin_bottom = 88.0
+margin_right = 68.0
+margin_bottom = 96.0
 rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
 focus_mode = 2
 mouse_filter = 0
 mouse_default_cursor_shape = 0
@@ -407,14 +1117,16 @@ align = 1
 
 [node name="Chest" type="PanelContainer" parent="HBoxContainer/Equipment" index="2"]
 
+editor/display_folded = true
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_top = 180.0
-margin_right = 80.0
-margin_bottom = 282.0
+margin_top = 196.0
+margin_right = 82.0
+margin_bottom = 306.0
 rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
 mouse_filter = 0
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
@@ -428,9 +1140,10 @@ anchor_right = 0.0
 anchor_bottom = 0.0
 margin_left = 7.0
 margin_top = 7.0
-margin_right = 73.0
-margin_bottom = 95.0
+margin_right = 75.0
+margin_bottom = 103.0
 rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
 mouse_filter = 1
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
@@ -443,14 +1156,15 @@ anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_right = 66.0
+margin_right = 68.0
 margin_bottom = 64.0
 rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
 mouse_filter = 1
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
-texture = ExtResource( 3 )
+texture = ExtResource( 11 )
 stretch_mode = 0
 
 [node name="UnequipChest" type="Button" parent="HBoxContainer/Equipment/Chest/VBoxContainer" index="1"]
@@ -460,9 +1174,10 @@ anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_top = 68.0
-margin_right = 66.0
-margin_bottom = 88.0
+margin_right = 68.0
+margin_bottom = 96.0
 rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
 focus_mode = 2
 mouse_filter = 0
 mouse_default_cursor_shape = 0
@@ -478,14 +1193,16 @@ align = 1
 
 [node name="Arms" type="PanelContainer" parent="HBoxContainer/Equipment" index="3"]
 
+editor/display_folded = true
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_top = 286.0
-margin_right = 80.0
-margin_bottom = 388.0
+margin_top = 310.0
+margin_right = 82.0
+margin_bottom = 420.0
 rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
 mouse_filter = 0
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
@@ -499,9 +1216,10 @@ anchor_right = 0.0
 anchor_bottom = 0.0
 margin_left = 7.0
 margin_top = 7.0
-margin_right = 73.0
-margin_bottom = 95.0
+margin_right = 75.0
+margin_bottom = 103.0
 rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
 mouse_filter = 1
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
@@ -514,14 +1232,15 @@ anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_right = 66.0
+margin_right = 68.0
 margin_bottom = 64.0
 rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
 mouse_filter = 1
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
-texture = ExtResource( 4 )
+texture = ExtResource( 12 )
 stretch_mode = 0
 
 [node name="UnequipArms" type="Button" parent="HBoxContainer/Equipment/Arms/VBoxContainer" index="1"]
@@ -531,9 +1250,10 @@ anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_top = 68.0
-margin_right = 66.0
-margin_bottom = 88.0
+margin_right = 68.0
+margin_bottom = 96.0
 rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
 focus_mode = 2
 mouse_filter = 0
 mouse_default_cursor_shape = 0
@@ -549,14 +1269,16 @@ align = 1
 
 [node name="Legs" type="PanelContainer" parent="HBoxContainer/Equipment" index="4"]
 
+editor/display_folded = true
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_top = 392.0
-margin_right = 80.0
-margin_bottom = 494.0
+margin_top = 424.0
+margin_right = 82.0
+margin_bottom = 534.0
 rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
 mouse_filter = 0
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
@@ -570,9 +1292,10 @@ anchor_right = 0.0
 anchor_bottom = 0.0
 margin_left = 7.0
 margin_top = 7.0
-margin_right = 73.0
-margin_bottom = 95.0
+margin_right = 75.0
+margin_bottom = 103.0
 rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
 mouse_filter = 1
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
@@ -585,14 +1308,15 @@ anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_right = 66.0
+margin_right = 68.0
 margin_bottom = 64.0
 rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
 mouse_filter = 1
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
-texture = ExtResource( 5 )
+texture = ExtResource( 13 )
 stretch_mode = 0
 
 [node name="UnequipLegs" type="Button" parent="HBoxContainer/Equipment/Legs/VBoxContainer" index="1"]
@@ -602,9 +1326,10 @@ anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_top = 68.0
-margin_right = 66.0
-margin_bottom = 88.0
+margin_right = 68.0
+margin_bottom = 96.0
 rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
 focus_mode = 2
 mouse_filter = 0
 mouse_default_cursor_shape = 0
@@ -618,18 +1343,12 @@ text = "Unequip"
 flat = false
 align = 1
 
-[connection signal="pressed" from="HBoxContainer/ItemDescription/HBoxContainer/Drop" to="." method="_on_Drop_pressed"]
+[node name="CanvasLayer" type="CanvasLayer" parent="." index="1"]
 
-[connection signal="pressed" from="HBoxContainer/ItemDescription/HBoxContainer/Equip" to="." method="_on_Equip_pressed"]
-
-[connection signal="pressed" from="HBoxContainer/Equipment/Weapon/VBoxContainer/UnequipWeapon" to="." method="_on_UnequipWeapon_pressed"]
-
-[connection signal="pressed" from="HBoxContainer/Equipment/Head/VBoxContainer/UnequipHead" to="." method="_on_UnequipHead_pressed"]
-
-[connection signal="pressed" from="HBoxContainer/Equipment/Chest/VBoxContainer/UnequipChest" to="." method="_on_UnequipChest_pressed"]
-
-[connection signal="pressed" from="HBoxContainer/Equipment/Arms/VBoxContainer/UnequipArms" to="." method="_on_UnequipArms_pressed"]
-
-[connection signal="pressed" from="HBoxContainer/Equipment/Legs/VBoxContainer/UnequipLegs" to="." method="_on_UnequipLegs_pressed"]
+layer = 1
+offset = Vector2( 0, 0 )
+rotation = 0.0
+scale = Vector2( 1, 1 )
+transform = Transform2D( 1, 0, 0, 1, 0, 0 )
 
 

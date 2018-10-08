@@ -169,6 +169,10 @@ size = 1.0
 near = 0.05
 far = 100.0
 
+[node name="DirectionalLight" parent="Actor" index="5"]
+
+light_cull_mask = -1
+
 [node name="ClickCast" type="RayCast2D" parent="." index="1"]
 
 enabled = false
@@ -192,7 +196,6 @@ margin_bottom = 32.0
 [node name="Inventory" parent="CanvasLayer" index="1" instance=ExtResource( 3 )]
 
 visible = false
-rect_clip_content = false
 _sections_unfolded = [ "Margin", "Rect" ]
 
 [node name="HUD" parent="CanvasLayer" index="2" instance=ExtResource( 4 )]

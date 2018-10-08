@@ -8,7 +8,11 @@
 script/source = "extends \"res://Items/WeaponItem.gd\"
 
 const type = \"SwordItem\"
+const iname = \"Iron Sword\"
 const slot = \"Weapon\"
+const attack = 10
+const defense = [0,0,0,0]
+const desc = \"A rather large Iron Sword. As it was not folded over a thousand times, it has only modest cutting power.\"
 
 onready var r_mesh = $Model/Sword
 
@@ -19,7 +23,7 @@ func rMesh():
 
 extents = Vector3( 0.117428, 0.0243001, 0.597227 )
 
-[node name="StaticBody" type="StaticBody" index="0"]
+[node name="StaticBody" type="StaticBody"]
 
 input_ray_pickable = true
 input_capture_on_drag = false
