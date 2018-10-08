@@ -1,0 +1,24 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://Actors/Enemies/Egg/Assets/EggEnemy.dae" type="PackedScene" id=1]
+
+[sub_resource type="GDScript" id=1]
+
+script/source = "extends Spatial
+
+func _ready():
+	var new_npc = load(\"res://Controllers/NPCs/KnightController.tscn\").instance()
+	new_npc.name = uuid.v4()
+	new_npc.setSpawnPosition(global_transform.origin)
+	get_parent().call_deferred(\"add_child\", new_npc)
+	get_parent().call_deferred(\"remove_child\", self)
+	queue_free()
+"
+
+[node name="KnightSpawner" type="Spatial"]
+
+script = SubResource( 1 )
+
+[node name="Scene Root" parent="." index="0" instance=ExtResource( 1 )]
+
+

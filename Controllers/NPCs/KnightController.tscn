@@ -1,0 +1,78 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://Actors/NPCs/KnightActor.tscn" type="PackedScene" id=1]
+
+[sub_resource type="GDScript" id=1]
+
+script/source = "extends \"res://Controllers/NPCController.gd\"
+
+var enemy_list = []
+
+var get_agro_range = 750.0
+var keep_agro_range = 1500.0
+var swing_range = 350.0
+
+func _antagonizeEnemy():
+	return false
+
+func _checkForStartCombat():
+	return false
+
+func _ready():
+	randomize()
+	actor = $Actor
+	actor.setPosition(spawnPos)
+
+var ai_cooldown_ends = 0
+func startAICooldown(ai_cooldown):
+	ai_cooldown_ends = global.clock + ai_cooldown
+func isOnAICooldown():
+	return global.clock < ai_cooldown_ends
+
+func _process(delta):
+	if (dead_confirmed and !isOnDeadCooldown()):
+		queue_free()
+	else: if (!dead_confirmed and actor.is_dead):
+		dead_confirmed = true
+		startDeadCooldown()
+	else: if (!isOnAICooldown()):
+		var check_friendlies = _checkForStartCombat()
+		var check_enemies = _antagonizeEnemy()
+		var lost = []
+		for e in enemy_list:
+			if (_checkIsController(e) and (_distanceTo(e) > keep_agro_range or e.isDead())):
+				lost.append(e)
+		for l in lost:
+			enemy_list.erase(l)
+		if (!actor.in_combat and enemy_list.size() > 0):
+			actor.setInCombat(true)
+			#TODO: any stuff that needs to be done when entering combat
+		else: if (actor.in_combat and enemy_list.size() == 0):
+			actor.setInCombat(false)
+			#TODO: any stuff that needs to be done when exiting combat
+		
+		if (actor.in_combat):
+			var decided = false
+			var closest_e = null
+			var closest_d = 999999.9
+			for e in enemy_list:
+				var dist = _distanceTo(e)
+				if (dist < closest_d):
+					closest_d = dist
+					closest_e = e
+				if (closest_d <= swing_range):
+					actor.queueAbilityTowardsByName(\"SwordSlash\", e.getPosition())
+					decided = true
+					break
+			if (!decided and closest_e != null):
+				actor.walkTowards(getPosition() + ((closest_e.getPosition() - getPosition()).normalized() * (closest_d - 120.0)))
+			startAICooldown(0.050)
+"
+
+[node name="Node" type="Node"]
+
+script = SubResource( 1 )
+
+[node name="Actor" parent="." index="0" instance=ExtResource( 1 )]
+
+
