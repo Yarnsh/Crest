@@ -182,7 +182,7 @@ func highlight():
 	pass
 
 func __DIALOGUE():
-	pass"
+	return {\"title\": \"Knight\", \"content\": \"EW! I don't like em! I don't like goblins! WHUUUUUUUU!\", \"responses\": [\"Agreed\"]}"
 
 [sub_resource type="BoxShape" id=8]
 
