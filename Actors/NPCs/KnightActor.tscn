@@ -174,18 +174,21 @@ surfaces/0 = {
 "vertex_count": 202
 }
 
-[sub_resource type="GDScript" id=8]
+[sub_resource type="GDScript" id=7]
 
 script/source = "extends StaticBody
 
 func highlight():
+	pass
+
+func __DIALOGUE():
 	pass"
 
-[sub_resource type="BoxShape" id=7]
+[sub_resource type="BoxShape" id=8]
 
 extents = Vector3( 0.249167, 0.804334, 0.267131 )
 
-[node name="Actor" type="KinematicBody2D" index="0"]
+[node name="Actor" type="KinematicBody2D"]
 
 input_pickable = true
 collision_layer = 1
@@ -206,8 +209,6 @@ _sections_unfolded = [ "Material", "Transform", "Visibility", "Z Index" ]
 
 [node name="Skeleton" parent="Spatial/Model/Armature" index="0"]
 
-bones/9/bound_children = [ NodePath("Held_L") ]
-bones/16/bound_children = [ NodePath("Held_R") ]
 _sections_unfolded = [ "bones", "bones/16", "bones/21", "bones/22", "bones/23", "bones/24", "bones/25", "bones/26", "bones/9" ]
 
 [node name="BodyDefault" parent="Spatial/Model/Armature/Skeleton" index="0"]
@@ -310,12 +311,12 @@ friction = 1.0
 bounce = 0.0
 constant_linear_velocity = Vector3( 0, 0, 0 )
 constant_angular_velocity = Vector3( 0, 0, 0 )
-script = SubResource( 8 )
+script = SubResource( 7 )
 
 [node name="CollisionShape" type="CollisionShape" parent="Spatial/Activate" index="0"]
 
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.802705, 0.0582862 )
-shape = SubResource( 7 )
+shape = SubResource( 8 )
 disabled = false
 
 [node name="Abilities" type="Node2D" parent="." index="2"]

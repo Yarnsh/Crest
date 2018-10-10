@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://Actors/PlayerActor.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Controllers/UI/Damage.tscn" type="PackedScene" id=2]
@@ -6,7 +6,8 @@
 [ext_resource path="res://Controllers/UI/HUD.tscn" type="PackedScene" id=4]
 [ext_resource path="res://Controllers/UI/Abilities.tscn" type="PackedScene" id=5]
 [ext_resource path="res://Controllers/UI/Respawn.tscn" type="PackedScene" id=6]
-[ext_resource path="res://Controllers/UI/Markermat.material" type="Material" id=7]
+[ext_resource path="res://Controllers/UI/Dialogue.tscn" type="PackedScene" id=7]
+[ext_resource path="res://Controllers/UI/Markermat.material" type="Material" id=8]
 
 [sub_resource type="GDScript" id=1]
 
@@ -61,10 +62,13 @@ func _unhandled_input(event):
 				else:
 					#TODO: ignore items on the ground if in combat
 					var atClick = _get_item_at_mouse()
-					if (atClick != null and atClick.has_method(\"__ITEM\")):
-						actor.pickUp(atClick)
-					else: if (atClick != null and atClick.has_method(\"__TRANSITION\")):
-						actor.moveThrough(atClick)
+					if (atClick != null):
+						if (atClick.has_method(\"__ITEM\")):
+							actor.pickUp(atClick)
+						else: if (atClick.has_method(\"__TRANSITION\")):
+							actor.moveThrough(atClick)
+						else: if (atClick.has_method(\"__DIALOGUE\")):
+							dialogueUI.show_dialogue(\"TEST TITLE\", \"TEST TALKING\", [\"Aye mate how ya do\", \"Heck off\"])
 		
 		else: if (event.is_action(\"inventory\")):
 			_toggle_inventory()
@@ -108,7 +112,7 @@ surfaces/0 = {
 "blend_shape_data": [  ],
 "format": 98071,
 "index_count": 48,
-"material": ExtResource( 7 ),
+"material": ExtResource( 8 ),
 "name": "Markermat",
 "primitive": 4,
 "skeleton_aabb": [  ],
@@ -193,7 +197,7 @@ margin_bottom = 1054.0
 [node name="Inventory" parent="CanvasLayer" index="1" instance=ExtResource( 3 )]
 
 visible = false
-_sections_unfolded = [ "Margin", "Rect" ]
+_sections_unfolded = [ "Margin", "Rect", "Theme" ]
 
 [node name="HUD" parent="CanvasLayer" index="2" instance=ExtResource( 4 )]
 
@@ -208,6 +212,14 @@ margin_bottom = 22.0
 [node name="Respawn" parent="CanvasLayer" index="4" instance=ExtResource( 6 )]
 
 visible = false
+
+[node name="Dialogue" parent="CanvasLayer" index="5" instance=ExtResource( 7 )]
+
+visible = false
+margin_left = 726.0
+margin_top = 517.0
+margin_right = 1182.0
+margin_bottom = 569.0
 
 [node name="WalkMarker" type="Spatial" parent="." index="3"]
 
