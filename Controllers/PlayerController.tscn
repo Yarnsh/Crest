@@ -68,8 +68,9 @@ func _unhandled_input(event):
 						else: if (atClick.has_method(\"__TRANSITION\")):
 							actor.moveThrough(atClick)
 						else: if (atClick.has_method(\"__DIALOGUE\")):
-							var d = atClick.__DIALOGUE()
-							dialogueUI.show_dialogue(d.title, d.content, d.responses)
+							var d = atClick.__DIALOGUE(name)
+							if (d):
+								dialogueUI.show_dialogue(d.title, d.content, d.responses, atClick)
 		
 		else: if (event.is_action(\"inventory\")):
 			_toggle_inventory()

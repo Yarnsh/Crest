@@ -1,7 +1,39 @@
 [gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://Controllers/UI/Themes/Goldbordertheme.tres" type="Theme" id=1]
-[ext_resource path="res://Controllers/UI/Item.gd" type="Script" id=2]
+
+[sub_resource type="GDScript" id=1]
+
+script/source = "extends PanelContainer
+
+onready var Title = $VBoxContainer/Title
+onready var Content = $VBoxContainer/Content
+onready var Responses = $VBoxContainer/Responses
+
+var talker
+
+func show_dialogue(title, content, responses, talking_to):
+	talker = talking_to
+	for r in Responses.get_children():
+		Responses.remove_child(r)
+		r.queue_free()
+	Title.text = title
+	Content.text = content
+	for r in responses:
+		var b = Button.new()
+		b.text = r
+		Responses.add_child(b)
+		b.connect(\"pressed\", self, \"respond\", [r])
+	show()
+
+func respond(response):
+	var d
+	if talker:
+		d = talker.__RESPOND(get_parent().get_parent().name, response)
+	if d:
+		show_dialogue(d.title, d.content, d.responses, talker)
+	else:
+		hide()"
 
 [node name="Dialogue" type="PanelContainer" index="0"]
 
@@ -19,7 +51,7 @@ mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
 theme = ExtResource( 1 )
-script = ExtResource( 2 )
+script = SubResource( 1 )
 _sections_unfolded = [ "Rect", "Theme", "custom_styles" ]
 
 [node name="VBoxContainer" type="VBoxContainer" parent="." index="0"]

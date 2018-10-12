@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=2]
+[gd_scene load_steps=18 format=2]
 
 [ext_resource path="res://Actors/Assets/Character.dae" type="PackedScene" id=1]
 [ext_resource path="res://Actors/Assets/Material.material" type="Material" id=2]
@@ -7,7 +7,8 @@
 [ext_resource path="res://Items/Armor/Assets/Gauntlets.material" type="Material" id=5]
 [ext_resource path="res://Items/Armor/Assets/Greaves.material" type="Material" id=6]
 [ext_resource path="res://Items/Armor/Assets/Helm.material" type="Material" id=7]
-[ext_resource path="res://Abilities/SwordSlash.tscn" type="PackedScene" id=8]
+[ext_resource path="res://Actors/Dialogue/FirstKnightDialogue.gd" type="Script" id=8]
+[ext_resource path="res://Abilities/SwordSlash.tscn" type="PackedScene" id=9]
 
 [sub_resource type="GDScript" id=1]
 
@@ -178,11 +179,21 @@ surfaces/0 = {
 
 script/source = "extends StaticBody
 
+export(GDScript) var dialogue
+var d
+
+func _ready():
+	if not d:
+		d = dialogue.new()
+
 func highlight():
 	pass
 
-func __DIALOGUE():
-	return {\"title\": \"Knight\", \"content\": \"EW! I don't like em! I don't like goblins! WHUUUUUUUU!\", \"responses\": [\"Agreed\"]}"
+func __DIALOGUE(talker_id):
+	return d.get(talker_id)
+
+func __RESPOND(talker_id, respose):
+	return d.respond_get(talker_id, respose)"
 
 [sub_resource type="BoxShape" id=8]
 
@@ -312,6 +323,7 @@ bounce = 0.0
 constant_linear_velocity = Vector3( 0, 0, 0 )
 constant_angular_velocity = Vector3( 0, 0, 0 )
 script = SubResource( 7 )
+dialogue = ExtResource( 8 )
 
 [node name="CollisionShape" type="CollisionShape" parent="Spatial/Activate" index="0"]
 
@@ -321,7 +333,7 @@ disabled = false
 
 [node name="Abilities" type="Node2D" parent="." index="2"]
 
-[node name="SwordSlash" parent="Abilities" index="0" instance=ExtResource( 8 )]
+[node name="SwordSlash" parent="Abilities" index="0" instance=ExtResource( 9 )]
 
 
 [editable path="Spatial/Model"]
