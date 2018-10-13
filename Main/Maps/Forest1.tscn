@@ -1,22 +1,23 @@
-[gd_scene load_steps=28 format=2]
+[gd_scene load_steps=29 format=2]
 
 [ext_resource path="res://Main/Maps/Map.gd" type="Script" id=1]
 [ext_resource path="res://Main/Maps/Elements/Transition.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Controllers/Enemies/Spawners/EggSpawner.tscn" type="PackedScene" id=3]
-[ext_resource path="res://Items/Armor/KnightChest.tscn" type="PackedScene" id=4]
-[ext_resource path="res://Items/SwordItem.tscn" type="PackedScene" id=5]
-[ext_resource path="res://Items/Armor/KnightGauntlets.tscn" type="PackedScene" id=6]
-[ext_resource path="res://Items/Armor/KnightGreaves.tscn" type="PackedScene" id=7]
-[ext_resource path="res://Items/Armor/KnightHelm.tscn" type="PackedScene" id=8]
-[ext_resource path="res://Items/Armor/HunterChest.tscn" type="PackedScene" id=9]
-[ext_resource path="res://Items/Armor/HunterGauntlets.tscn" type="PackedScene" id=10]
-[ext_resource path="res://Items/Armor/HunterGreaves.tscn" type="PackedScene" id=11]
-[ext_resource path="res://Items/Armor/HunterHelm.tscn" type="PackedScene" id=12]
-[ext_resource path="res://Items/BowItem.tscn" type="PackedScene" id=13]
-[ext_resource path="res://Main/Maps/Assets/TallForestF1-nav.dae" type="PackedScene" id=14]
-[ext_resource path="res://Main/Maps/Tree_env.tres" type="Environment" id=15]
-[ext_resource path="res://Main/Maps/Assets/TallForestF1.dae" type="PackedScene" id=16]
-[ext_resource path="res://Main/Maps/Assets/TreeShader.tres" type="Material" id=17]
+[ext_resource path="res://Controllers/NPCs/Spawners/KnightSpawner.tscn" type="PackedScene" id=4]
+[ext_resource path="res://Items/Armor/KnightChest.tscn" type="PackedScene" id=5]
+[ext_resource path="res://Items/SwordItem.tscn" type="PackedScene" id=6]
+[ext_resource path="res://Items/Armor/KnightGauntlets.tscn" type="PackedScene" id=7]
+[ext_resource path="res://Items/Armor/KnightGreaves.tscn" type="PackedScene" id=8]
+[ext_resource path="res://Items/Armor/KnightHelm.tscn" type="PackedScene" id=9]
+[ext_resource path="res://Items/Armor/HunterChest.tscn" type="PackedScene" id=10]
+[ext_resource path="res://Items/Armor/HunterGauntlets.tscn" type="PackedScene" id=11]
+[ext_resource path="res://Items/Armor/HunterGreaves.tscn" type="PackedScene" id=12]
+[ext_resource path="res://Items/Armor/HunterHelm.tscn" type="PackedScene" id=13]
+[ext_resource path="res://Items/BowItem.tscn" type="PackedScene" id=14]
+[ext_resource path="res://Main/Maps/Assets/TallForestF1-nav.dae" type="PackedScene" id=15]
+[ext_resource path="res://Main/Maps/Tree_env.tres" type="Environment" id=16]
+[ext_resource path="res://Main/Maps/Assets/TallForestF1.dae" type="PackedScene" id=17]
+[ext_resource path="res://Main/Maps/Assets/TreeShader.tres" type="Material" id=18]
 
 [sub_resource type="BoxShape" id=1]
 
@@ -157,9 +158,13 @@ script = SubResource( 2 )
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 44.7886, 0, -19.3506 )
 script = SubResource( 2 )
 
+[node name="KnightSpawner" parent="NPCs" index="2" instance=ExtResource( 4 )]
+
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -5.19969, 0, 53.7972 )
+
 [node name="Items" type="Node" parent="." index="3"]
 
-[node name="StaticBody5" parent="Items" index="0" instance=ExtResource( 4 )]
+[node name="StaticBody5" parent="Items" index="0" instance=ExtResource( 5 )]
 
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -8.19223, 0, 52.608 )
 
@@ -180,36 +185,36 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -6.11538, 0, 54.3133 )
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -9.56368, 0.0157345, 53.9309 )
 script = SubResource( 3 )
 
-[node name="StaticBody6" parent="Items" index="5" instance=ExtResource( 9 )]
+[node name="StaticBody6" parent="Items" index="5" instance=ExtResource( 10 )]
 
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.800766, 0, 54.246 )
 script = SubResource( 4 )
 _sections_unfolded = [ "Collision", "Transform" ]
 
-[node name="StaticBody7" parent="Items" index="6" instance=ExtResource( 10 )]
+[node name="StaticBody7" parent="Items" index="6" instance=ExtResource( 11 )]
 
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2.4128, 0, 56.2297 )
 script = SubResource( 5 )
 _sections_unfolded = [ "Collision", "Transform" ]
 
-[node name="StaticBody8" parent="Items" index="7" instance=ExtResource( 11 )]
+[node name="StaticBody8" parent="Items" index="7" instance=ExtResource( 12 )]
 
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.02275, 0, 56.26 )
 script = SubResource( 6 )
 _sections_unfolded = [ "Collision", "Transform" ]
 
-[node name="StaticBody9" parent="Items" index="8" instance=ExtResource( 12 )]
+[node name="StaticBody9" parent="Items" index="8" instance=ExtResource( 13 )]
 
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2.59415, 0, 54.3186 )
 script = SubResource( 7 )
 _sections_unfolded = [ "Collision", "Transform" ]
 
-[node name="StaticBody10" parent="Items" index="9" instance=ExtResource( 13 )]
+[node name="StaticBody10" parent="Items" index="9" instance=ExtResource( 14 )]
 
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.317092, 0, 55.6567 )
 script = SubResource( 8 )
 
-[node name="Scene Root" parent="." index="4" instance=ExtResource( 14 )]
+[node name="Scene Root" parent="." index="4" instance=ExtResource( 15 )]
 
 visible = false
 
@@ -274,15 +279,15 @@ _sections_unfolded = [ "Light", "Shadow" ]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." index="6"]
 
-environment = ExtResource( 15 )
+environment = ExtResource( 16 )
 
-[node name="Scene Root2" parent="." index="7" instance=ExtResource( 16 )]
+[node name="Scene Root2" parent="." index="7" instance=ExtResource( 17 )]
 
 _sections_unfolded = [ "Transform" ]
 
 [node name="Level" parent="Scene Root2" index="0"]
 
-material/0 = ExtResource( 17 )
+material/0 = ExtResource( 18 )
 _sections_unfolded = [ "material" ]
 
 

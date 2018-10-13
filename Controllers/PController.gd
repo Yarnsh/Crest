@@ -23,6 +23,7 @@ onready var abilityUI = $CanvasLayer/Abilities
 onready var HUD = $CanvasLayer/HUD
 onready var damageUI = $CanvasLayer/Damage
 onready var respawnUI = $CanvasLayer/Respawn
+onready var dialogueUI = $CanvasLayer/Dialogue
 onready var WalkMarker = $WalkMarker
 
 var mouse_arrow = load("res://arrow.png")
