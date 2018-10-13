@@ -7,8 +7,9 @@
 [ext_resource path="res://Items/Armor/Assets/Gauntlets.material" type="Material" id=5]
 [ext_resource path="res://Items/Armor/Assets/Greaves.material" type="Material" id=6]
 [ext_resource path="res://Items/Armor/Assets/Helm.material" type="Material" id=7]
-[ext_resource path="res://Actors/Dialogue/FirstKnightDialogue.gd" type="Script" id=8]
-[ext_resource path="res://Abilities/SwordSlash.tscn" type="PackedScene" id=9]
+[ext_resource path="res://Actors/Elements/DialogueCollider.tscn" type="PackedScene" id=8]
+[ext_resource path="res://Actors/Dialogue/FirstKnightDialogue.gd" type="Script" id=9]
+[ext_resource path="res://Abilities/SwordSlash.tscn" type="PackedScene" id=10]
 
 [sub_resource type="GDScript" id=1]
 
@@ -175,31 +176,11 @@ surfaces/0 = {
 "vertex_count": 202
 }
 
-[sub_resource type="GDScript" id=7]
-
-script/source = "extends StaticBody
-
-export(GDScript) var dialogue
-var d
-
-func _ready():
-	if not d:
-		d = dialogue.new()
-
-func highlight():
-	pass
-
-func __DIALOGUE(talker_id):
-	return d.get(talker_id)
-
-func __RESPOND(talker_id, respose):
-	return d.respond_get(talker_id, respose)"
-
-[sub_resource type="BoxShape" id=8]
+[sub_resource type="BoxShape" id=7]
 
 extents = Vector3( 0.249167, 0.804334, 0.267131 )
 
-[node name="Actor" type="KinematicBody2D"]
+[node name="Actor" type="KinematicBody2D" index="0"]
 
 input_pickable = true
 collision_layer = 1
@@ -220,6 +201,8 @@ _sections_unfolded = [ "Material", "Transform", "Visibility", "Z Index" ]
 
 [node name="Skeleton" parent="Spatial/Model/Armature" index="0"]
 
+bones/9/bound_children = [ NodePath("Held_L") ]
+bones/16/bound_children = [ NodePath("Held_R") ]
 _sections_unfolded = [ "bones", "bones/16", "bones/21", "bones/22", "bones/23", "bones/24", "bones/25", "bones/26", "bones/9" ]
 
 [node name="BodyDefault" parent="Spatial/Model/Armature/Skeleton" index="0"]
@@ -312,28 +295,19 @@ mesh = SubResource( 6 )
 skeleton = NodePath("..")
 material/0 = null
 
-[node name="Activate" type="StaticBody" parent="Spatial" index="1"]
+[node name="Dialogue" parent="Spatial" index="1" instance=ExtResource( 8 )]
 
-input_ray_pickable = true
-input_capture_on_drag = false
-collision_layer = 1
-collision_mask = 1
-friction = 1.0
-bounce = 0.0
-constant_linear_velocity = Vector3( 0, 0, 0 )
-constant_angular_velocity = Vector3( 0, 0, 0 )
-script = SubResource( 7 )
-dialogue = ExtResource( 8 )
+dialogue = ExtResource( 9 )
 
-[node name="CollisionShape" type="CollisionShape" parent="Spatial/Activate" index="0"]
+[node name="CollisionShape" type="CollisionShape" parent="Spatial/Dialogue" index="0"]
 
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.802705, 0.0582862 )
-shape = SubResource( 8 )
+shape = SubResource( 7 )
 disabled = false
 
 [node name="Abilities" type="Node2D" parent="." index="2"]
 
-[node name="SwordSlash" parent="Abilities" index="0" instance=ExtResource( 9 )]
+[node name="SwordSlash" parent="Abilities" index="0" instance=ExtResource( 10 )]
 
 
 [editable path="Spatial/Model"]
