@@ -318,9 +318,13 @@ func _process(delta):
 		
 		if (move_through != null and move_through.get_ref() and (global.to2D(move_through.get_ref().getGlobalPosition()) - global_transform.origin).length() < move_through.get_ref().moveRange):
 			emit_signal(\"scene_switch\", move_through.get_ref().toMap, move_through.get_ref().toPoint)
-			print(move_through.get_ref().toMap)
 			walk_towards = null
 			move_through = null
+		
+		if (talk_to != null and talk_to.get_ref() and (global.to2D(talk_to.get_ref().getGlobalPosition()) - global_transform.origin).length() < talk_to.get_ref().moveRange):
+			emit_signal(\"talk_to\", talk_to.get_ref())
+			walk_towards = null
+			talk_to = null
 	
 	#Make sure the right animation is playing
 	if (!is_dead):
@@ -410,7 +414,7 @@ _sections_unfolded = [ "material" ]
 
 [node name="Held_L" type="BoneAttachment" parent="Spatial/Model/Armature/Skeleton" index="4"]
 
-transform = Transform( -1, 0, 4.16988e-009, -3.72529e-009, 1, 6.89546e-011, 1.7493e-015, -7.38743e-009, -1, 0.685988, 1.32506, 0.00487549 )
+transform = Transform( 1, 1.54658e-007, 4.16988e-009, 1.58383e-007, -1, 6.89546e-011, -3.00098e-015, 7.38743e-009, -1, 0.685988, 1.32506, 0.00487549 )
 bone_name = "Held_L"
 
 [node name="Held_R" type="BoneAttachment" parent="Spatial/Model/Armature/Skeleton" index="5"]

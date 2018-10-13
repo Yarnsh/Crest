@@ -68,9 +68,7 @@ func _unhandled_input(event):
 						else: if (atClick.has_method(\"__TRANSITION\")):
 							actor.moveThrough(atClick)
 						else: if (atClick.has_method(\"__DIALOGUE\")):
-							var d = atClick.__DIALOGUE(name)
-							if (d):
-								dialogueUI.show_dialogue(d.title, d.content, d.responses, atClick)
+							actor.talkTo(atClick)
 		
 		else: if (event.is_action(\"inventory\")):
 			_toggle_inventory()
@@ -101,6 +99,11 @@ func _on_Actor_out_combat():
 
 func _on_Actor_scene_switch(toMap, toPoint):
 	get_node(\"/root/World\").changeScene(self, toMap, toPoint)
+
+func _on_Actor_talk_to(talk_to):
+	var d = talk_to.__DIALOGUE(name)
+	if (d):
+		dialogueUI.show_dialogue(d.title, d.content, d.responses, talk_to)
 "
 
 [sub_resource type="ArrayMesh" id=2]
@@ -270,6 +273,8 @@ collision_mask = 1
 [connection signal="out_combat" from="Actor" to="." method="_on_Actor_out_combat"]
 
 [connection signal="scene_switch" from="Actor" to="." method="_on_Actor_scene_switch"]
+
+[connection signal="talk_to" from="Actor" to="." method="_on_Actor_talk_to"]
 
 
 [editable path="Actor"]

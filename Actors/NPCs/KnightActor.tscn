@@ -298,6 +298,7 @@ material/0 = null
 [node name="Dialogue" parent="Spatial" index="1" instance=ExtResource( 8 )]
 
 dialogue = ExtResource( 9 )
+moveRange = 100.0
 
 [node name="CollisionShape" type="CollisionShape" parent="Spatial/Dialogue" index="0"]
 

@@ -12,6 +12,7 @@ signal damage_updated
 signal in_combat
 signal out_combat
 signal scene_switch(to_map, to_point)
+signal talk_to(talk_to)
 
 var world
 onready var spatial = $Spatial
@@ -41,6 +42,7 @@ var walk_speed = 0.0
 
 var pick_up = null
 var move_through = null
+var talk_to = null
 
 var is_attacking = false
 var attack_towards = null
@@ -183,12 +185,14 @@ func walkTowards(dest):
 		_walk(dest)
 		move_through = null
 		pick_up = null
+		talk_to = null
 
 func pickUp(item):
 	#TODO: check if item is able to be reached
 	#TODO: ignore this in combat probably
 	queued_ability_name = null
 	move_through = null
+	talk_to = null
 	if (item != null and !busy):
 		pick_up = weakref(item)
 		_walk(pick_up.get_ref().getGlobalPosition())
@@ -197,8 +201,18 @@ func moveThrough(target):
 	#TODO: ignore this in combat probably
 	queued_ability_name = null
 	pick_up = null
+	talk_to = null
 	if (target != null and !busy):
 		move_through = weakref(target)
+		_walk(global.to2D(target.getGlobalPosition()))
+
+func talkTo(target):
+	#TODO: ignore this in combat probably
+	queued_ability_name = null
+	pick_up = null
+	move_through = null
+	if (target != null and !busy):
+		talk_to = weakref(target)
 		_walk(global.to2D(target.getGlobalPosition()))
 
 func _walk(dest):
