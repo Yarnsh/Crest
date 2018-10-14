@@ -28,6 +28,8 @@ onready var WalkMarker = $WalkMarker
 
 var cam_min_dist = -4.0
 var cam_max_dist = 15.0
+var cam_max_pitch = -1.5
+var cam_min_pitch = -0.3
 
 var mouse_arrow = load("res://arrow.png")
 var mouse_highlight = load("res://highlight.png")

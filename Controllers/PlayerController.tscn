@@ -19,7 +19,7 @@ func _unhandled_input(event):
 		var right = Vector3(1,0,0)
 		cam3D.get_parent().get_parent().rotate_y(-event.relative.x / 160.0)
 		cam3D.get_parent().get_parent().rotate_object_local(right, -event.relative.y / 160.0)
-		cam3D.get_parent().get_parent().rotation.x = min(max(cam3D.get_parent().get_parent().rotation.x, -1.5), -0.3)
+		cam3D.get_parent().get_parent().rotation.x = min(max(cam3D.get_parent().get_parent().rotation.x, cam_max_pitch), cam_min_pitch)
 		if (cam3D.get_parent().get_parent().rotation.z != 0):
 			cam3D.get_parent().get_parent().rotate_y(PI)
 			cam3D.get_parent().get_parent().rotation.z = 0
@@ -90,6 +90,15 @@ func _unhandled_input(event):
 		else: if (event.is_action(\"cam_move_out\")):
 			var zoom = min(cam3D.transform.origin.z+1, cam_max_dist)
 			cam3D.transform.origin.z = zoom
+		else: if (event.is_action(\"cam_move_left\")):
+			_setCameraAttached(false)
+		else: if (event.is_action(\"cam_move_right\")):
+			_setCameraAttached(false)
+		else: if (event.is_action(\"cam_move_up\")):
+			_setCameraAttached(false)
+		else: if (event.is_action(\"cam_move_down\")):
+			_setCameraAttached(false)
+
 func setInCombat(combat):
 	actor.setInCombat(combat)
 	HUD.setInCombat(combat)
