@@ -15,7 +15,16 @@ script/source = "extends \"res://Controllers/PController.gd\"
 
 func _unhandled_input(event):
 	#TODO: limit inputs if actor is busy, allow readying of actions during cool downs
-	if (event.is_pressed()):
+	if (event is InputEventMouseMotion and Input.is_action_pressed(\"cam_rotate\")):
+		var right = Vector3(1,0,0)
+		cam3D.get_parent().get_parent().rotate_y(-event.relative.x / 160.0)
+		cam3D.get_parent().get_parent().rotate_object_local(right, -event.relative.y / 160.0)
+		cam3D.get_parent().get_parent().rotation.x = min(max(cam3D.get_parent().get_parent().rotation.x, cam_max_pitch), cam_min_pitch)
+		if (cam3D.get_parent().get_parent().rotation.z != 0):
+			cam3D.get_parent().get_parent().rotate_y(PI)
+			cam3D.get_parent().get_parent().rotation.z = 0
+		print(cam3D.get_parent().get_parent().rotation)
+	else: if (event.is_pressed()):
 		if (event.is_action(\"toggle_combat\")):
 			actor.toggleInCombat()
 		if (event.is_action(\"move\")): #TODO: separate combat move from regular
@@ -74,6 +83,16 @@ func _unhandled_input(event):
 			_toggle_inventory()
 		else: if (event.is_action(\"abilities\")):
 			_toggle_abilities()
+		
+		else: if (event.is_action(\"cam_move_in\")):
+			var zoom = max(cam3D.transform.origin.z-1, cam_min_dist)
+			cam3D.transform.origin.z = zoom
+		else: if (event.is_action(\"cam_move_out\")):
+			var zoom = min(cam3D.transform.origin.z+1, cam_max_dist)
+			cam3D.transform.origin.z = zoom
+		else: if (event.is_action(\"cam_attach\")):
+			_setCameraAttached(true)
+
 func setInCombat(combat):
 	actor.setInCombat(combat)
 	HUD.setInCombat(combat)
@@ -124,7 +143,7 @@ surfaces/0 = {
 "vertex_count": 29
 }
 
-[node name="Node" type="Node"]
+[node name="Node" type="Node" index="0"]
 
 script = SubResource( 1 )
 
@@ -160,9 +179,19 @@ _sections_unfolded = [ "Drag Margin", "Smoothing", "Transform" ]
 
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00439453, 0, -0.00317383 )
 
-[node name="Camera" type="Camera" parent="Actor/Spatial" index="1"]
+[node name="Spatial" type="Spatial" parent="Actor/Spatial" index="1"]
 
-transform = Transform( 0.939693, 0.241845, -0.241845, 0, 0.707107, 0.707107, 0.34202, -0.664463, 0.664463, -1.3, 4.5, 3.5 )
+transform = Transform( 0.707107, 0.5, -0.5, 0, 0.707107, 0.707107, 0.707107, -0.5, 0.5, 0, 1.2, 0 )
+_sections_unfolded = [ "Transform" ]
+
+[node name="Spatial" type="Spatial" parent="Actor/Spatial/Spatial" index="0"]
+
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 4.5 )
+_sections_unfolded = [ "Transform" ]
+
+[node name="Camera" type="Camera" parent="Actor/Spatial/Spatial/Spatial" index="0"]
+
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
 keep_aspect = 1
 cull_mask = 1048575
 environment = null
