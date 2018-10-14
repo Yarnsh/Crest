@@ -15,7 +15,7 @@ func setState(state):
 
 
 onready var cam = $Actor/Camera2D
-onready var cam3D = $Actor/Spatial/Camera
+onready var cam3D = $Actor/Spatial/Spatial/Camera
 onready var clickCast = $ClickCast
 onready var mouseCast = $MouseCast
 onready var inventoryUI = $CanvasLayer/Inventory
@@ -25,6 +25,9 @@ onready var damageUI = $CanvasLayer/Damage
 onready var respawnUI = $CanvasLayer/Respawn
 onready var dialogueUI = $CanvasLayer/Dialogue
 onready var WalkMarker = $WalkMarker
+
+var cam_min_dist = -4.0
+var cam_max_dist = 15.0
 
 var mouse_arrow = load("res://arrow.png")
 var mouse_highlight = load("res://highlight.png")
