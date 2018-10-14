@@ -16,6 +16,7 @@ func setState(state):
 
 onready var cam = $Actor/Camera2D
 onready var cam3D = $Actor/Spatial/Spatial/Spatial/Camera
+onready var cam3D_base = $Actor/Spatial/Spatial
 onready var clickCast = $ClickCast
 onready var mouseCast = $MouseCast
 onready var inventoryUI = $CanvasLayer/Inventory
@@ -30,6 +31,7 @@ var cam_min_dist = -4.0
 var cam_max_dist = 15.0
 var cam_max_pitch = -1.5
 var cam_min_pitch = -0.3
+var cam_attached = true
 
 var mouse_arrow = load("res://arrow.png")
 var mouse_highlight = load("res://highlight.png")
@@ -52,6 +54,18 @@ func _selectAbility(id):
 			ability_list[id].get_ref().setUser(actor) #This should be either on weapon equip or ability selection. Or make the attack start use it
 			ability_list[id].get_ref().showArea()
 			selected_ability = id
+
+func _setCameraAttached(attached):
+	if (!attached and cam_attached):
+		cam_attached = false
+		actor.get_node("Spatial").remove_child(cam3D_base)
+		actor.add_child(cam3D_base)
+		cam3D_base.transform.origin = Vector3(actor.model.global_transform.origin.x, cam3D_base.transform.origin.y, actor.model.global_transform.origin.z)
+	elif (attached and !cam_attached):
+		cam_attached = true
+		actor.remove_child(cam3D_base)
+		actor.get_node("Spatial").add_child(cam3D_base)
+		cam3D_base.transform.origin = Vector3(0,cam3D_base.transform.origin.y,0)
 
 func _ready():
 	actor = $Actor
@@ -153,6 +167,19 @@ func _process(delta):
 				point_at.highlight()
 				mouse = mouse_highlight
 	Input.set_custom_mouse_cursor(mouse)
+	
+	if (Input.is_action_pressed("cam_move_left")):
+		_setCameraAttached(false)
+		cam3D_base.translate(Vector3(-20,0,0)*delta)
+	if (Input.is_action_pressed("cam_move_right")):
+		_setCameraAttached(false)
+		cam3D_base.translate(Vector3(20,0,0)*delta)
+	if (Input.is_action_pressed("cam_move_up")):
+		_setCameraAttached(false)
+		cam3D_base.transform.origin += Vector3(0,0,-20).rotated(Vector3(0,1,0), cam3D_base.rotation.y)*delta
+	if (Input.is_action_pressed("cam_move_down")):
+		_setCameraAttached(false)
+		cam3D_base.transform.origin += Vector3(0,0,20).rotated(Vector3(0,1,0), cam3D_base.rotation.y)*delta
 	
 	HUD.setMaxGlobalCooldown(actor.global_cooldown)
 	HUD.setCurrentCooldown(actor.global_cooldown_ends - global.clock)

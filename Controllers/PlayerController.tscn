@@ -90,14 +90,8 @@ func _unhandled_input(event):
 		else: if (event.is_action(\"cam_move_out\")):
 			var zoom = min(cam3D.transform.origin.z+1, cam_max_dist)
 			cam3D.transform.origin.z = zoom
-		else: if (event.is_action(\"cam_move_left\")):
-			_setCameraAttached(false)
-		else: if (event.is_action(\"cam_move_right\")):
-			_setCameraAttached(false)
-		else: if (event.is_action(\"cam_move_up\")):
-			_setCameraAttached(false)
-		else: if (event.is_action(\"cam_move_down\")):
-			_setCameraAttached(false)
+		else: if (event.is_action(\"cam_attach\")):
+			_setCameraAttached(true)
 
 func setInCombat(combat):
 	actor.setInCombat(combat)
