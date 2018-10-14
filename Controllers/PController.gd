@@ -27,10 +27,10 @@ onready var respawnUI = $CanvasLayer/Respawn
 onready var dialogueUI = $CanvasLayer/Dialogue
 onready var WalkMarker = $WalkMarker
 
-var cam_min_dist = -4.0
-var cam_max_dist = 15.0
+var cam_min_dist = -3.0
+var cam_max_dist = 6.0
 var cam_max_pitch = -1.5
-var cam_min_pitch = -0.3
+var cam_min_pitch = -0.6
 var cam_attached = true
 
 var mouse_arrow = load("res://arrow.png")
