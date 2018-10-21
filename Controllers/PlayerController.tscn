@@ -92,6 +92,9 @@ func _unhandled_input(event):
 			cam3D.transform.origin.z = zoom
 		else: if (event.is_action(\"cam_attach\")):
 			_setCameraAttached(true)
+		
+		elif (event.is_action(\"stop_all\")):
+			actor.stopAll()
 
 func setInCombat(combat):
 	actor.setInCombat(combat)
@@ -143,7 +146,7 @@ surfaces/0 = {
 "vertex_count": 29
 }
 
-[node name="Node" type="Node" index="0"]
+[node name="Node" type="Node"]
 
 script = SubResource( 1 )
 
@@ -191,7 +194,6 @@ _sections_unfolded = [ "Transform" ]
 
 [node name="Camera" type="Camera" parent="Actor/Spatial/Spatial/Spatial" index="0"]
 
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
 keep_aspect = 1
 cull_mask = 1048575
 environment = null
