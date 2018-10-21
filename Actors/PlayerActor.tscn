@@ -280,6 +280,8 @@ func _ready():
 
 func _process(delta):
 	_updateModelPosition()
+
+func _physics_process(delta):
 	#TODO: limit inputs when attacking
 	if (!is_dead):
 		#TODO: make the actor walk, interact, attack, and all that, client side based on parameters passed by controller
@@ -287,7 +289,7 @@ func _process(delta):
 			if (in_combat):
 				busy = true
 			if (((walk_towards - global_transform.origin)).length() <= walk_speed * delta):
-				translate((walk_towards - global_transform.origin))
+				move_and_slide((walk_towards - global_transform.origin) / delta)
 				walk_towards = null
 				if (walk_path != null and !walk_path.empty()):
 					var walk3D = walk_path.pop_front()
@@ -298,7 +300,7 @@ func _process(delta):
 						startGlobalCooldown()
 					busy = false
 			else:
-				translate((walk_towards - global_transform.origin).normalized() * walk_speed * delta)
+				move_and_slide((walk_towards - global_transform.origin).normalized() * walk_speed)
 		
 		if (pick_up != null and pick_up.get_ref() and !pick_up.get_ref().on_ground):
 			pick_up = null
