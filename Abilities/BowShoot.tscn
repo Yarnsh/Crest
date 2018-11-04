@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://Abilities/Assets/Attackindicatormat.material" type="Material" id=1]
 [ext_resource path="res://Abilities/AbilityIndicator.gd" type="Script" id=2]
+[ext_resource path="res://Abilities/AbilityIndicatorRay.gd" type="Script" id=3]
 
 [sub_resource type="GDScript" id=1]
 
@@ -64,7 +65,7 @@ func _process(delta):
 		set_process(false)
 		_do()"
 
-[node name="BowShoot" type="Node2D"]
+[node name="BowShoot" type="Node2D" index="0"]
 
 script = SubResource( 1 )
 _sections_unfolded = [ "Transform" ]
@@ -103,6 +104,28 @@ lod_min_hysteresis = 0.0
 lod_max_distance = 0.0
 lod_max_hysteresis = 0.0
 script = ExtResource( 2 )
+_sections_unfolded = [ "Geometry" ]
+
+[node name="Collider2" type="RayCast2D" parent="." index="1"]
+
+enabled = false
+exclude_parent = true
+cast_to = Vector2( 0, 250 )
+collision_mask = 1
+_sections_unfolded = [ "Collision", "Pickable", "Transform" ]
+
+[node name="Model" type="ImmediateGeometry" parent="Collider2" index="0"]
+
+layers = 1
+material_override = ExtResource( 1 )
+cast_shadow = 0
+extra_cull_margin = 0.0
+use_in_baked_light = false
+lod_min_distance = 0.0
+lod_min_hysteresis = 0.0
+lod_max_distance = 0.0
+lod_max_hysteresis = 0.0
+script = ExtResource( 3 )
 _sections_unfolded = [ "Geometry" ]
 
 
