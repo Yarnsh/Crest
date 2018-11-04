@@ -25,7 +25,10 @@ func hideArea():
 	preview = false
 	_hideArea()
 func _hideArea():
-	collider.set_monitoring(false)
+	if (collider.has_method("set_monitoring")):
+		collider.set_monitoring(false)
+	elif (collider.has_method("set_enabled")):
+		collider.set_enabled(false)
 	collider.hide()
 	model.hide()
 	
@@ -33,7 +36,10 @@ func showArea():
 	preview = true
 	_showArea()
 func _showArea():
-	collider.set_monitoring(true)
+	if (collider.has_method("set_monitoring")):
+		collider.set_monitoring(true)
+	elif (collider.has_method("set_enabled")):
+		collider.set_enabled(true)
 	collider.show()
 	model.show()
 
