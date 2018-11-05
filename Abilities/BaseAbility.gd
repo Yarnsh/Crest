@@ -20,9 +20,6 @@ var preview = false
 var shown = false
 var point_towards = Vector2(0,0)
 
-var max_range = 0.0
-var min_range = 0.0
-
 
 func hideArea():
 	preview = false

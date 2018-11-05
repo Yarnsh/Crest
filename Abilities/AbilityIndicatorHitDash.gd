@@ -11,8 +11,6 @@ func _process(delta):
 		var side = dir.tangent()
 		var dist = get_parent().get_parent().get_parent().max_range
 		
-		print(str(side_len) + " " + str(dist) + " ")
-		
 		var old_user_pos = user.get_global_position()
 		var col = user.move_and_collide(dir*dist)
 		if (col != null):
@@ -33,8 +31,3 @@ func _process(delta):
 		end()
 		
 		transform.origin = global.to3D(pos)
-		var look = get_parent().get_parent().get_parent().getPointTowards()
-		var look3D = global.to3D(look)
-		if (look3D.x != pos.x and look3D.z != pos.y):
-			look_at(look3D, Vector3(0,1,0))
-			rotate_y(PI/2.0)

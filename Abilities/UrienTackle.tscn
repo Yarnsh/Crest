@@ -25,6 +25,8 @@ func _beginMove():
 func _onMove():
 	return global.clock < move_ends
 
+const max_range = dash_length * dash_speed
+
 func _ready():
 	set_process(false)
 
@@ -46,7 +48,6 @@ func startTowards(point):
 		ability_user.get_ref().setBusy(true)
 		showArea()
 		shown = true
-		#TODO: start appropriate animation
 		#TODO: play whatever noises
 		_beginStartup()
 		set_process(true)
