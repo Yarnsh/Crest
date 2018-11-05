@@ -11,6 +11,8 @@ func _process(delta):
 		var side = dir.tangent()
 		var dist = get_parent().get_parent().get_parent().max_range
 		
+		print(str(side_len) + " " + str(dist) + " ")
+		
 		var old_user_pos = user.get_global_position()
 		var col = user.move_and_collide(dir*dist)
 		if (col != null):
