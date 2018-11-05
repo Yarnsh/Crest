@@ -65,7 +65,6 @@ func _do():
 	shown = false
 
 func _process(delta):
-	print (str(_onStartup()) + \" \" + str(_onMove()) + \" \" + str(startup))
 	if (!_onStartup() and startup):
 		_do()
 	elif (_onMove()):
