@@ -2,14 +2,14 @@ extends ImmediateGeometry
 #Assumes this is for an actor with a circular collider
 
 func _process(delta):
-	if (get_parent().get_parent().ability_user != null):
-		var user = get_parent().get_parent().ability_user
-		var pos = get_parent().get_parent().get_global_position()
+	if (get_parent().get_parent().get_parent().ability_user != null):
+		var user = get_parent().get_parent().get_parent().ability_user.get_ref()
+		var pos = get_parent().get_parent().get_parent().get_global_position()
 		
 		var side_len = user.collider.shape.radius
-		var dir = (get_parent().get_parent().point_towards - pos).normalized()
+		var dir = (get_parent().get_parent().get_parent().getPointTowards() - pos).normalized()
 		var side = dir.tangent()
-		var dist = get_parent().get_parent().max_range
+		var dist = get_parent().get_parent().get_parent().max_range
 		
 		var old_user_pos = user.get_global_position()
 		var col = user.move_and_collide(dir*dist)
