@@ -1,0 +1,116 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://Abilities/Assets/Attackindicatormat.material" type="Material" id=1]
+[ext_resource path="res://Abilities/AbilityIndicatorHitDash.gd" type="Script" id=2]
+
+[sub_resource type="GDScript" id=1]
+
+script/source = "extends \"res://Abilities/BaseAbility.gd\"
+
+const ability_art = preload(\"res://Abilities/Assets/images/Shoot.png\")
+const ability_name = \"Urien Tackle\"
+const ability_desc = \"\\\"Crush!\\\" - Urien from the hit fighting game series \\'Street Fighter\\'\"
+
+const startup = 0.75
+const cooldown = 1.0
+const anim_cooldown = 1.0
+
+var startup = true
+const dash_length = 0.5
+const dash_speed = 1000.0
+var direction = Vector2(0,0)
+var move_ends = 0.0
+func _beginMove():
+	move_ends = global.clock + dash_length
+func _onMove():
+	return global.clock < move_ends
+
+const max_range = dash_length * dash_speed
+
+func _ready():
+	set_process(false)
+
+func startTowards(point):
+	pointTowards(point)
+	startup = true
+	
+	if (_onCooldown() or ability_user == null or ability_user.get_ref() == null or ability_user.get_ref().isOnGlobalCooldown()):
+		hideArea()
+		return
+	
+	ability_user.get_ref().lock()
+	ability_user.get_ref().is_attacking = true
+	ability_user.get_ref().startAnimCooldown(anim_cooldown)
+	ability_user.get_ref()._anim_playing(\"Bow_Fire\")
+	ability_user.get_ref()._turn_towards(point)
+	
+	if (ability_user.get_ref().has_method(\"setBusy\")):
+		ability_user.get_ref().setBusy(true)
+		showArea()
+		shown = true
+		#TODO: play whatever noises
+		_beginStartup()
+		set_process(true)
+	
+	ability_user.get_ref().unlock()
+
+func _do():
+	ability_user.get_ref().lock()
+	
+	direction = (point_towards - ability_user.get_ref().get_global_position()).normalized()
+	
+	startup = false
+	_beginMove()
+	
+	hideArea()
+	shown = false
+
+func _process(delta):
+	if (!_onStartup() and startup):
+		_do()
+	elif (_onMove()):
+		var col = ability_user.get_ref().move_and_collide(direction * dash_speed * delta)
+		if (col != null):
+			var b = col.get_collider()
+			if (b.has_method(\"takeHit\") and b != ability_user.get_ref()):
+				b.takeHit(500, ability_user) #TODO: make this depend on weapon and what damage was rolled
+				ability_user.get_ref().takeHit(15, ability_user)
+			move_ends = 0.0
+	elif (!_onStartup() and !_onMove()):
+		set_process(false)
+		startup = true
+		ability_user.get_ref().is_attacking = false
+		
+		ability_user.get_ref().startGlobalCooldown()
+		ability_user.get_ref().setBusy(false)
+		
+		ability_user.get_ref().unlock()"
+
+[node name="UrienTackle" type="Node2D" index="0"]
+
+script = SubResource( 1 )
+_sections_unfolded = [ "Transform" ]
+
+[node name="Collider" type="Node2D" parent="." index="0"]
+
+visible = false
+_sections_unfolded = [ "Collision", "Pickable", "Transform" ]
+
+[node name="Shape" type="Node2D" parent="Collider" index="0"]
+
+[node name="Model" type="ImmediateGeometry" parent="Collider/Shape" index="0"]
+
+visible = false
+layers = 1
+material_override = ExtResource( 1 )
+cast_shadow = 0
+extra_cull_margin = 0.0
+use_in_baked_light = false
+lod_min_distance = 0.0
+lod_min_hysteresis = 0.0
+lod_max_distance = 0.0
+lod_max_hysteresis = 0.0
+script = ExtResource( 2 )
+_sections_unfolded = [ "Geometry" ]
+
+

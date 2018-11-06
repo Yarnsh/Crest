@@ -15,6 +15,7 @@ signal scene_switch(to_map, to_point)
 signal talk_to(talk_to)
 
 var world
+onready var collider = $CollisionShape2D
 onready var spatial = $Spatial
 onready var model = $Spatial/Model
 onready var anim_player = $Spatial/Model/AnimationPlayer
