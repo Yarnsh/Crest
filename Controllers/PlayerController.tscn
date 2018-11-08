@@ -95,6 +95,8 @@ func _unhandled_input(event):
 		
 		elif (event.is_action(\"stop_all\")):
 			actor.stopAll()
+			_hideAllAbilities()
+			selected_ability = -1
 
 func setInCombat(combat):
 	actor.setInCombat(combat)
@@ -146,7 +148,7 @@ surfaces/0 = {
 "vertex_count": 29
 }
 
-[node name="Node" type="Node"]
+[node name="Node" type="Node" index="0"]
 
 script = SubResource( 1 )
 
