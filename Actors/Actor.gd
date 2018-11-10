@@ -13,6 +13,7 @@ signal in_combat
 signal out_combat
 signal scene_switch(to_map, to_point)
 signal talk_to(talk_to)
+signal crest_updated
 
 var world
 onready var collider = $CollisionShape2D

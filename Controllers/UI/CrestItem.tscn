@@ -1,0 +1,147 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://Controllers/UI/Themes/Goldbordertheme.tres" type="Theme" id=1]
+
+[sub_resource type="GDScript" id=1]
+
+script/source = "extends PanelContainer
+
+onready var Name = $HBoxContainer/Name
+onready var Equip = $HBoxContainer/Equip
+
+var id
+
+func setName(n):
+	Name.text = n
+
+var _controller
+var _ability
+
+func init(controller, ability):
+	_controller = weakref(controller)
+	_ability = weakref(ability)
+	setName(ability.id)
+	id = ability.id
+
+func _on_Equip_pressed():
+	if (_controller.get_ref().isCrestEquipped(id)):
+		_controller.get_ref().unequipCrest(id)
+	else:
+		_controller.get_ref().equipCrest(id)
+	update()
+
+func update():
+	if (_controller.get_ref().isCrestEquipped(id)):
+		Equip.text = \"Unequip\"
+	else:
+		Equip.text = \"Equip\"
+"
+
+[node name="PanelContainer" type="PanelContainer"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 458.0
+margin_bottom = 52.0
+rect_min_size = Vector2( 456, 30 )
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+theme = ExtResource( 1 )
+script = SubResource( 1 )
+_sections_unfolded = [ "Rect", "Theme", "custom_styles" ]
+
+[node name="HBoxContainer" type="HBoxContainer" parent="." index="0"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 451.0
+margin_bottom = 45.0
+rect_min_size = Vector2( 364, 30 )
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+alignment = 0
+_sections_unfolded = [ "Rect" ]
+
+[node name="Name" type="Label" parent="HBoxContainer" index="0"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 7.0
+margin_right = 154.0
+margin_bottom = 31.0
+rect_min_size = Vector2( 154, 24 )
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 4
+text = "ItemName"
+valign = 1
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+_sections_unfolded = [ "Anchor", "Margin", "Rect", "Theme" ]
+
+[node name="VSeparator" type="VSeparator" parent="HBoxContainer" index="1"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 158.0
+margin_right = 162.0
+margin_bottom = 38.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+
+[node name="Equip" type="Button" parent="HBoxContainer" index="2"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 166.0
+margin_right = 234.0
+margin_bottom = 38.0
+rect_min_size = Vector2( 68, 22 )
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+theme = ExtResource( 1 )
+toggle_mode = false
+enabled_focus_mode = 2
+shortcut = null
+group = null
+text = "Equip"
+flat = false
+align = 1
+_sections_unfolded = [ "Grow Direction", "Margin", "Rect", "Theme", "custom_styles" ]
+
+[connection signal="pressed" from="HBoxContainer/Equip" to="." method="_on_Equip_pressed"]
+
+
