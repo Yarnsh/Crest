@@ -187,6 +187,16 @@ func _updateModelPosition():
 	#TODO: make this match to the height of the navmesh at that point
 	return pos
 
+func stopAll():
+	queued_ability_name = null
+	move_through = null
+	pick_up = null
+	talk_to = null
+	if (in_combat and walk_towards != null and !isOnGlobalCooldown()):
+		startGlobalCooldown()
+		busy = false
+	walk_towards = null
+
 func walkTowards(dest):
 	queued_ability_name = null
 	if (!busy):

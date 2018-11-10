@@ -93,6 +93,11 @@ func _unhandled_input(event):
 			cam3D.transform.origin.z = zoom
 		else: if (event.is_action(\"cam_attach\")):
 			_setCameraAttached(true)
+		
+		elif (event.is_action(\"stop_all\")):
+			actor.stopAll()
+			_hideAllAbilities()
+			selected_ability = -1
 
 func setInCombat(combat):
 	actor.setInCombat(combat)
