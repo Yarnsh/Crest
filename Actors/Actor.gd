@@ -184,7 +184,7 @@ func stopAll():
 	move_through = null
 	pick_up = null
 	talk_to = null
-	if (in_combat and walk_towards != null):
+	if (in_combat and walk_towards != null and !isOnGlobalCooldown()):
 		startGlobalCooldown()
 		busy = false
 	walk_towards = null
