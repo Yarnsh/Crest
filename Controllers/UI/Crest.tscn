@@ -13,15 +13,10 @@ func init(controller):
 	_controller = weakref(controller)
 	_actor = weakref(controller.actor)
 
-func _ready():
-	# Called every time the node is added to the scene.
-	# Initialization here
-	pass
-
 func updateCrest():
 	for c in list.get_children():
 		list.remove_child(c)
-		c.free()
+		c.call_deferred(\"free\")
 	
 	for a in _actor.get_ref().available_crest_elements.values():
 		var abil = preload(\"res://Controllers/UI/CrestItem.tscn\").instance()

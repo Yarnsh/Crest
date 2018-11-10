@@ -42,6 +42,10 @@ func startTowardsByName(ability_name, point):
 	slash_abil.ability_user = weakref(self)
 	slash_abil.startTowards(point)
 
+func onTakeHit(damage, source):
+	if is_dead and source.get_ref().has_method(\"addCrestElement\"):
+		source.get_ref().addCrestElement(load(\"res://Actors/CrestElements/Health1Crest.tscn\").instance())
+
 func _ready():
 	updateWorld()
 	

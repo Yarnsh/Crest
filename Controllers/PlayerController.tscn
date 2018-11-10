@@ -134,6 +134,11 @@ func _on_Actor_talk_to(talk_to):
 
 func _on_Actor_crest_updated():
 	crestUI.updateCrest()
+	inventoryUI.updateEquipment(actor.equipped_weapon, actor.equipped_head, actor.equipped_chest, actor.equipped_arms, actor.equipped_legs)
+	abilityUI.updateAbilities()
+	_checkAbilityHotslots()
+	HUD.updateAbilityBar()
+	damageUI.updateDamage()
 "
 
 [sub_resource type="ArrayMesh" id=2]
@@ -154,7 +159,7 @@ surfaces/0 = {
 "vertex_count": 29
 }
 
-[node name="Node" type="Node" index="0"]
+[node name="Node" type="Node"]
 
 script = SubResource( 1 )
 
