@@ -26,6 +26,7 @@ onready var damageUI = $CanvasLayer/Damage
 onready var respawnUI = $CanvasLayer/Respawn
 onready var dialogueUI = $CanvasLayer/Dialogue
 onready var WalkMarker = $WalkMarker
+onready var crestUI = $CanvasLayer/Crest
 
 var cam_min_dist = -3.0
 var cam_max_dist = 6.0
@@ -74,12 +75,14 @@ func _ready():
 	HUD.init(self)
 	damageUI.init(self)
 	respawnUI.init(self)
+	crestUI.init(self)
 	
 	inventoryUI.updateItems(actor.inventory)
 	abilityUI.updateAbilities()
 	_checkAbilityHotslots()
 	HUD.updateAbilityBar()
 	damageUI.updateDamage()
+	crestUI.updateCrest()
 
 func _checkAbilityHotslots():
 	var i = 0

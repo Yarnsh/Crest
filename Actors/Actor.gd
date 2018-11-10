@@ -13,6 +13,7 @@ signal in_combat
 signal out_combat
 signal scene_switch(to_map, to_point)
 signal talk_to(talk_to)
+signal crest_updated
 
 var world
 onready var collider = $CollisionShape2D
@@ -48,7 +49,8 @@ var talk_to = null
 var is_attacking = false
 var attack_towards = null
 
-var max_wounds = [3,2,1]
+var base_max_wounds = [3,2,1]
+var max_wounds = base_max_wounds.duplicate()
 var current_wounds = [0,0,0]
 var defense = [2,10,20,40]
 var current_defense = defense
@@ -158,6 +160,8 @@ func takeHit(damage, source=null):
 		if (damage_tier >= max_wounds.size()):
 			is_dead = true
 			emit_signal("damage_updated")
+			if has_method("onTakeHit"):
+				onTakeHit(damage, source)
 			return
 	if (damage_tier >= 0):
 		startAnimCooldown(1.0)
@@ -169,6 +173,9 @@ func takeHit(damage, source=null):
 		source.get_ref().setInCombat(true)
 	
 	emit_signal("damage_updated")
+	
+	if has_method("onTakeHit"):
+		onTakeHit(damage, source)
 
 func setPosition(pos):
 	set_global_position(pos)

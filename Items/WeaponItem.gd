@@ -10,7 +10,9 @@ func getAbilities():
 	return abilities.get_children()
 
 func containsAbility(ability):
-	return getAbilities().has(ability)
+	if !ability:
+		return false
+	return getAbilities().has(ability.get_ref())
 
 func startTowardsByName(user, ability, point):
 	var a = abilities.find_node(ability)
