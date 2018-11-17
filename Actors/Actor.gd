@@ -133,13 +133,11 @@ func reset():
 	emit_signal("damage_updated")
 
 func toggleInCombat():
-	in_combat = !in_combat
-	if (in_combat):
-		emit_signal("in_combat")
-	else:
-		emit_signal("out_combat")
+	setInCombat(!in_combat)
 
 func setInCombat(val):
+	if (in_combat and busy):
+		return
 	if (in_combat != val):
 		in_combat = val
 		if (in_combat):
