@@ -61,7 +61,7 @@ filter/low_hanging_obstacles = false
 filter/ledge_spans = false
 filter/filter_walkable_low_height_spans = false
 
-[node name="Forest1TestDup" type="Navigation"]
+[node name="Forest1TestDup" type="Navigation" index="0"]
 
 up_vector = Vector3( 0, 1, 0 )
 script = ExtResource( 1 )
