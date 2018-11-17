@@ -164,7 +164,7 @@ surfaces/0 = {
 "vertex_count": 29
 }
 
-[node name="Node" type="Node"]
+[node name="Node" type="Node" index="0"]
 
 script = SubResource( 1 )
 
@@ -223,7 +223,7 @@ current = false
 fov = 70.0
 size = 1.0
 near = 0.05
-far = 160.0
+far = 200.0
 _sections_unfolded = [ "Transform" ]
 
 [node name="ClickCast" type="RayCast2D" parent="." index="1"]
