@@ -13,7 +13,7 @@ const ability_desc = \"Hope you've been lifting.\"
 
 const startup = 0.4
 const cooldown = 1.0
-const anim_cooldown = 1.0
+const anim_cooldown = 1.3
 
 func _ready():
 	set_process(false)
@@ -73,7 +73,7 @@ func _on_Collider_body_exited( body ):
 		body.setHighlight(false)
 "
 
-[node name="Punch" type="Node2D" index="0"]
+[node name="Punch" type="Node2D"]
 
 script = SubResource( 1 )
 _sections_unfolded = [ "Transform" ]
