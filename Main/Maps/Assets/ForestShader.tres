@@ -4,7 +4,7 @@
 [ext_resource path="res://Main/Maps/Assets/Images/Stone.png" type="Texture" id=2]
 [ext_resource path="res://Main/Maps/Assets/Images/Grass.png" type="Texture" id=3]
 [ext_resource path="res://Main/Maps/Assets/Images/Forestground.png" type="Texture" id=4]
-[ext_resource path="res://Main/Maps/Assets/Images/ForestSplatmap.png" type="Texture" id=5]
+[ext_resource path="res://Main/Maps/Assets/Images/forestsplatmap.png" type="Texture" id=5]
 
 [sub_resource type="Shader" id=1]
 
