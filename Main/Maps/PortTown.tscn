@@ -69,7 +69,7 @@ _sections_unfolded = [ "Transform" ]
 
 [node name="ToForest" parent="." index="0" instance=ExtResource( 2 )]
 
-transform = Transform( 0.9994, 0.0291334, 0.0187463, -0.0293133, 0.999526, 0.00939289, -0.0184637, -0.00993677, 0.99978, -11.4318, 1.35419, -91.7688 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -11.4318, -0.466203, -92.7633 )
 visible = false
 _sections_unfolded = [ "Collision", "Transform" ]
 toMap = "Forest1TestDup"
@@ -84,7 +84,7 @@ _sections_unfolded = [ "Transform" ]
 
 [node name="Mesh" type="MeshInstance" parent="ToForest" index="1"]
 
-transform = Transform( 3, 0, 0, 0, 6, 0, 0, 0, 1, 0, 0, 0 )
+transform = Transform( 2, 0, 0, 0, 6, 0, 0, 0, 1, 0, 0, 0 )
 layers = 1
 material_override = null
 cast_shadow = 1
@@ -196,11 +196,11 @@ blend_times = [  ]
 
 _sections_unfolded = [ "Transform" ]
 
-[node name="Circle.001" parent="Scene Root2" index="3"]
+[node name="Circle.001" parent="Scene Root2" index="4"]
 
 _sections_unfolded = [ "material" ]
 
-[node name="Terrain" parent="Scene Root2" index="8"]
+[node name="Terrain" parent="Scene Root2" index="9"]
 
 material/0 = ExtResource( 6 )
 _sections_unfolded = [ "material" ]
